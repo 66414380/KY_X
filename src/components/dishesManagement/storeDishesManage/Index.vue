@@ -53,7 +53,7 @@
           <el-table-column label-class-name="table_head" header-align="center" align="center" prop="productname" label="名称"
                            width="120"></el-table-column>
           <el-table-column label-class-name="table_head" header-align="center" align="center"
-                           label="第三方编码" width="120">
+                           label="第三方编码" width="180">
             <template slot-scope="scope">
               <div v-for="(item,index) in scope.row.morecodes">
                 <span>{{item.code1}} -- {{item.code2}}</span>
@@ -67,21 +67,20 @@
           <el-table-column label-class-name="table_head" header-align="center" align="center" prop="price" label="参考价格"
                            width="120"></el-table-column>
           <el-table-column label-class-name="table_head" header-align="center" align="center" prop="status" label="菜品图片"
-                           width="360">
+                           width="140">
             <template slot-scope="scope">
-              <div class="flex">
-                <div v-for="(item,index) in scope.row.image" class="margin_r_10" style="margin-top: 7px">
+              <div style="margin-top: 7px" v-if="scope.row.image">
                   <el-popover
-                    placement="right"
+                    placement="top"
                     width="200"
                     trigger="hover"
                   >
-                    <img  :src="item.imgurl" alt="" v-if="item.select === 1" style="width: 200px;height: 200px">
-                    <img slot="reference" :src="item.imgurl" alt="" v-if="item.select === 1" style="width: 100px;height: 100px">
+                    <img  :src="scope.row.image" alt=""  style="width: 200px;height: 200px">
+                    <img slot="reference" :src="scope.row.image" alt=""  style="width: 100px;height: 100px">
                   </el-popover>
-                </div>
               </div>
-
+              <div class="noImg" v-else>
+              </div>
             </template>
 
 
@@ -92,7 +91,7 @@
                            width="180">
 
             <template slot-scope="scope">
-              <div v-for="(item,index) in scope.row.Skus">
+              <div v-for="(item,index) in scope.row.skus">
                 <span>{{item.skuid}}   {{item.price}}</span>
               </div>
             </template>
@@ -101,7 +100,14 @@
                            width="240">
             <template slot-scope="scope">
               <div v-for="(item,index) in scope.row.property">
-                <span>{{item.value}} {{item.value1}}</span>
+
+                <div class="flex">
+                  <div class="margin_r_10">{{item.attr}}</div>
+                  <div v-for="(item,index) in item.list">
+                    <span class="margin_r_10"> {{item.value}}</span>
+                  </div>
+                </div>
+
               </div>
             </template>
           </el-table-column>
@@ -109,10 +115,13 @@
                            width="240">
 
             <template slot-scope="scope">
-              <div v-for="(item,index) in scope.row.Lunchboxes">
-                <span>{{item.value}} {{item.count}} </span>
+              <div v-if="scope.row.lunchboxes.length !== 0">
+                <div v-for="(item,index) in scope.row.lunchboxes">
+                  <span>{{item.value}} {{item.count}} </span>
+                </div>
+                <!--<div style="border-top: 1px solid #BECBD9">餐盒总价：￥{{scope.row.box}}</div>-->
               </div>
-                <div style="border-top: 1px solid #BECBD9">餐盒总价：￥{{scope.row.box}}</div>
+
             </template>
           </el-table-column>
           <!--<el-table-column label-class-name="table_head" header-align="center" align="center" prop="status" label="平台信息"-->
@@ -228,7 +237,7 @@
           oneTwoApi(params).then((res) => {
             if (res.errcode === 0) {
               this.dialogVisible2 = false;
-              this.$message(res.errmsg);
+              this.$message('操作成功');
               this.showResouce(this.p = {page: 1, size: 20, total: 0}, this.dishesName = '');
             }
           });
@@ -287,7 +296,7 @@
         let list = [];
         this.tableData.forEach((item)=>{
           if(item.select === true){
-            list.push(item.id)
+            list.push(item.x0_productid)
           }
         });
         if(list.length === 0){
@@ -302,7 +311,7 @@
             let params = {
               redirect: "x2a.product.delete",
               levelid:this.getStoreDishesManageLevelId(),
-              id:list.join(','),
+              x0_productids:list.join(','),
             };
             oneTwoApi(params).then((res) => {
               if(res.errcode === 0){
@@ -318,7 +327,7 @@
         }
       },
       search() {
-
+        this.showResouce(this.p = {page: 1, size: 20, total: 0},this.dishesName);
       },
 
       issued() {
@@ -363,6 +372,9 @@
         };
         oneTwoApi(params).then((res) => {
           if(res.errcode === 0){
+            res.data.list.forEach((item)=>{
+              item.select = false;
+            });
             this.tableData = res.data.list;
             this.p.total = res.data.count;
           }
@@ -420,6 +432,8 @@
 </script>
 
 <style scoped>
-
+.noImg{
+  margin: 7px 0;width: 100px;height: 100px;border: 1px dashed #d9d9d9;
+}
 
 </style>

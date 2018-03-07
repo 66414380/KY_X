@@ -156,7 +156,7 @@
       width="80%">
       <el-form ref="formRules" :model="form">
       <el-table :data="form.brandEditList" border style="width: 100%;">
-        <el-table-column label-class-name="table_head" header-align="center" align="center" label="门店编码" width="200">
+        <el-table-column label-class-name="table_head" header-align="center" align="center" label="菜品编码" width="200">
           <template slot-scope="scope">
             <el-input v-model="scope.row.id" disabled placeholder="" class="p_b_22"></el-input>
           </template>

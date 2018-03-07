@@ -65,23 +65,30 @@
 
           <el-table :data="tableData" border :height="tableHeight -83">
             <el-table-column header-align="center" align="center" prop="no" label="序号" width="70"></el-table-column>
-            <el-table-column header-align="center" align="center" prop="settlementLot" label="结算批次" width="100"></el-table-column>
-            <el-table-column header-align="center" align="center" prop="account" label="账户" width="70"></el-table-column>
-            <el-table-column header-align="center" align="center" prop="accountTime" label="划账时间" width="100"></el-table-column>
+            <el-table-column header-align="center" align="center" prop="create_time" label="划账日期" width="100"></el-table-column>
+
+
+            <el-table-column header-align="center" align="center" prop="bank_account_name" label="账户名称" width="120"></el-table-column>
+
             <el-table-column header-align="center" align="center" prop="transactionTime" label="交易起止时间" width="140"></el-table-column>
-            <el-table-column header-align="center" align="center" prop="payMoney" label="交易金额" width="100"></el-table-column>
+            <el-table-column header-align="center" align="center" prop="payMoney" label="交易金额（元）" width="140"></el-table-column>
             <el-table-column header-align="center" align="center" prop="payCount" label="交易笔数" width="100"></el-table-column>
 
-            <el-table-column header-align="center" align="center" prop="refundAmount" label="退款金额" width="100"></el-table-column>
+            <el-table-column header-align="center" align="center" prop="refundAmount" label="退款金额（元）" width="140"></el-table-column>
 
             <el-table-column header-align="center" align="center" prop="refundCount" label="退款笔数" width="100"></el-table-column>
-            <el-table-column header-align="center" align="center" prop="netPayment" label="支付净额" width="100"></el-table-column>
-            <el-table-column header-align="center" align="center" prop="serviceCharge" label="手续费" width="100"></el-table-column>
-            <el-table-column header-align="center" align="center" prop="amountOfAccount" label="划账金额" width="100"></el-table-column>
-            <el-table-column header-align="center" align="center" prop="amountTime" label="划账金额到账时间" width="150"></el-table-column>
-            <el-table-column header-align="center" align="center" prop="issuingBank" label="发卡行" width="100"></el-table-column>
-            <el-table-column header-align="center" align="center" prop="cardNumber" label="卡号" width="70"></el-table-column>
-            <el-table-column header-align="center" align="center" prop="cardholder" label="持卡人" width="100"></el-table-column>
+            <el-table-column header-align="center" align="center" prop="netPayment" label="支付净额（差额）元" width="180"></el-table-column>
+            <el-table-column header-align="center" align="center" prop="serviceCharge" label="手续费金额（元）" width="180"></el-table-column>
+            <el-table-column header-align="center" align="center" prop="amountOfAccount" label="划账金额（元）" width="140"></el-table-column>
+            <el-table-column header-align="center" align="center" prop="amountTime" label="划账金额到账时间" width="180"></el-table-column>
+            <el-table-column header-align="center" align="center" prop="issuingBank" label="结算银行卡号" width="160"></el-table-column>
+            <el-table-column header-align="center" align="center" prop="cardNumber" label="操作" width="70">
+              <template slot-scope="scope">
+                <el-button type="primary" @click="info()">明细</el-button>
+              </template>
+            </el-table-column>
+
+
           </el-table>
 
           <footer>
@@ -114,15 +121,7 @@
         input2:'',
         userList: [],
         userId: '',
-        tableData: [{
-          no: '1',
-          settlementLot: '2',
-          account: '3'
-        },{
-          no: '1',
-          settlementLot: '2',
-          account: '3'
-        }],
+        tableData: [],
         p: {page: 1, size: 20, total: 0},
         time_start: '',
         time_end: '',
@@ -138,29 +137,24 @@
     methods: {
       ...mapActions(['setSettlementRecordTree','setSettlementRecordLevelId']),
       ...mapGetters(['getSettlementRecordTree','getSettlementRecordLevelId']),
-      search(){
+      info(){
 
+      },
+      search(){
+        this.showResouce(this.p = {page: 1, size: 20, total: 0},this.userId,this.start_stamp,this.end_stamp);
       },
       out(){
 
       },
       getPage(page) {
         this.p.page = page;
-        //this.showResouce(this.p,this.getSalesRankingLevelId());
+        this.showResouce(this.p,this.userId,this.start_stamp,this.end_stamp);
       },
       getPageSize(size) {
         this.p.size = size;
-        //this.showResouce(this.p,this.getSalesRankingLevelId());
+        this.showResouce(this.p,this.userId,this.start_stamp,this.end_stamp);
       },
-      getRadioDate(d){
-        console.log(d)
-      },
-      getStartTime(d){
-        console.log(d)
-      },
-      getEndTime(d){
-        console.log(d)
-      },
+
       recur(data,bool) {
         data.forEach((map) => {
           if(map.id === this.getSettlementRecordLevelId()){
@@ -187,7 +181,7 @@
             }
 
             this.name = res.data.data[0].levelname;
-            //this.showResouce(this.p,res.data.data[0].id);
+            this.showResouce(this.p,this.userId,this.start_stamp,this.end_stamp);
 
             this.recur(res.data.data,true);
           } else {
@@ -213,10 +207,13 @@
 
       },
 
-      showResouce(p){
+      showResouce(p,account_id = '',start_date = '',end_date = ''){
         let param = {
-          redirect: 'x1.accountmanage.accountList',
-
+          redirect: 'x1.withdraw.withdrawList',
+          level_id:this.getSettlementRecordLevelId(),
+          account_id:account_id,
+          start_date:start_date,
+          end_date:end_date,
           page: p.page,
           pagesize: p.size
         };
@@ -233,7 +230,7 @@
       if(this.getSettlementRecordTree().length === 0){
         this.showLevel()
       }else {
-        // this.showResouce(this.p,this.getSalesRankingLevelId());
+         this.showResouce(this.p,this.userId,this.start_stamp,this.end_stamp);
 
          this.recur(this.getSettlementRecordTree(),false);
       }
@@ -259,7 +256,7 @@
     mounted(){
       Hub.$on('showAdd', (e) => {
 
-        //this.showResouce(this.p={page: 1, size: this.p.size, total: 0},e.levelid);
+        this.showResouce(this.p,this.userId = '',this.start_stamp = '',this.end_stamp = '');
         this.setSettlementRecordLevelId({levelId: e.levelid});
         this.recur(this.getSettlementRecordTree(),false);
       });

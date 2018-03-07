@@ -197,7 +197,6 @@
             }else {
               let params = {
                 redirect: "x2a.sku.update",
-                levelid:this.getDishesSpecLevelId(),
                 id:this.formEdit.id,
                 skuname:this.formEdit.skuname,
                 morecodes:window.JSON.stringify(this.formEdit.morecodes),

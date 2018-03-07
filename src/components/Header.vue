@@ -58,7 +58,10 @@
         'setBusinessConfTree', 'setBusinessConfLevelId', 'setPushStateTree', 'setPushStateLevelId', 'setRunningStateTree',
       'setRunningStateLevelId','setPrintConfTree','setPrintConfLevelId','setX2storeTree','setX2StoreLevelId','setX1storeTree',
         'setX1StoreLevelId','setPublicTree','setPublicLevelId','setDishesLibraryTree','setDishesLibraryLevelId',
-        'setSalesRankingTree','setSalesRankingLevelId']),
+        'setSalesRankingTree','setSalesRankingLevelId','setSettlementRecordTree','setSettlementRecordLevelId',
+      'setDishesSpecTree','setDishesSpecLevelId','setBoxSettingTree','setBoxSettingLevelId','setDishesCategoryTree',
+        'setDishesCategoryLevelId','setStoreDishesManageTree','setStoreDishesManageLevelId'
+      ]),
       loginOut: function () {
         this.$http.get(`?controller=user&action=logout&token=${this.$localStorage.get("token")}`).then((res) => {
           if (res.data.errcode === 0) {
@@ -96,6 +99,21 @@
 
             this.setSalesRankingTree({list: []});
             this.setSalesRankingLevelId({levelId: ''});
+
+            this.setSettlementRecordTree({list: []});
+            this.setSettlementRecordLevelId({levelId: ''});
+
+            this.setDishesSpecTree({list: []});
+            this.setDishesSpecLevelId({levelId: ''});
+
+            this.setBoxSettingTree({list: []});
+            this.setBoxSettingLevelId({levelId: ''});
+
+            this.setDishesCategoryTree({list: []});
+            this.setDishesCategoryLevelId({levelId: ''});
+
+            this.setStoreDishesManageTree({list: []});
+            this.setStoreDishesManageLevelId({levelId: ''});
             this.$router.push("/login")
           } else {
             this.$message(res.data.errmsg)
@@ -116,7 +134,7 @@
 
       this.topHeight(this.height);
       // this.$store.dispatch('topHeight',this.height);
-      // console.log(this.topHeight);
+
     },
     computed: {}
   }

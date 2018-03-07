@@ -170,7 +170,8 @@
       ...mapActions(['setBoxSettingTree','setBoxSettingLevelId']),
       ...mapGetters(['getBoxSettingTree','getBoxSettingLevelId']),
       checkNumber(rule, value, callback){
-        let re = /^0{1}([.]([1-9][0-9]?)|[.][0-9][1-9])?$|^[1-9]\d*([.]{1}[0-9]{1,2})?$/;
+        //可以是0 0.0 0.00
+        let re = /^0{1}([.]([0-9][0-9]?)|[.][0-9][1-9])?$|^[1-9]\d*([.]{1}[0-9]{1,2})?$/;
         if (value === '') {
           callback(new Error('请输入价格'));
         }else {
@@ -216,7 +217,6 @@
             }else {
               let params = {
                 redirect: "x2a.lunchbox.update",
-                levelid:this.getBoxSettingLevelId(),
                 id:this.formEdit.id,
                 lunchboxname:this.formEdit.lunchboxname,
                 morecodes:window.JSON.stringify(this.formEdit.morecodes),

@@ -221,7 +221,6 @@
             }else {
               let params = {
                 redirect: "x2a.category.update",
-                levelid:this.getDishesCategoryLevelId(),
                 id:this.formEdit.id,
                 categoryname:this.formEdit.categoryname,
                 morecodes:window.JSON.stringify(this.formEdit.morecodes),
