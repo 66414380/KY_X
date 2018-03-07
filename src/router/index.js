@@ -406,7 +406,7 @@ export default new Router({
         },
         //门店菜品管理/编辑
         {
-          path: '/dishesManagement/storeDishesManage/editDishes',
+          path: '/dishesManagement/storeDishesManage/editDishes/:levelId/:id',
           meta: { auth: true },
           name: '菜品管理/编辑菜品',
           component: editDishes

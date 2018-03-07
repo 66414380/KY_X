@@ -22,8 +22,8 @@
               {{levelName}}
             </h3>
             <el-button size="small" @click="addDishes()" v-show="getTreeArr['新增外卖菜品']" :disabled="showAdd !== 4">批量新增</el-button>
-            <el-button size="small" @click="edit()" v-show="getTreeArr['修改外卖菜品']">批量编辑</el-button>
-            <el-button size="small" @click="del()" v-show="getTreeArr['删除外卖菜品']">批量删除</el-button>
+            <el-button size="small" @click="edit()" v-show="getTreeArr['修改外卖菜品']" :disabled="showAdd !== 4">批量编辑</el-button>
+            <el-button size="small" @click="del()" v-show="getTreeArr['删除外卖菜品']" :disabled="showAdd !== 4">批量删除</el-button>
             <!--<el-button size="small" @click="issued()">批量下发</el-button>-->
           </div>
 
@@ -115,28 +115,28 @@
                 <div style="border-top: 1px solid #BECBD9">餐盒总价：￥{{scope.row.box}}</div>
             </template>
           </el-table-column>
-          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="status" label="平台信息"
-                           width="340">
+          <!--<el-table-column label-class-name="table_head" header-align="center" align="center" prop="status" label="平台信息"-->
+                           <!--width="340">-->
 
-            <template slot-scope="scope">
-              <div class="flex_r">
-                <div class="flex_1" v-for="(item,index) in scope.row.plat">
-                  <div>
-                    {{item.value}}
-                  </div>
-                  <div class="margin_b_10">
-                    {{item.value1}}
-                  </div>
-                  <div v-for="(item1,index) in item.value2">
-                    {{item1.value}} {{item1.value1}}
-                  </div>
+            <!--<template slot-scope="scope">-->
+              <!--<div class="flex_r">-->
+                <!--<div class="flex_1" v-for="(item,index) in scope.row.plat">-->
+                  <!--<div>-->
+                    <!--{{item.value}}-->
+                  <!--</div>-->
+                  <!--<div class="margin_b_10">-->
+                    <!--{{item.value1}}-->
+                  <!--</div>-->
+                  <!--<div v-for="(item1,index) in item.value2">-->
+                    <!--{{item1.value}} {{item1.value1}}-->
+                  <!--</div>-->
 
-                </div>
-              </div>
+                <!--</div>-->
+              <!--</div>-->
 
-            </template>
+            <!--</template>-->
 
-          </el-table-column>
+          <!--</el-table-column>-->
 
 
         </el-table>
@@ -198,43 +198,7 @@
         navList: [{name: "菜品管理", url: ''},{name: "菜品列表", url: ''}],
         levelName:'',
         dishesName: '',
-        tableData: [
-        //   {
-        //   storeCode: '83789',
-        //   storeName: '菜品1',
-        //   price: "1角",
-        //   status: '在售中',
-        //   imgList:[{img:'../../../assets/login-ky-login-small.png'}],
-        //   thirdPartyCoding: [
-        //     {value: '11', value1: '22'},
-        //     {value: '33', value1: '44'},
-        //     {value: '55', value1: '66'}
-        //   ],
-        //   spec:[
-        //     {value: '大份', value1: '￥90.00'},
-        //     {value: '中份', value1: '￥80.00'},
-        //     {value: '小份', value1: '￥70.00'},
-        //   ],
-        //   attr:[
-        //     {value: '辣度', value1: '微辣，中辣，重辣'},
-        //     {value: '口味', value1: '免蒜，免葱'},
-        //
-        //   ],
-        //
-        //   box:{
-        //     a:[
-        //       {value: '圆餐盒', value1: 'X1', value2: '¥18.99'},
-        //       {value: '方餐盒', value1: 'X1', value2: '¥17.99'},
-        //     ],
-        //     b:{value: '¥17.99'}
-        //   },
-        //   plat:[
-        //     {value: '美团', value1: 'MT鱼香肉丝', value2: [{value: '大份', value1: '￥90.00'}, {value: '中份', value1: '￥80.00'}, {value: '小份', value1: '￥70.00'},]},
-        //     {value: '饿了么', value1: 'ele鱼香肉丝', value2: [{value: '大份', value1: '￥90.00'}, {value: '中份', value1: '￥80.00'}, {value: '小份', value1: '￥70.00'},]},
-        //     {value: '百度', value1: 'BD鱼香肉丝', value2: [{value: '大份', value1: '￥90.00'}, {value: '中份', value1: '￥80.00'}, {value: '小份', value1: '￥70.00'},]}
-        //     ]
-        // }
-        ],
+        tableData: [],
         p: {page: 1, size: 20, total: 0},
         showAdd:'',
         baseDishes: {},
@@ -310,18 +274,14 @@
         let list = [];
         this.tableData.forEach((item)=>{
           if(item.select === true){
-            list.push(item.id)
+            list.push(item.x0_productid)
           }
         });
         if(list.length === 0){
           this.$message('请勾选菜品');
         }else {
-          this.$router.push('/dishesManagement/storeDishesManage/editDishes')
+          this.$router.push({path:`/dishesManagement/storeDishesManage/editDishes/${this.getStoreDishesManageLevelId()}/${list.join(',')}`})
         }
-
-
-
-
       },
       del() {
         let list = [];
@@ -333,7 +293,28 @@
         if(list.length === 0){
           this.$message('请勾选菜品');
         }else {
-          //
+
+          this.$confirm('此操作将删除选择的数据, 是否继续?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            let params = {
+              redirect: "x2a.product.delete",
+              levelid:this.getStoreDishesManageLevelId(),
+              id:list.join(','),
+            };
+            oneTwoApi(params).then((res) => {
+              if(res.errcode === 0){
+                this.showResouce(this.p,this.dishesName);
+                this.$message("操作成功");
+              }
+            })
+
+          }).catch(() => {
+            //
+          });
+
         }
       },
       search() {

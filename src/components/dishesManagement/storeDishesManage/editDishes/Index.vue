@@ -184,28 +184,28 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label-class-name="table_head" header-align="center" align="center" prop="status" label="平台信息"
-                         width="340">
+        <!--<el-table-column label-class-name="table_head" header-align="center" align="center" prop="status" label="平台信息"-->
+                         <!--width="340">-->
 
-          <template slot-scope="scope">
-            <div class="flex_r">
-              <div class="flex_1" v-for="(item,index) in scope.row.plat">
-                <div>
-                  {{item.value}}
-                </div>
-                <div class="margin_b_10">
-                  {{item.value1}}
-                </div>
-                <div v-for="(item1,index) in item.value2">
-                  {{item1.value}} {{item1.value1}}
-                </div>
+          <!--<template slot-scope="scope">-->
+            <!--<div class="flex_r">-->
+              <!--<div class="flex_1" v-for="(item,index) in scope.row.plat">-->
+                <!--<div>-->
+                  <!--{{item.value}}-->
+                <!--</div>-->
+                <!--<div class="margin_b_10">-->
+                  <!--{{item.value1}}-->
+                <!--</div>-->
+                <!--<div v-for="(item1,index) in item.value2">-->
+                  <!--{{item1.value}} {{item1.value1}}-->
+                <!--</div>-->
 
-              </div>
-            </div>
+              <!--</div>-->
+            <!--</div>-->
 
-          </template>
+          <!--</template>-->
 
-        </el-table-column>
+        <!--</el-table-column>-->
 
 
       </el-table>
@@ -219,11 +219,7 @@
 
 <script>
 
-
-  import Hub from '../../../utility/commun'
-
-  import {mapActions, mapGetters} from 'vuex';
-
+  import {oneTwoApi} from '@/api/api.js';
 
   export default {
     components: {
@@ -234,7 +230,8 @@
 
 
         attrList: [{id: 1, name: '辣度'}, {id: 2, name: '甜度'}, {id: 3, name: '口味'}],
-        boxList:[{
+        boxList:[
+          {
           id: 1,
           name: '大杯'
         }, {
@@ -251,68 +248,70 @@
           id: 2,
           name: '品类2'
         }],
-        dishesList: [{
-          sequence: '1',
-          id: '83789',
-          productname: '菜品1',
-          price: "1角",
-          status: '在售中',
-          image: [{img: '../../../assets/login-ky-login-small.png'}],
-          categoryid: 2,
-          description: '好吃的',
-          categoryList: [{
-            value: 1,
-            label: '品类1'
-          }, {
-            value: 2,
-            label: '品类2'
-          }],
-          morecodes: [
-            {value: '11', value1: '22'},
-            {value: '33', value1: '44'},
-            {value: '55', value1: '66'}
-          ],
-
-
-          skus: [
-            {skuid: '大份', price: '￥90.00'},
-            {skuid: '中份', price: '￥80.00'},
-            {skuid: '小份', price: '￥70.00'},
-          ],
-
-          property: [],
-
-          luncboxes: [
-              {lunchboxid: 1, count: '¥18.99'},
-              {lunchboxid: 3, count: '¥17.99'},
-            ],
-          plat: [
-            {
-              value: '美团',
-              value1: 'MT鱼香肉丝',
-              value2: [{value: '大份', value1: '￥90.00'}, {value: '中份', value1: '￥80.00'}, {
-                value: '小份',
-                value1: '￥70.00'
-              },]
-            },
-            {
-              value: '饿了么',
-              value1: 'ele鱼香肉丝',
-              value2: [{value: '大份', value1: '￥90.00'}, {value: '中份', value1: '￥80.00'}, {
-                value: '小份',
-                value1: '￥70.00'
-              },]
-            },
-            {
-              value: '百度',
-              value1: 'BD鱼香肉丝',
-              value2: [{value: '大份', value1: '￥90.00'}, {value: '中份', value1: '￥80.00'}, {
-                value: '小份',
-                value1: '￥70.00'
-              },]
-            }
-          ]
-        }],
+        dishesList: [
+        //   {
+        //   sequence: '1',
+        //   id: '83789',
+        //   productname: '菜品1',
+        //   price: "1角",
+        //   status: '在售中',
+        //   image: [{img: '../../../assets/login-ky-login-small.png'}],
+        //   categoryid: 2,
+        //   description: '好吃的',
+        //   categoryList: [{
+        //     value: 1,
+        //     label: '品类1'
+        //   }, {
+        //     value: 2,
+        //     label: '品类2'
+        //   }],
+        //   morecodes: [
+        //     {value: '11', value1: '22'},
+        //     {value: '33', value1: '44'},
+        //     {value: '55', value1: '66'}
+        //   ],
+        //
+        //
+        //   skus: [
+        //     {skuid: '大份', price: '￥90.00'},
+        //     {skuid: '中份', price: '￥80.00'},
+        //     {skuid: '小份', price: '￥70.00'},
+        //   ],
+        //
+        //   property: [],
+        //
+        //   luncboxes: [
+        //       {lunchboxid: 1, count: '¥18.99'},
+        //       {lunchboxid: 3, count: '¥17.99'},
+        //     ],
+        //   plat: [
+        //     {
+        //       value: '美团',
+        //       value1: 'MT鱼香肉丝',
+        //       value2: [{value: '大份', value1: '￥90.00'}, {value: '中份', value1: '￥80.00'}, {
+        //         value: '小份',
+        //         value1: '￥70.00'
+        //       },]
+        //     },
+        //     {
+        //       value: '饿了么',
+        //       value1: 'ele鱼香肉丝',
+        //       value2: [{value: '大份', value1: '￥90.00'}, {value: '中份', value1: '￥80.00'}, {
+        //         value: '小份',
+        //         value1: '￥70.00'
+        //       },]
+        //     },
+        //     {
+        //       value: '百度',
+        //       value1: 'BD鱼香肉丝',
+        //       value2: [{value: '大份', value1: '￥90.00'}, {value: '中份', value1: '￥80.00'}, {
+        //         value: '小份',
+        //         value1: '￥70.00'
+        //       },]
+        //     }
+        //   ]
+        // }
+        ],
 
       }
     },
@@ -359,10 +358,20 @@
       },
     },
     created() {
+console.log(this.$route)
+      let params = {
+        redirect: "x2a.product.view",
+        levelid:this.$route.params.levelId,
+        id:this.$route.params.id,
+      };
+      oneTwoApi(params).then((res) => {
+        if(res.errcode === 0){
+          this.dishesList = res.data.list;
 
-      this.dishesList.forEach((map) => {
-        this.$set(map, 'select', false)
+        }
       })
+
+
 
     },
     mounted() {
