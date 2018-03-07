@@ -35,10 +35,6 @@
               {
                 name: '结算记录',
                 route: '/report/settlementRecord'
-              },
-              {
-                name: '差异账单查询',
-                route: '/report/billQuery'
               }
             ]
           },

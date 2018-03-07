@@ -39,7 +39,6 @@
                            label="编码" width="100"></el-table-column>
           <el-table-column label-class-name="table_head" header-align="center" align="center" prop="lunchboxname"
                            label="餐盒名称">
-
           </el-table-column>
           <el-table-column label-class-name="table_head" header-align="center" align="center" prop="price" label="价格">
           </el-table-column>
@@ -183,7 +182,7 @@
         }
       },
       search(){
-        this.showResouce(this.p = {page: 1, size: 20, total: 0},);
+        this.showResouce(this.p = {page: 1, size: 20, total: 0},this.dishesName);
       },
       getPage(page) {
         this.p.page = page;

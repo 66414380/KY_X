@@ -1,14 +1,5 @@
-<style scoped>
-  .time {
-    margin-left: 100px;
-  }
-  .bodyTop{
-    padding-bottom: 10px;
-  }
-</style>
-
 <template>
-  <div class="scroll_of">
+  <div class="scroll_of" v-show="getTreeArr['列表']">
     <div class="bodyTop">
       <div class="margin_b_10">
         <xo-nav-path :navList="navList"></xo-nav-path>
@@ -209,3 +200,11 @@
 
   }
 </script>
+<style scoped>
+  .time {
+    margin-left: 100px;
+  }
+  .bodyTop{
+    padding-bottom: 10px;
+  }
+</style>

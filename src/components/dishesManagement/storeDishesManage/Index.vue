@@ -45,62 +45,63 @@
               <el-checkbox v-model="scope.row.select" @change="handleChecked">{{scope.$index + 1 }}</el-checkbox>
             </template>
           </el-table-column>
-          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="storeCode"
-                           label="编码"
-                           width="100"></el-table-column>
-          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="storeName"
+
+          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="sequence"
                            label="排序"></el-table-column>
-          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="price" label="菜品编码"
-                           width="120"></el-table-column>
-          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="status" label="名称"
+          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="x0_productid" label="菜品编码"
+                           width="100"></el-table-column>
+          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="productname" label="名称"
                            width="120"></el-table-column>
           <el-table-column label-class-name="table_head" header-align="center" align="center"
                            label="第三方编码" width="120">
             <template slot-scope="scope">
-              <div v-for="(item,index) in scope.row.thirdPartyCoding">
-                <span>{{item.value}} -- {{item.value1}}</span>
+              <div v-for="(item,index) in scope.row.morecodes">
+                <span>{{item.code1}} -- {{item.code2}}</span>
               </div>
             </template>
 
 
           </el-table-column>
-          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="status" label="所属品类"
+          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="CategoryName" label="所属品类"
                            width="120"></el-table-column>
-          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="status" label="参考价格"
+          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="price" label="参考价格"
                            width="120"></el-table-column>
           <el-table-column label-class-name="table_head" header-align="center" align="center" prop="status" label="菜品图片"
-                           width="140">
+                           width="360">
             <template slot-scope="scope">
-              <div v-for="(item,index) in scope.row.imgList">
-                <el-popover
-                  placement="right"
-                  width="200"
-                  trigger="hover"
-                 >
-                  <img  src="../../../assets/login-ky-login-small.png" alt="" style="width: 200px;height: 200px">
-                  <img slot="reference" src="../../../assets/login-ky-login-small.png" alt="" style="width: 100px;height: 100px">
-                </el-popover>
+              <div class="flex">
+                <div v-for="(item,index) in scope.row.image" class="margin_r_10" style="margin-top: 7px">
+                  <el-popover
+                    placement="right"
+                    width="200"
+                    trigger="hover"
+                  >
+                    <img  :src="item.imgurl" alt="" v-if="item.select === 1" style="width: 200px;height: 200px">
+                    <img slot="reference" :src="item.imgurl" alt="" v-if="item.select === 1" style="width: 100px;height: 100px">
+                  </el-popover>
+                </div>
               </div>
+
             </template>
 
 
           </el-table-column>
-          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="status" label="菜品详情"
+          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="description" label="菜品详情"
                            width="120"></el-table-column>
-          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="status" label="菜品规格"
+          <el-table-column label-class-name="table_head" header-align="center" align="center"  label="菜品规格"
                            width="180">
 
             <template slot-scope="scope">
-              <div v-for="(item,index) in scope.row.spec">
-                <span>{{item.value}}   {{item.value1}}</span>
+              <div v-for="(item,index) in scope.row.Skus">
+                <span>{{item.skuid}}   {{item.price}}</span>
               </div>
             </template>
           </el-table-column>
           <el-table-column label-class-name="table_head" header-align="center" align="center" label="菜品属性"
                            width="240">
             <template slot-scope="scope">
-              <div v-for="(item,index) in scope.row.attr">
-                <span>{{item.value}}:   {{item.value1}}</span>
+              <div v-for="(item,index) in scope.row.property">
+                <span>{{item.value}} {{item.value1}}</span>
               </div>
             </template>
           </el-table-column>
@@ -108,10 +109,10 @@
                            width="240">
 
             <template slot-scope="scope">
-              <div v-for="(item,index) in scope.row.box.a">
-                <span>{{item.value}}:   {{item.value1}}  {{item.value2}} </span>
+              <div v-for="(item,index) in scope.row.Lunchboxes">
+                <span>{{item.value}} {{item.count}} </span>
               </div>
-                <div style="border-top: 1px solid #BECBD9">餐盒总价：{{scope.row.box.b.value}}</div>
+                <div style="border-top: 1px solid #BECBD9">餐盒总价：￥{{scope.row.box}}</div>
             </template>
           </el-table-column>
           <el-table-column label-class-name="table_head" header-align="center" align="center" prop="status" label="平台信息"
@@ -255,12 +256,10 @@
         if (list.length === 0) {
           this.$message('请选择菜品');
         } else {
-
-
           let params = {
             redirect: "x2a.product.create",
-            ids: list.join(','),
-
+            levelid:this.getStoreDishesManageLevelId(),
+            x0_productids: list.join(',')
           };
           oneTwoApi(params).then((res) => {
             if (res.errcode === 0) {
