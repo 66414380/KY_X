@@ -1,0 +1,195 @@
+// 请把后缀带上,这是个坑
+@import "./normalize.less";
+
+//公共样式
+html,body,#app,#main{
+  width: 100%;
+  height: 100%;
+  overflow-y: hidden;
+}
+.img_w_100{width:100%}
+.main{margin: 10px auto;width: 96%;}
+.width_0{width: 0}
+.width_100{width: 100%}
+.height_100{height: 100%}
+.flex{display: flex;align-items: center;justify-content: center;}
+.flex_a{display: flex;align-items: center;}
+.flex_j{display: flex;justify-content: center;}
+.flex_r{display: flex}
+.flex_f{display: flex;flex-direction: column}
+
+.flex_d_c{display: flex;flex-direction: column}
+.flex_d_r{display: flex;flex-direction: row}
+
+.f_f{flex-flow: wrap}
+.flex_fe{display: flex;align-items: flex-end;flex-direction: column}
+.flex_ce{display: flex;justify-content:flex-end;align-items: center;}
+.flex_sc{display: flex;align-items: flex-start;justify-content: center;}
+.flex_sb{display: flex;align-items: center;justify-content: space-between;}
+.flex_ec{display: flex;align-items: flex-end;justify-content: center;}
+.flex_es{display: flex;align-items: flex-end;justify-content: space-between;}
+.flex_1{flex: 1;}
+.flex_2{flex: 2;}
+.flex_3{flex: 3;}
+.margin_10{margin:10px}
+.margin_t_10{margin-top:10px}
+.margin_b_10{margin-bottom:10px}
+.margin_tm_10{margin:10px 0}
+.margin_l_10{margin-left:10px}
+.margin_r_10{margin-right:10px}
+.padding_10{padding: 10px}
+.padding_t_10{padding-top: 10px}
+.padding_l_10{padding-left: 10px}
+.padding_b_10{padding-bottom: 10px}
+.scroll_of{
+  overflow: auto;
+}
+.pointer{
+  cursor: pointer;
+}
+
+.transfer .el-transfer-panel{
+  width: 300px;
+}
+
+.equal {
+  display:table;
+  border-collapse:collapse;
+  width: 95%;
+}
+.row {
+  display:table-row;
+}
+.row div{
+  display:table-cell;
+}
+
+.row .two {
+  width:100%;
+  text-align: center;
+  //border: 1px solid #d1dbe5;
+}
+.row input {
+  font-size: 100px;
+  margin-left: 5px;
+  cursor: pointer;
+}
+
+.isInput input {
+  border-color: red;
+}
+
+.isSelected .el-input input{
+  border-color: red;
+}
+
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+  border-color: #409EFF;
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+.avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
+}
+
+.myForm .el-form-item{
+  margin-bottom:0
+}
+
+.mySelect .cell .el-checkbox:after{
+  margin-left: 5px;
+  content: "全选";
+}
+
+.myButton{
+  border: 1px solid;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 10px 15px;
+  line-height: 1;
+  white-space: nowrap;
+}
+.myButton:active {
+  box-shadow: 1px 1px 20px #B6C5D8;
+  opacity: 0.8;
+}
+.myButton:focus {
+  outline: none;
+}
+
+.my-transfer{
+  margin-left: 125px;
+}
+.myBusiness .el-form-item .el-form-item__label{
+  padding: 0 10px 0 0;
+  height: 178px;
+  line-height: 178px;
+}
+
+.myRunningStateCell .cell{
+  height: 100%;
+  padding: 0;
+}
+
+.myPrintConfig .el-checkbox {
+  margin-left: 15px;
+}
+
+.m-rank {
+  width: 40px;
+  .m-rank-child {
+    height: 18px;
+    border-bottom: 1px solid #000;
+  }
+}
+
+.m-storeCode {
+  font-size: 30px;
+}
+/****************** code Li ***************************/
+.contentMsg {
+  padding: 0 0 25px 0;
+}
+
+.flex-jc {
+  display: flex;
+  justify-content: center;
+}
+.flex-ac {
+  display: flex;
+  align-items: center;
+}
+.flex-c{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.plusBtn{
+  border: none;
+  color: red;
+  font-size: 35px;
+  padding: 0 9px 0 9px;
+}
+
+.minusBtn{
+  border: none;
+  color: deepskyblue;
+  font-size: 35px;
+  padding: 0 9px 0 9px;
+}

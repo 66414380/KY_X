@@ -1,0 +1,137 @@
+// 账户列表 -> get
+{
+  "page": 1,                                // 页码
+  "pageSize": 20,                           // 每页显示条数
+  "msg": "ok",
+  "params": {
+    "paymentMethod": "123",                 // 支付方式, ""为全部
+    "paymentChannel": "123",                // 支付通道, ""为全部
+    "accountName": "天河北"                  // 账号名称, ""为全部
+  }
+},
+
+// 账户列表/已有账户 -> return
+{
+  "page": 1,                                // 页码
+  "pageSize": 20,                           // 每页显示条数
+  "totalPages": 200                         // 总页数
+  "list": [{
+    "count": 1,                             // 序号
+    "acountCode": 11233,                    // 账户编码
+    "accountName": "支付宝",                 // 账户名称
+    "paymentChannel": "易极付",              // 支付通道
+    "status": "开户成",                      // 账户状态
+  }]
+},
+
+// 新建账户 -> post
+{
+  params: {
+    "accountCode": 23423,                   // 账户编码
+    "thirdCode": [{                         // 第三方编码
+      code1: 23424,                         // 编码1
+      code2: 234243243                      // 编码2
+    },{
+      code1: 23424,
+      code2: 1312342
+    }],
+    "accountName": "支付宝",                 // 账户名称
+    "paymentMethod": "xxx",                 // 支付方式
+    "paymentChannel": "xxx",                // 支付通道
+    "payKey": 12312,                        // 商户秘钥
+    "Merchants": "xxx"                      // 商户号
+  }
+}
+
+// 图片上传 -> post
+{}
+
+
+// 账户列表/开户申请
+
+
+
+// 下发记录 -> get
+{
+  "page": 1,                                // 页码
+  "pageSize": 20,                           // 每页显示条数
+  "params": {
+
+  }
+}
+
+
+// 下发记录 -> return
+{
+  "page": 1,                                // 页码
+  "pageSize": 20,                           // 每页显示条数
+  "totalPages": 200                         // 总页数
+  "msg": 'ok',
+  "list": [{
+    "count": 12333,                           // 序号
+    "paymentMethods": ["支付宝","微付"],        // 支付方式
+    "paymentChannels": ["易极付","通联"],       // 支付通道
+    "accounts": ["炳胜(马场店)","炳胜(兴)"],     // 账户
+    "time": "2017-9-26 12:00:00",             // 时间
+    "operation": "张三",                       // 操作员
+    "executionTime": "2017-3-34 12:32:32",    // 待执行时间
+    "state": "成功"                            // 状态
+    },{
+    "count": 12333,                           // 序号
+    "paymentMethods": ["支付宝","微付"],        // 支付方式
+    "paymentChannels": ["易极付","通联"],       // 支付通道
+    "accounts": ["炳胜(马场店)","炳胜(兴)"],     // 账户
+    "time": "2017-9-26 12:00:00",             // 时间
+    "operation": "张三",                       // 操作员
+    "executionTime": "2017-3-34 12:32:32",    // 待执行时间
+    "state": "成功"                            // 状态
+    }
+  ]
+}
+
+// 下发记录/新增下发 -> post
+{
+  "params":{
+    "account": [{                             // 账户
+    "paymentMethod": "支付宝",                 // 支付方式
+    "paymentChannel": "易极付",                // 支付通道
+    "accountName": "炳胜(马场店)"               // 账户名
+    }],
+    "reserveAcc": [{                          // 备用账户
+    "paymentMethod": "支付宝",
+    "paymentChannel": "易极付",
+    "accountName": "炳胜(马场店)"
+    }],
+    "shop": "1",                              // 选择门店 -> 1:全部门店,2:部分门店
+    "rules": "1",                             // 下发规则 -> 1:替换,2:更新
+    "runTime": "1",                           // 执行时间 -> 1:立即执行,2:定时执行
+    "runTimeValue": "2017-10-25 17:50:07",    // 执行时间
+    "delayTime": "3"                          // 延迟时间
+  }
+}
+
+
+// 下发记录/新增下发/新增门店 -> get
+{
+  "params": {                                 // 一下参数如果都为"",默认返回所有数据
+    "province": "福建省",                      // 省份
+    "city": "龙岩",                            // 城市
+    "storeTag": "xxx",                        // 门店标签
+    "storeKeyword": "门店关键字",               // 门店关键字
+  }
+}
+
+
+// 下发记录/新增下发/新增门店 -> return
+{
+  "msg": "ok",
+  "store":[
+    {
+      "key": 10,
+      "label": '门店组1',
+    }
+  ],
+  "selectStore": [
+    "key"
+  ]
+}
