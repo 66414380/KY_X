@@ -1,10 +1,3 @@
-<style scoped>
-
-  .bodyTop {
-    padding-bottom: 10px;
-  }
-</style>
-
 <template>
   <div class="scroll_of" v-show="getTreeArr['订单统计']">
     <div class="bodyTop">
@@ -75,6 +68,7 @@
 
     <el-table :data="tableData" border :height="tableHeight">
       <el-table-column header-align="center" align="center" prop="date" label="日期" ></el-table-column>
+      <el-table-column header-align="center" align="center" prop="store_name" label="门店名称"></el-table-column>
       <el-table-column header-align="center" align="center" prop="order_price" label="订单金额"></el-table-column>
       <el-table-column header-align="center" align="center" prop="order_num" label="支付单数" ></el-table-column>
       <el-table-column header-align="center" align="center" prop="pay_money" label="支付金额" ></el-table-column>
@@ -233,3 +227,9 @@
 
   }
 </script>
+<style scoped>
+
+  .bodyTop {
+    padding-bottom: 10px;
+  }
+</style>

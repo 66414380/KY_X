@@ -191,8 +191,8 @@
         var msgArr = [];        // 消息数组
 
         var map = new BMap.Map("container");          // 创建地图实例
-        var point = new BMap.Point(95.369272, 29.773890);  // 创建点坐标
-        map.centerAndZoom(point, 15);                 // 初始化地图，设置中心点坐标和地图级别
+        var point = new BMap.Point(113.211108, 23.382816);  // 创建点坐标
+        map.centerAndZoom(point, 13);                 // 初始化地图，设置中心点坐标和地图级别
 
         for (let key in arr) {
           var point = new BMap.Point(parseFloat(arr[key].lat), parseFloat(arr[key].lng));  // 创建点坐标

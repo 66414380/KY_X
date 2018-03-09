@@ -194,6 +194,25 @@
                   <i class="fa fa-info-circle" aria-hidden="true" slot="reference" style="font-size: 15px;"></i>
                 </el-popover>
               </div>
+
+              <div class="flex_a">
+                <el-switch
+                  v-model="clientForm_second.code_lacation"
+                  on-color="#13ce66"
+                  off-color="#ff4949" :disabled="showName === '查看'">
+                </el-switch>
+
+                <div class="margin_l_10 margin_r_10 t_a">
+                  二维码打印在预结单小票:
+                </div>
+                <el-popover
+                  placement="right"
+                  width="200"
+                  trigger="hover"
+                  content="备注：发票二维码与支付二维码均在预结单（指顾客付款前供顾客核实的消费清单）小票上打印（二码合一）顾客第一次扫码完成支付，第二次扫进入自助开电子发票页面">
+                  <i class="fa fa-info-circle" aria-hidden="true" slot="reference" style="font-size: 15px;"></i>
+                </el-popover>
+              </div>
             </el-form-item>
 
 
@@ -365,6 +384,7 @@
         //新增
         clientForm_first2:{
           auto_log: true,
+          code_lacation:false,
           purchasers: [],
           code_number:'',
           sale_name:'',
@@ -385,6 +405,7 @@
         //修改
         clientForm_first3:{
           auto_log: true,
+          code_lacation:false,
           purchasers: [],
           code_number:'',
           sale_name:'',
@@ -404,6 +425,7 @@
         },
         clientForm_second:{
           auto_log: true,
+          code_lacation:false,
           purchasers: []
         },
 
@@ -731,6 +753,7 @@
           };
           this.clientForm_second = {
             auto_log: true,
+            code_lacation:false,
             purchasers: []
           };
 
@@ -739,6 +762,7 @@
           };
           this.clientForm_first2 ={
             auto_log: true,
+            code_lacation:false,
             purchasers: [],
             code_number:'',
             sale_name:'',
@@ -799,7 +823,7 @@
        }
 
         if (a === true && b === true) {
-          let list = [],status ,auto_log,card_package_allow,alipay_allow,other_pay_allow;
+          let list = [],status ,auto_log,code_lacation,card_package_allow,alipay_allow,other_pay_allow;
           (this.clientForm.status === true)? status = 1: status = 0;
           if (this.showName === "新增方案") {
 
@@ -810,6 +834,7 @@
                 }
               });
               (this.clientForm_first2.auto_log === true)? auto_log = 1: auto_log = 0;
+              (this.clientForm_first2.code_lacation === true)? code_lacation = 1: code_lacation = 0;
               (this.clientForm_first2.card_package_allow === true)? card_package_allow = 1: card_package_allow = 0;
               (this.clientForm_first2.alipay_allow === true)? alipay_allow = 1: alipay_allow = 0;
               (this.clientForm_first2.other_pay_allow === true)? other_pay_allow = 1: other_pay_allow = 0;
@@ -819,8 +844,8 @@
                   list.push(item.id)
                 }
               });
-              (this.clientForm_second.auto_log === true)? auto_log = 1: auto_log = 0
-
+              (this.clientForm_second.auto_log === true)? auto_log = 1: auto_log = 0;
+              (this.clientForm_second.code_lacation === true)? code_lacation = 1: code_lacation = 0
             }
             // 新增方案
             let params = {
@@ -831,6 +856,7 @@
               status: status,
 
               auto_log: auto_log,
+              code_lacation:code_lacation,
               purchasers: list.join(','),
               token1:this.clientForm_first.token1,
               code_number:this.clientForm_first2.code_number,
@@ -870,6 +896,7 @@
               });
 
               (this.clientForm_first3.auto_log === true)? auto_log = 1: auto_log = 0;
+              (this.clientForm_first3.code_lacation === true)? code_lacation = 1: code_lacation = 0;
               (this.clientForm_first3.card_package_allow === true)? card_package_allow = 1: card_package_allow = 0;
               (this.clientForm_first3.alipay_allow === true)? alipay_allow = 1: alipay_allow = 0;
               (this.clientForm_first3.other_pay_allow === true)? other_pay_allow = 1: other_pay_allow = 0;
@@ -881,7 +908,7 @@
                 }
               });
               (this.clientForm_second.auto_log === true)? auto_log = 1: auto_log = 0;
-
+              (this.clientForm_second.code_lacation === true)? code_lacation = 1: code_lacation = 0;
             }
 
             // 修改方案
@@ -893,6 +920,7 @@
               third_code: window.JSON.stringify(this.clientForm.third_code),
               status: status,
               auto_log: auto_log,
+              code_lacation:code_lacation,
               purchasers: list.join(','),
 
               token1:this.clientForm_first.token1,
@@ -1022,7 +1050,7 @@
             (res.data.status === 1) ? res.data.status = true: res.data.status = false;
 
            (res.data.auto_log === 1) ? res.data.auto_log = true: res.data.auto_log = false;
-
+            (res.data.code_lacation === 1) ? res.data.code_lacation = true: res.data.code_lacation = false;
             (res.data.card_package_allow === 1) ? res.data.card_package_allow = true: res.data.card_package_allow = false;
             (res.data.other_pay_allow === 1) ? res.data.other_pay_allow = true: res.data.other_pay_allow = false;
             (res.data.alipay_allow === 1) ? res.data.alipay_allow = true: res.data.alipay_allow = false;
@@ -1043,6 +1071,7 @@
               this.activeName = 'first';
               this.clientForm.type = 1;
               this.clientForm_first3.auto_log = res.data.auto_log;
+              this.clientForm_first3.code_lacation = res.data.code_lacation;
               this.clientForm_first3.card_package_allow = res.data.card_package_allow;
               this.clientForm_first3.other_pay_allow = res.data.other_pay_allow;
               this.clientForm_first3.alipay_allow = res.data.alipay_allow;
@@ -1050,6 +1079,7 @@
               this.activeName = 'second';
               this.clientForm.type = 2;
               this.clientForm_second.auto_log = res.data.auto_log;
+              this.clientForm_second.code_lacation = res.data.code_lacation;
             }
             this.clientForm_first.token1 = res.data.token1;
             this.clientForm_first3.id = res.data.id;

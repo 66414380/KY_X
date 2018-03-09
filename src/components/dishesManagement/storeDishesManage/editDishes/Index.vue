@@ -9,30 +9,36 @@
       <el-form ref="formRules" :model="form">
         <el-table :data="form.dishesList" border style="width: 100%;">
 
-        <el-table-column label-class-name="table_head" header-align="center" align="center" label="排序">
-
+        <el-table-column label-class-name="table_head" header-align="center" align="center" label="排序" width="120">
           <template slot-scope="scope">
-            <el-input v-model="scope.row.sequence"></el-input>
+            <el-form-item label="" :prop="'dishesList.' + scope.$index + '.sequence'" :rules="{required: true, validator: (rule, value, callback) => {
+                return checkNumber_1(rule, value, callback,'请输入排序','排序格式错误')
+                }, trigger: 'blur'}">
+              <el-input v-model="scope.row.sequence" ></el-input>
+            </el-form-item>
           </template>
-
         </el-table-column>
         <el-table-column label-class-name="table_head" header-align="center" align="center" label="菜品名称"
                          width="160">
           <template slot-scope="scope">
-            <el-form-item label="" :prop="'dishesList.' + scope.$index + '.productname'" :rules="{required: true, message: '请输入菜品名称', trigger: 'blur'}">
-              <el-input v-model="scope.row.productname" class="m_t_22"></el-input>
-            </el-form-item>
+            <div class="height">
+              <el-form-item style="position: relative" label="" :prop="'dishesList.' + scope.$index + '.productname'" :rules="{required: true, message: '请输入菜品名称', trigger: 'blur'}">
+                <el-input v-model="scope.row.productname" class="m_t_22"></el-input>
+                <div class="flex_a color ab" >{{scope.row.x0product.product_name}}</div>
+              </el-form-item>
+            </div>
           </template>
         </el-table-column>
+        <el-table-column label-class-name="table_head" header-align="center" align="center" label="菜品编码" width="120">
+          <template slot-scope="scope">
+            <el-input v-model="scope.row.x0_productid" disabled class="m_b"></el-input>
+          </template>
 
-        <el-table-column label-class-name="table_head" header-align="center" align="center" prop="x0_productid"
-                         label="菜品编码"
-                         width="120"></el-table-column>
-
+        </el-table-column>
         <el-table-column label-class-name="table_head" header-align="center" align="center"
                          label="第三方编码" width="420">
           <template slot-scope="scope">
-            <div v-for="(item, index) in scope.row.morecodes" class="flex_r padding_10">
+            <div v-for="(item, index) in scope.row.morecodes" class="flex_r padding_10 ">
               <div style="width:150px">
                 <el-input v-model="item.code1" placeholder="请输入名称"></el-input>
               </div>
@@ -52,13 +58,17 @@
                 </div>
               </div>
             </div>
+            <div v-for="(item, index) in scope.row.x0product.productcodes" style="display: block">
+              <span style="float: left" class="margin_l_10 color" >{{item.name}}</span>
+              <span style="float: right;margin-right: 200px;" class="color">{{item.providerid}}</span>
+            </div>
           </template>
 
 
         </el-table-column>
         <el-table-column label-class-name="table_head" header-align="center" align="center" label="所属品类" width="200">
           <template slot-scope="scope">
-            <el-form-item label="" :prop="'dishesList.' + scope.$index + '.categoryid'" :rules="{type:'number',required: true, message: '请选择品类', trigger: 'blur'}" class="m_t_22">
+            <el-form-item label="" :prop="'dishesList.' + scope.$index + '.categoryid'" :rules="{type:'number',required: true, message: '请选择品类', trigger: 'blur'}">
               <el-select v-model="scope.row.categoryid" placeholder="请选择">
                 <el-option
                   v-for="item in categoryList"
@@ -70,12 +80,14 @@
             </el-form-item>
           </template>
         </el-table-column>
-        <el-table-column label-class-name="table_head" header-align="center" align="center" label="参考价格"
-                         width="120">
+        <el-table-column label-class-name="table_head" header-align="center" align="center" label="参考价格" width="120">
           <template slot-scope="scope">
-            <el-form-item label="" :prop="'dishesList.' + scope.$index + '.price'" :rules="{required: true, validator: checkNumber, trigger: 'blur'}">
-              <el-input v-model="scope.row.price" class="m_t_22"></el-input>
-            </el-form-item>
+            <div class="height">
+              <el-form-item style="position: relative" label="" :prop="'dishesList.' + scope.$index + '.price'" :rules="{required: true, validator: checkNumber, trigger: 'blur'}">
+                <el-input v-model="scope.row.price" class="m_t_22"></el-input>
+                <div class="flex_a color ab" >{{scope.row.x0product.price}}</div>
+              </el-form-item>
+            </div>
           </template>
         </el-table-column>
         <el-table-column label-class-name="table_head" header-align="center" align="center" label="菜品图片"
@@ -104,7 +116,7 @@
                          width="220">
           <template slot-scope="scope">
 
-            <el-input v-model="scope.row.description"></el-input>
+            <el-input v-model="scope.row.description" class="m_b"></el-input>
 
           </template>
 
@@ -113,7 +125,7 @@
 
         <el-table-column label-class-name="table_head" header-align="center" align="center" label="菜品规格" width="360">
           <template slot-scope="scope">
-            <div v-for="(item,index) in scope.row.skus" class="flex_a margin_b_10">
+            <div v-for="(item,index) in scope.row.skus" class="flex_a m_b">
 
               <el-form-item label="" :prop="'dishesList.' + scope.$index  + '.skus.' + index + '.skuid'" :rules="{type:'number',required: true, message: '请选择菜品规格', trigger: 'blur'}" class="m_t_22">
                 <el-select v-model="item.skuid" placeholder="请选择" style="width:120px">
@@ -145,11 +157,12 @@
         </el-table-column>
 
 
-        <el-table-column label-class-name="table_head" header-align="center" align="center" label="菜品属性"
-                         width="300">
+        <el-table-column label-class-name="table_head" header-align="center" align="center" label="菜品属性" width="300">
           <template slot-scope="scope">
             <div class="">
-              <el-button size="small" type="primary" @click="addAttr(scope.row.property)" class="margin_b_10">+新增属性</el-button>
+              <div class="margin_b_10">
+                <el-button size="small" type="primary" @click="addAttr(scope.row.property)">+新增属性</el-button>
+              </div>
               <div v-for="(item,index) in scope.row.property" class="margin_b_10">
                 <div class="flex_a margin_b_10">
                   <div style="position: relative" class="margin_r_10">
@@ -158,7 +171,6 @@
                     <i class="el-icon-delete pointer" style="position: absolute;top: 0;right: 0" @click="delAttr(scope.row.property,index)"></i>
                   </div>
                   <el-button size="small" type="primary" @click="addAttrCell(item)">+属性值</el-button>
-
                 </div>
 
                 <div  class="flex_a" >
@@ -191,7 +203,9 @@
                 </el-select>
               </el-form-item>
               <div class="margin_l_10" style="width:120px">
-                <el-form-item label="" :prop="'dishesList.' + scope.$index  + '.lunchboxes.' + index + '.count'" :rules="{required: true, validator: checkNumber_1, trigger: 'blur'}">
+                <el-form-item label="" :prop="'dishesList.' + scope.$index  + '.lunchboxes.' + index + '.count'" :rules="{required: true, validator: (rule, value, callback) => {
+                return checkNumber_1(rule, value, callback,'请输入数量','数量格式错误')
+                }, trigger: 'blur'}">
                   <el-input v-model="item.count" placeholder="请输入数量" class="m_t_22"></el-input>
                 </el-form-item>
               </div>
@@ -267,7 +281,6 @@
         this.$refs[formName].validate((valid) => {
           if (valid) {
             this.form.dishesList.forEach((item)=>{
-
               delete item.x0product;
               delete item.created_at;
               delete item.updated_at;
@@ -275,7 +288,6 @@
             });
             let params = {
               redirect: "x2a.product.update",
-              //levelid:this.$route.params.levelId,
               data:window.JSON.stringify(this.form.dishesList),
             };
             oneTwoApi(params).then((res) => {
@@ -284,8 +296,6 @@
                 this.$router.go(-1)
               }
             })
-
-
           } else {
             console.log('error submit!!');
             this.$message({
@@ -308,15 +318,15 @@
           }
         }
       },
-      checkNumber_1(rule, value, callback){
+      checkNumber_1(rule, value, callback,str1,str2){
         let re = /^[1-9]\d*$/;
         if (value === '') {
-          callback(new Error('请输入数量'));
+          callback(new Error(str1));
         }else {
           if(re.test(value)){
             callback()
           }else {
-            callback(new Error('数量格式错误'));
+            callback(new Error(str2));
           }
         }
       },
@@ -402,7 +412,6 @@
       oneTwoApi(params).then((res) => {
         if(res.errcode === 0){
           this.categoryList = res.data.list;
-
         }
       });
       let params1 = {
@@ -412,9 +421,7 @@
       };
       oneTwoApi(params1).then((res) => {
         if(res.errcode === 0){
-
           this.skuList = res.data.list;
-
         }
       });
       let params2 = {
@@ -424,9 +431,7 @@
       };
       oneTwoApi(params2).then((res) => {
         if(res.errcode === 0){
-
           this.boxList = res.data.list;
-
         }
       })
 
@@ -442,6 +447,18 @@
     margin-right: 10px;
   }
   .m_t_22{
-    margin-top: 22px;
+    margin-top: 20px;
+  }
+  .m_b{
+    margin-bottom: 23px
+  };
+  .color{
+    color: #8c939d;
+  }
+  .height{
+    height: 100px
+  }
+  .ab{
+    position: absolute;top: 65px;left: 0
   }
 </style>

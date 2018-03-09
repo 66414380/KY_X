@@ -83,6 +83,25 @@
           <i class="fa fa-info-circle" aria-hidden="true" slot="reference" style="font-size: 15px;"></i>
         </el-popover>
       </div>
+
+      <div class="flex_a">
+        <el-switch
+          v-model="clientFormData.code_lacation"
+          on-color="#13ce66"
+          off-color="#ff4949" :disabled="showName === '查看'">
+        </el-switch>
+
+        <div class="margin_l_10 margin_r_10 t_a">
+          发票二维码打印在预结单小票
+        </div>
+        <el-popover
+          placement="right"
+          width="200"
+          trigger="hover"
+          content="备注：发票二维码与支付二维码均在预结单（指顾客付款前供顾客核实的消费清单）小票上打印（二码合一）顾客第一次扫码完成支付，第二次扫进入自助开电子发票页面">
+          <i class="fa fa-info-circle" aria-hidden="true" slot="reference" style="font-size: 15px;"></i>
+        </el-popover>
+      </div>
     </el-form-item>
 
     <div class="flex_sb margin_b_10" style="border-bottom: 1px solid #bfcbd9">

@@ -106,33 +106,29 @@
     </el-dialog>
 
     <div class="margin_t_10 width_100">
-      <el-table :data="storeData" border :height="tableHeight" style="width: 100%;">
+      <el-form ref="formRules" :model="form">
+        <el-table :data="form.storeData" border :height="tableHeight" style="width: 100%;">
         <el-table-column label-class-name="table_head" header-align="center" align="center" label="门店名称" width="200">
           <template slot-scope="scope">
-            <el-input :class="{isInput:scope.row.nameClass === true}" v-model="scope.row.storename"
-                      @change="myChange(scope.row,'storename','nameClass')" placeholder="请输入内容">
-            </el-input>
+            <el-form-item label="" :prop="'storeData.' + scope.$index + '.storename'" :rules="{required: true, message: '请输入门店名称', trigger: 'blur'}">
+              <el-input v-model="scope.row.storename" placeholder="门店名称" class="m_t_22">
+              </el-input>
+            </el-form-item>
           </template>
         </el-table-column>
-        <!--<el-table-column label-class-name="table_head" header-align="center" align="center" label="门店编码" width="200">-->
-          <!--<template scope="scope">-->
-            <!--<el-input :class="{isInput:scope.row.codeClass === true}" v-model="scope.row.storecodeid"-->
-                      <!--@change="myChange(scope.row,'storecodeid','codeClass')" placeholder="请输入内容"></el-input>-->
-          <!--</template>-->
-        <!--</el-table-column>-->
+
         <el-table-column label-class-name="table_head" header-align="center" align="center" label="第三方编码" width="420">
           <template slot-scope="scope">
             <div v-for="(domain, index) in scope.row.storecodes" class="flex_r padding_10">
               <div style="width:150px">
-                <el-input  v-model="domain.name"
-                          @change="myChange(domain,'name','valueClass')" placeholder="请输入第三方名称">
+                <el-input  v-model="domain.name" placeholder="请输入第三方名称">
                 </el-input>
               </div>
               <div class="m-rank">
                 <div class="m-rank-child"></div>
               </div>
               <div style="width:150px">
-                <el-input  v-model="domain.providerid" @change="myChange(domain,'providerid','value1Class')" placeholder="请输入第三方编码">
+                <el-input  v-model="domain.providerid"  placeholder="请输入第三方编码">
                 </el-input>
               </div>
               <div class="flex_sb" style="width:80px">
@@ -150,55 +146,60 @@
 
         <el-table-column label-class-name="table_head" header-align="center" align="center" label="所属品牌" width="200">
           <template slot-scope="scope">
-            <el-select :class="{isSelected:scope.row.brandClass === true}" v-model="scope.row.brand" clearable filterable
-                       @change="myChange(scope.row,'brand','brandClass')" placeholder="请选择">
-              <el-option
-                v-for="item in brandList"
-                :key="item.id"
-                :label="item.levelname"
-                :value="item.id">
-              </el-option>
-            </el-select>
+            <el-form-item label="" :prop="'storeData.' + scope.$index + '.brand'" :rules="{type:'number',required: true, message: '请选择品牌', trigger: 'change'}">
+              <el-select v-model="scope.row.brand" clearable filterable placeholder="请选择" class="m_t_22">
+                <el-option
+                  v-for="item in brandList"
+                  :key="item.id"
+                  :label="item.levelname"
+                  :value="item.id">
+                </el-option>
+              </el-select>
+            </el-form-item>
+
           </template>
         </el-table-column>
 
         <el-table-column label-class-name="table_head" header-align="center" align="center" label="门店地址" width="600">
           <template slot-scope="scope">
             <div class="flex_a">
-              <el-select :class="{isSelected:scope.row.provinceClass === true}" v-model="scope.row.provinceid" clearable filterable
-                         @change="myChange(scope.row,'provinceid','provinceClass')" @visible-change="canSelectProvider" placeholder="请选择省">
-                <el-option v-for="item in provinceList" :key="item.id" :label="item.address" :value="item.id">
-                </el-option>
-              </el-select>
-              <div class="margin_l_10">
-                <el-select :class="{isSelected:scope.row.cityClass === true}" v-model="scope.row.cityid" clearable filterable
-                           @change="myChange(scope.row,'cityid','cityClass')" @visible-change="canSelectCity" placeholder="请选择市">
-                  <el-option v-for="item in scope.row.cityList" :key="item.id" :label="item.address"
-                             :value="item.id">
+              <el-form-item label="" :prop="'storeData.' + scope.$index + '.provinceid'" :rules="{type:'number',required: true, message: '请选择省', trigger: 'change'}">
+                <el-select @change="myChange(scope.row)" v-model="scope.row.provinceid" clearable filterable @visible-change="canSelectProvider" placeholder="请选择省" class="m_t_22">
+                  <el-option v-for="item in provinceList" :key="item.id" :label="item.address" :value="item.id">
                   </el-option>
                 </el-select>
+              </el-form-item>
+              <div class="margin_l_10">
+                <el-form-item label="" :prop="'storeData.' + scope.$index + '.cityid'" :rules="{type:'number',required: true, message: '请选择市', trigger: 'change'}">
+                  <el-select @change="myChange(scope.row)" v-model="scope.row.cityid" clearable filterable @visible-change="canSelectCity" placeholder="请选择市" class="m_t_22">
+                    <el-option v-for="item in scope.row.cityList" :key="item.id" :label="item.address"
+                               :value="item.id">
+                    </el-option>
+                  </el-select>
+                </el-form-item>
               </div>
               <div class="margin_l_10">
-                <el-select :class="{isSelected:scope.row.areaClass === true}" v-model="scope.row.areaid" clearable filterable
-                           @change="myChange(scope.row,'areaid','areaClass')" placeholder="请选择区">
-                  <el-option v-for="item in scope.row.areaList" :key="item.id" :label="item.address"
-                             :value="item.id">
-                  </el-option>
-                </el-select>
+                  <el-select v-model="scope.row.areaid" @change="myChange(scope.row)" clearable filterable placeholder="请选择区">
+                    <el-option v-for="item in scope.row.areaList" :key="item.id" :label="item.address"
+                               :value="item.id">
+                    </el-option>
+                  </el-select>
               </div>
               <div class="margin_l_10">
-                <el-input :class="{isInput:scope.row.addressClass === true}" v-model="scope.row.address"
-                          @change="myChange(scope.row,'address','addressClass')" placeholder="详细地址">
-                </el-input>
+                <el-form-item label="" :prop="'storeData.' + scope.$index + '.address'" :rules="{required: true, message: '请输入详细地址', trigger: 'blur'}">
+                  <el-input v-model="scope.row.address" placeholder="详细地址" class="m_t_22">
+                  </el-input>
+                </el-form-item>
               </div>
             </div>
           </template>
         </el-table-column>
         <el-table-column label-class-name="table_head" header-align="center" align="center" label="门店电话" width="200">
           <template slot-scope="scope">
-            <el-input :class="{isInput:scope.row.telClass === true}" v-model="scope.row.tel"
-                      @change="myChange(scope.row,'tel','telClass')" placeholder="请输入内容">
-            </el-input>
+            <el-form-item label="" :prop="'storeData.' + scope.$index + '.tel'" :rules="{required: true, message: '请输入门店电话', trigger: 'blur'}">
+              <el-input v-model="scope.row.tel" placeholder="请输入门店电话" class="m_t_22">
+              </el-input>
+            </el-form-item>
           </template>
         </el-table-column>
 
@@ -211,9 +212,9 @@
           </template>
         </el-table-column>
       </el-table>
-
+      </el-form>
       <div class="flex margin_t_10">
-        <el-button type="primary" @click="submitFrom()">保存</el-button>
+        <el-button type="primary" @click="submitFrom('formRules')">保存</el-button>
         <el-button @click="$router.go(-1)">取消</el-button>
       </div>
     </div>
@@ -245,7 +246,7 @@
           legalman_1: '',
           legalman_2: '',
         },
-        storeData: [],
+        form:{storeData: []},
         va: "",
         dialogVisible: false,
         imageUrl: '',
@@ -258,12 +259,12 @@
     methods: {
       addRow(row, index) {
         this.imgList = {
-          business_src: (this.storeData[index].business_src)?this.storeData[index].business_src:'',
-          businesscode_src: (this.storeData[index].businesscode_src)?this.storeData[index].businesscode_src:'',
-          account_src: (this.storeData[index].account_src)?this.storeData[index].account_src:'',
-          tax_src: (this.storeData[index].tax_src)?this.storeData[index].tax_src:'',
-          legalman_1: (this.storeData[index].legalman_1)?this.storeData[index].legalman_1:'',
-          legalman_2: (this.storeData[index].legalman_2)?this.storeData[index].legalman_2:'',
+          business_src: (this.form.storeData[index].business_src)?this.form.storeData[index].business_src:'',
+          businesscode_src: (this.form.storeData[index].businesscode_src)?this.form.storeData[index].businesscode_src:'',
+          account_src: (this.form.storeData[index].account_src)?this.form.storeData[index].account_src:'',
+          tax_src: (this.form.storeData[index].tax_src)?this.form.storeData[index].tax_src:'',
+          legalman_1: (this.form.storeData[index].legalman_1)?this.form.storeData[index].legalman_1:'',
+          legalman_2: (this.form.storeData[index].legalman_2)?this.form.storeData[index].legalman_2:'',
         };
 
         this.index = index;
@@ -271,12 +272,12 @@
 
       },
       updateImg() {
-        this.storeData[this.index].business_src = this.imgList.business_src;
-        this.storeData[this.index].businesscode_src = this.imgList.businesscode_src;
-        this.storeData[this.index].account_src = this.imgList.account_src;
-        this.storeData[this.index].tax_src = this.imgList.tax_src;
-        this.storeData[this.index].legalman_1 = this.imgList.legalman_1;
-        this.storeData[this.index].legalman_2 = this.imgList.legalman_2;
+        this.form.storeData[this.index].business_src = this.imgList.business_src;
+        this.form.storeData[this.index].businesscode_src = this.imgList.businesscode_src;
+        this.form.storeData[this.index].account_src = this.imgList.account_src;
+        this.form.storeData[this.index].tax_src = this.imgList.tax_src;
+        this.form.storeData[this.index].legalman_1 = this.imgList.legalman_1;
+        this.form.storeData[this.index].legalman_2 = this.imgList.legalman_2;
 
         this.dialogVisible = false
       },
@@ -304,8 +305,38 @@
       canSelectCity(e){
         (e === true)? this.selectCity = true: this.selectCity = false
       },
-      myChange(map, name, className) {
-        console.log(map);
+
+
+      submitFrom(formName) {
+
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            this.form.storeData.forEach((item) => {
+              delete item.areaList;
+              delete item.cityList;
+            });
+            getApi.addStore(this.$route.params.levelid,this.$route.params.type,this.form.storeData).then((res)=>{
+              if(res.data.errcode === 0){
+                this.$alert('添加成功', '', {
+                  confirmButtonText: '确定',
+                  callback: action => {
+                    this.$router.go(-1)
+                  }
+                })
+              }
+            })
+
+          } else {
+            console.log('error submit!!');
+            this.$message({
+              message: '请填写所需选项',
+              type: 'warning'
+            });
+            return false;
+          }
+        });
+      },
+      myChange(map) {
         if (this.selectProvider === true) {
           getArea(map.provinceid).then((res) => {
             this.$set(map, "cityid", '');
@@ -320,109 +351,12 @@
             this.$set(map, "areaList", res.data.data);
           })
         }
-
-        if (map[name] !== "") {
-          map[className] = false
-        } else {
-          map[className] = true
-        }
       },
-      checkSubmit() {
-        for (let map of this.storeData) {
-          if (map.storename === "") {
-            map.nameClass = true
-          }
-          if (map.brand === "") {
-            map.brandClass = true
-          }
-          if (map.provinceid === "") {
-            map.provinceClass = true
-          }
-          if (map.cityid === "") {
-            map.cityClass = true
-          }
-          if (map.areaid === "") {
-            map.areaClass = true
-          }
-          if (map.address === "") {
-            map.addressClass = true
-          }
-          if (map.tel === "") {
-            map.telClass = true
-          }
-          for (let map1 of map.storecodes) {
-            if (map1.name === "") {
-              map1.valueClass = true
-            }
-            if (map1.providerid === "") {
-              map1.value1Class = true
-            }
-          }
-        }
-      },
-      submitFrom() {
-        this.checkSubmit();
-        outer:
-          for (let map of this.storeData) {
-            if (map.storename === "" || map.provinceid === "" || map.cityid === "" || map.areaid === "" || map.address === "" || map.tel === "") {
-              this.va = "";
-              break
-            }
-
-//            for (let map1 of map.storecodes) {
-//              if (map1.name === "" || map1.providerid === "") {
-//                this.va = "";
-//                break outer
-//              }
-//              this.va = "ok"
-//            }
-            this.va = "ok"
-          }
-        console.log(this.va)
-
-
-        if (this.va === "ok") {
-
-        this.storeData.forEach((item) => {
-          delete item.nameClass;
-          delete item.brandClass;
-          delete item.provinceClass;
-          delete item.areaClass;
-          delete item.addressClass;
-          delete item.telClass;
-          delete item.cityClass;
-          delete item.areaList;
-          delete item.cityList;
-          item.storecodes.forEach((item1) => {
-            delete item1.valueClass;
-            delete item1.value1Class
-
-          })
-        });
-          getApi.addStore(this.$route.params.levelid,this.$route.params.type,this.storeData).then((res)=>{
-            if(res.data.errcode === 0){
-              this.$alert('添加成功', '', {
-                confirmButtonText: '确定',
-                callback: action => {
-                  this.$router.go(-1)
-                }
-              })
-            }
-          })
-        } else {
-          this.$message({
-            type: 'warning',
-            message: '请填写所需选项'
-          });
-        }
-
-      },
-
       removeDomain(list, i) {
         list.splice(i, 1)
       },
       addDomain(list) {
-        list.push({name: '', valueClass: false, providerid: '', value1Class: false});
+        list.push({name: '', providerid: ''});
       },
 
       getOneList() {
@@ -456,24 +390,16 @@
     },
     created() {
       for (let i = 0; i < this.$route.params.number; i++) {
-        this.storeData.push({
+        this.form.storeData.push({
           storename: "",
-          nameClass: false,
-          //storecodeid:'1',
           brand: '',
-          brandClass: false,
           provinceid: "",
-          provinceClass: false,
           cityid: "",
-          cityClass: false,
           areaid: "",
-          areaClass: false,
           address: "",
-          addressClass: false,
           tel: "",
-          telClass: false,
           storecodes: [
-            {name: '', valueClass: false, providerid: '', value1Class: false}
+            {name: '', providerid: ''}
           ],
           business_src: '',
           businesscode_src: '',
@@ -507,5 +433,7 @@
 </script>
 
 <style scoped lang="less">
-
+  .m_t_22{
+    margin-top: 22px;
+  }
 </style>

@@ -22,8 +22,8 @@
               {{levelName}}
             </h3>
             <el-button size="small" @click="addDishes()" v-show="getTreeArr['新增外卖菜品']" :disabled="showAdd !== 4">批量新增</el-button>
-            <el-button size="small" @click="edit()" v-show="getTreeArr['修改外卖菜品']" :disabled="showAdd !== 4">批量编辑</el-button>
-            <el-button size="small" @click="del()" v-show="getTreeArr['删除外卖菜品']" :disabled="showAdd !== 4">批量删除</el-button>
+            <el-button size="small" @click="edit()" v-show="getTreeArr['修改外卖菜品']">批量编辑</el-button>
+            <el-button size="small" @click="del()" v-show="getTreeArr['删除外卖菜品']">批量删除</el-button>
             <!--<el-button size="small" @click="issued()">批量下发</el-button>-->
           </div>
 
@@ -92,7 +92,7 @@
 
             <template slot-scope="scope">
               <div v-for="(item,index) in scope.row.skus">
-                <span>{{item.skuid}}   {{item.price}}</span>
+                <span>{{item.skuname}}   ￥{{item.price}}</span>
               </div>
             </template>
           </el-table-column>
@@ -111,15 +111,13 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column label-class-name="table_head" header-align="center" align="center" label="餐盒"
-                           width="240">
-
+          <el-table-column label-class-name="table_head" header-align="center" align="center" label="餐盒" width="240">
             <template slot-scope="scope">
               <div v-if="scope.row.lunchboxes.length !== 0">
                 <div v-for="(item,index) in scope.row.lunchboxes">
-                  <span>{{item.value}} {{item.count}} </span>
+                  <span>{{item.lunchboxname}} X{{item.count}} ￥{{item.price}} </span>
                 </div>
-                <!--<div style="border-top: 1px solid #BECBD9">餐盒总价：￥{{scope.row.box}}</div>-->
+                 <div style="border-top: 1px solid #BECBD9">餐盒总价：￥{{scope.row.totalBoxPrice}}</div>
               </div>
 
             </template>
@@ -371,9 +369,14 @@
 
         };
         oneTwoApi(params).then((res) => {
+          let totalBoxPrice = 0;
           if(res.errcode === 0){
             res.data.list.forEach((item)=>{
               item.select = false;
+              item.lunchboxes.forEach((item1)=>{
+                totalBoxPrice += item1.totalprice
+              });
+              item.totalBoxPrice = totalBoxPrice
             });
             this.tableData = res.data.list;
             this.p.total = res.data.count;
