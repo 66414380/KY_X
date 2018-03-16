@@ -14,13 +14,13 @@
               <el-button size="small" @click="del1()" :disabled="form.show2">删除</el-button>
             </div>
             <div class="margin_10">
-              <el-form-item label="入口名称:" prop="name1" :rules="{required: true, message: '请输入规格名称', trigger: 'blur'}">
+              <el-form-item label="入口名称:" prop="name1" :rules="{required: true, message: '请输入入口名称', trigger: 'blur'}">
                 <el-input v-model="form.name1" placeholder="请输入入口名称"></el-input>
               </el-form-item>
               <el-form-item label="提示语:">
                 <el-input v-model="form.hint1" placeholder="请输入提示语" ></el-input>
               </el-form-item>
-              <el-form-item label="跳转链接:" prop="url1" :rules="{required: true, message: '请输入规格名称', trigger: 'blur'}">
+              <el-form-item label="跳转链接:" prop="url1" :rules="{required: true, message: '请输入跳转链接', trigger: 'blur'}">
                 <el-input v-model="form.url1" placeholder="例：http://www.baidu.com" ></el-input>
               </el-form-item>
             </div>
@@ -31,13 +31,13 @@
               <el-button size="small" @click="del2()">删除</el-button>
             </div>
             <div class="margin_10">
-              <el-form-item label="入口名称:" prop="name2" :rules="{required: true, message: '请输入规格名称', trigger: 'blur'}">
+              <el-form-item label="入口名称:" prop="name2" :rules="{required: true, message: '请输入入口名称', trigger: 'blur'}">
                 <el-input v-model="form.name2" placeholder="请输入入口名称"></el-input>
               </el-form-item>
               <el-form-item label="提示语:">
                 <el-input v-model="form.hint2" placeholder="请输入提示语" ></el-input>
               </el-form-item>
-              <el-form-item label="跳转链接:" prop="url2" :rules="{required: true, message: '请输入规格名称', trigger: 'blur'}">
+              <el-form-item label="跳转链接:" prop="url2" :rules="{required: true, message: '请输入跳转链接', trigger: 'blur'}">
                 <el-input v-model="form.url2" placeholder="例：http://www.baidu.com" ></el-input>
               </el-form-item>
             </div>

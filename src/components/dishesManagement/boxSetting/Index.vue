@@ -20,7 +20,7 @@
 
           <div class="flex_a">
             <div class="margin_r_10">
-              <el-input size="small" v-model="dishesName" placeholder="请输入规格名称"></el-input>
+              <el-input size="small" v-model="dishesName" placeholder="请输入餐盒名称"></el-input>
             </div>
             <el-button size="small" @click="search()">搜索</el-button>
             <el-button size="small" @click="option('新增')" v-show="getTreeArr['新增菜品餐盒']" :disabled="showAdd !== 4">+新增餐盒</el-button>

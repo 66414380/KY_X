@@ -1,13 +1,13 @@
 <template>
   <div id="xoMenu" :style="{height:getBodyHeight+'px'}">
-    <!--<el-menu default-active="2" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" theme="dark" :width="300">-->
+    <el-menu default-active="2" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" theme="dark" :width="300">
 
-      <!--&lt;!&ndash;后期加上&ndash;&gt;-->
-      <!--<el-submenu v-for="(value,index1) in leftList" :index=index1.toString() :key="index1">-->
-        <!--<template slot="title">{{value.name}}</template>-->
-        <!--<router-link v-for="(item,index2) in value.children" :key="item.route" :to=item.route><el-menu-item :index=formatNum(index1,index2) :key="index2">{{item.name}}</el-menu-item></router-link>-->
-      <!--</el-submenu>-->
-    <!--</el-menu>-->
+      <!--后期加上-->
+      <el-submenu v-for="(value,index1) in leftList" :index=index1.toString() :key="index1">
+        <template slot="title">{{value.name}}</template>
+        <router-link v-for="(item,index2) in value.children" :key="item.route" :to=item.route><el-menu-item :index=formatNum(index1,index2) :key="index2">{{item.name}}</el-menu-item></router-link>
+      </el-submenu>
+    </el-menu>
 
       <tree :data='leftData' :count=0></tree>
 
@@ -29,36 +29,36 @@
       return {
         leftList: [
 
-         {
-            name: '统计报表',
+         // {
+         //    name: '统计报表',
+         //    children: [
+         //      {
+         //        name: '结算记录',
+         //        route: '/report/settlementRecord'
+         //      }
+         //    ]
+         //  },
+
+
+          {
+            name: '菜品管理',
             children: [
               {
-                name: '结算记录',
-                route: '/report/settlementRecord'
-              }
+                name: '菜品组',
+                route: '/dishesManagement/dishesGroup'
+              },
+
+              // {
+              //   name: '菜品属性',
+              //   route: '/dishesManagement/dishesAttr'
+              // },
+
+              // {
+              //   name: '套餐管理',
+              //   route: '/dishesManagement/mealManage'
+              // },
             ]
           },
-
-
-          // {
-          //   name: '菜品管理',
-          //   children: [
-          //     {
-          //       name: '菜品组',
-          //       route: '/dishesManagement/dishesGroup'
-          //     },
-          //
-          //     // {
-          //     //   name: '菜品属性',
-          //     //   route: '/dishesManagement/dishesAttr'
-          //     // },
-          //
-          //     // {
-          //     //   name: '套餐管理',
-          //     //   route: '/dishesManagement/mealManage'
-          //     // },
-          //   ]
-          // },
         ],
         leftData:[]
       }

@@ -28,7 +28,6 @@
             <el-date-picker
               size="small"
               v-model="time_start"
-              @change="timeStart"
               type="datetime"
               placeholder="选择开始日期时间">
             </el-date-picker>
@@ -40,7 +39,6 @@
             <el-date-picker
               size="small"
               v-model="time_end"
-              @change="timeEnd"
               type="datetime"
               placeholder="选择结束日期时间">
             </el-date-picker>
@@ -66,7 +64,16 @@
       </div>
     </div>
 
-    <el-table :data="tableData" border :height="tableHeight">
+    <el-table :data="tableData" border :height="tableHeight" v-if="show === ''">
+      <el-table-column header-align="center" align="center" prop="date" label="日期" ></el-table-column>
+      <el-table-column header-align="center" align="center" prop="store_name" label="门店名称"></el-table-column>
+      <el-table-column header-align="center" align="center" prop="order_price" label="订单金额"></el-table-column>
+      <el-table-column header-align="center" align="center" prop="order_num" label="支付单数" ></el-table-column>
+      <el-table-column header-align="center" align="center" prop="pay_money" label="支付金额" ></el-table-column>
+      <el-table-column header-align="center" align="center" prop="shop_money" label="实收金额"></el-table-column>
+    </el-table>
+
+    <el-table :data="tableData" border :height="tableHeight" v-if="show === 'mt' || show === 'bd'">
       <el-table-column header-align="center" align="center" prop="date" label="日期" ></el-table-column>
       <el-table-column header-align="center" align="center" prop="store_name" label="门店名称"></el-table-column>
       <el-table-column header-align="center" align="center" prop="order_price" label="订单金额"></el-table-column>
@@ -74,16 +81,39 @@
       <el-table-column header-align="center" align="center" prop="pay_money" label="支付金额" ></el-table-column>
       <el-table-column header-align="center" align="center" prop="shop_money" label="实收金额"></el-table-column>
 
-      <el-table-column header-align="center" align="center" prop="income" label="预计收入" v-if="radio !== ''"></el-table-column>
-      <el-table-column header-align="center" align="center" prop="product_money" label="菜品金额" v-if="radio === 'el'"></el-table-column>
-      <el-table-column header-align="center" align="center" prop="plat_part" label="平台补贴" v-if="radio !== ''"></el-table-column>
-      <el-table-column header-align="center" align="center" prop="shop_part" label="商家补贴" v-if="radio !== ''"></el-table-column>
-      <el-table-column header-align="center" align="center" prop="activity_fee" label="活动补贴" v-if="radio !== ''"></el-table-column>
-      <el-table-column header-align="center" align="center" prop="service_fee" label="服务费用" v-if="radio !== ''"></el-table-column>
-      <el-table-column header-align="center" align="center" prop="shop_fee" label="商家支出" v-if="radio !== ''"></el-table-column>
-      <el-table-column header-align="center" align="center" prop="deliver_Fee" label="配送费用" v-if="radio !== ''"></el-table-column>
-      <el-table-column header-align="center" align="center" prop="package_fee" label="餐盒费" v-if="radio !== ''"></el-table-column>
+      <el-table-column header-align="center" align="center" prop="income" label="预计收入" ></el-table-column>
+      <el-table-column header-align="center" align="center" prop="plat_part" label="平台补贴" ></el-table-column>
+      <el-table-column header-align="center" align="center" prop="shop_part" label="商家补贴" ></el-table-column>
+      <el-table-column header-align="center" align="center" prop="activity_fee" label="活动补贴" ></el-table-column>
+      <el-table-column header-align="center" align="center" prop="service_fee" label="服务费用" ></el-table-column>
+      <el-table-column header-align="center" align="center" prop="shop_fee" label="商家支出" ></el-table-column>
+      <el-table-column header-align="center" align="center" prop="deliver_Fee" label="配送费用" ></el-table-column>
+      <el-table-column header-align="center" align="center" prop="package_fee" label="餐盒费" ></el-table-column>
     </el-table>
+
+
+
+    <el-table :data="tableData" border :height="tableHeight" v-if="show === 'el'">
+      <el-table-column header-align="center" align="center" prop="date" label="日期" ></el-table-column>
+      <el-table-column header-align="center" align="center" prop="store_name" label="门店名称"></el-table-column>
+      <el-table-column header-align="center" align="center" prop="order_price" label="订单金额"></el-table-column>
+      <el-table-column header-align="center" align="center" prop="order_num" label="支付单数" ></el-table-column>
+      <el-table-column header-align="center" align="center" prop="pay_money" label="支付金额" ></el-table-column>
+      <el-table-column header-align="center" align="center" prop="shop_money" label="实收金额"></el-table-column>
+
+      <el-table-column header-align="center" align="center" prop="income" label="预计收入" ></el-table-column>
+      <el-table-column header-align="center" align="center" prop="product_money" label="菜品金额"></el-table-column>
+      <el-table-column header-align="center" align="center" prop="plat_part" label="平台补贴" ></el-table-column>
+      <el-table-column header-align="center" align="center" prop="shop_part" label="商家补贴" ></el-table-column>
+      <el-table-column header-align="center" align="center" prop="activity_fee" label="活动补贴" ></el-table-column>
+      <el-table-column header-align="center" align="center" prop="service_fee" label="服务费用" ></el-table-column>
+      <el-table-column header-align="center" align="center" prop="shop_fee" label="商家支出" ></el-table-column>
+      <el-table-column header-align="center" align="center" prop="deliver_Fee" label="配送费用" ></el-table-column>
+      <el-table-column header-align="center" align="center" prop="package_fee" label="餐盒费" ></el-table-column>
+    </el-table>
+
+
+
     <footer>
       <xo-pagination :pageData=p @page="getPage" @pageSize="getPageSize"></xo-pagination>
     </footer>
@@ -115,8 +145,7 @@
         tableData: [],
         time_start: '',
         time_end: '',
-        start_stamp: '',
-        end_stamp: '',
+        show:'',
 
         p: {page: 1, size: 20, total: 0},
 
@@ -124,27 +153,12 @@
     },
 
     methods: {
-      timeStart(d) {
-        if (d === undefined) {
-          this.start_stamp = ""
-        } else {
-          this.start_stamp = new Date(this.time_start) /1000 ;
-        }
-      },
-      timeEnd(d) {
-        if (d === undefined) {
-          this.end_stamp = ""
-        } else {
-          this.end_stamp = new Date(this.time_end) /1000;
-        }
-
-      },
       out() {
         let params = {
           redirect: "x2a.order.orderstat",
           storeId:this.storeId,
-          begTime: this.start_stamp,
-          endTime:this.end_stamp,
+          begTime: this.time_start === undefined  || this.time_start === '' ? '' : (new Date(this.time_start) * 1 + '').substr(0, 10),
+          endTime:this.time_end === undefined || this.time_end === '' ? '' : (new Date(this.time_end) * 1 + '').substr(0, 10),
           source:this.radio,
           export:1
         };
@@ -166,6 +180,7 @@
         //
         //
         // }
+        this.show = this.radio;
 
         this.showResouce(this.p = {page: 1, size: 20, total: 0})
 
@@ -183,8 +198,8 @@
         let params = {
           redirect: "x2a.order.orderstat",
           storeId:this.storeId,
-          begTime: this.start_stamp,
-          endTime:this.end_stamp,
+          begTime: this.time_start === undefined  || this.time_start === '' ? '' : (new Date(this.time_start) * 1 + '').substr(0, 10),
+          endTime:this.time_end === undefined || this.time_end === '' ? '' : (new Date(this.time_end) * 1 + '').substr(0, 10),
           source:this.radio,
           page: p.page,
           pageSize:p.size

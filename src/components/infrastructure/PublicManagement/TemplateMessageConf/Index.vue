@@ -152,11 +152,34 @@
       :visible.sync="dialogVisible3"
       width="30%" size="tiny" @close="closeUrl">
 
+
       <el-form :model="urlObj">
         <el-form-item label="">
+          <div class="flex_a">
+            <el-radio-group v-model="urlObj.radio2">
+              <el-radio :label="1">跳转h5</el-radio>
+              <el-radio :label="2">跳转小程序</el-radio>
+            </el-radio-group>
+            <div class="margin_l_10">(二选一)</div>
+          </div>
+
+        </el-form-item>
+
+        <el-form-item label="" v-if="urlObj.radio2 === '' || urlObj.radio2 === 1">
           <el-input v-model="urlObj.url" class="form_width" placeholder="请输入网址">
           </el-input>
         </el-form-item>
+
+        <el-form-item label="小程序APPID" v-if="urlObj.radio2 === 2">
+          <el-input v-model="urlObj.wx_appid" class="form_width" placeholder="请输入网址">
+          </el-input>
+        </el-form-item>
+
+        <el-form-item label="页面路径" v-if="urlObj.radio2 === 2">
+          <el-input v-model="urlObj.pagepath" class="form_width" placeholder="请输入网址">
+          </el-input>
+        </el-form-item>
+
       </el-form>
       <div class="margin_t_10">
         <el-button type="primary" @click="submitFrom3()">确认</el-button>
@@ -197,7 +220,7 @@
         dialogVisible: false,
         dialogVisible2: false,
         dialogVisible3:false,
-        urlObj:{id:'',url:''},
+        urlObj:{id:'',url:'',radio2:'',pagepath:'',wx_appid:''},
         tableHeight: 0,
         navList: [{name: "基础设置", url: ''}, {name: "公众号管理", url: '/infrastructure/PublicManagement'}, {name: "模板消息配置", url: ''}],
         name: '',
@@ -213,11 +236,22 @@
     watch: {},
     methods: {
       submitFrom3(){
-        let params = {
-          redirect: "x1.privateTemplate.setJumpUrl",
-          id:this.urlObj.id,
-          url:this.urlObj.url,
+        let params;
+        if(this.urlObj.radio2 === 1){
+           params = {
+            redirect: "x1.privateTemplate.setJumpUrl",
+            id:this.urlObj.id,
+            url:this.urlObj.url,
+          };
+        }else {
+          params = {
+            redirect: "x1.privateTemplate.setJumpUrl",
+            id: this.urlObj.id,
+            wx_appid: this.urlObj.wx_appid,
+            pagepath: this.urlObj.pagepath,
+          }
         };
+
         oneTwoApi(params).then((res) => {
           if(res.errcode === 0){
             this.$message('操作成功');
@@ -257,8 +291,6 @@
       submitFrom(formRules) {
         this.$refs[formRules].validate((valid) => {
           if (valid) {
-            console.log(this.form)
-
             let title,status,redirect;
             this.templateList.forEach((item)=>{
               if(item.id === this.form.template_id){
@@ -313,7 +345,7 @@
         }
       },
       closeUrl(){
-        this.urlObj = {id:'',url:''}
+        this.urlObj = {id:'',url:'',radio2:'',pagepath:'',wx_appid:''}
       },
       closePreview(){
         this.previewList = ''
@@ -341,8 +373,20 @@
         };
         oneTwoApi(params).then((res) => {
           if(res.errcode === 0){
+            if(res.data.url === '' && res.data.wx_appid === ''){
+              this.urlObj.radio2 = 1
+            }else {
+              if(res.data.url === ''){
+                this.urlObj.radio2 = 2
+              }else {
+                this.urlObj.radio2 = 1
+              }
+
+            }
             this.urlObj.url = res.data.url;
-            this.urlObj.id = res.data.id
+            this.urlObj.id = res.data.id;
+            this.urlObj.wx_appid = res.data.wx_appid;
+            this.urlObj.pagepath = res.data.pagepath
           }
         })
       },

@@ -5,34 +5,32 @@
       <div class="margin_b_10">
         <xo-nav-path :navList="navList"></xo-nav-path>
       </div>
-
-      <div class="flex_es">
-        <div>
-
-
-        </div>
-
-        <div class="flex_a">
-          <div class="margin_r_10">
-            <el-input size="small" v-model="dishesName" placeholder="请输入菜品组名称"></el-input>
-          </div>
-          <el-button size="small" @click="search()">搜索</el-button>
-          <el-button size="small" @click="addCategory()">+新增菜品组</el-button>
-
-        </div>
-      </div>
     </div>
 
 
     <div class="flex_r">
       <div ref="tree" style="min-width: 200px;overflow-y: auto" :style="{height:tableHeight + 'px'}">
-        <public-tree :data='dataLeft' :count=0></public-tree>
+        <xo-pub-tree  :data='getDishesGroupTree()' :count=0 style="width: max-content;"></xo-pub-tree>
       </div>
 
       <div class="padding_l_10 " :style="{width:tableWidth + 'px'}">
+        <div class="flex_es margin_b_10">
+          <h3>
+            {{levelName}}
 
+          </h3>
 
-        <el-table :data="storeData" border :height="tableHeight" style="width: 100%;">
+          <div class="flex_a">
+            <div class="margin_r_10">
+              <el-input size="small" v-model="dishesName" placeholder="请输入菜品组名称"></el-input>
+            </div>
+            <el-button size="small" @click="search()">搜索</el-button>
+            <el-button size="small" @click="addCategory()">+新增菜品组</el-button>
+
+          </div>
+        </div>
+
+        <el-table :data="tableData" border :height="tableHeight" style="width: 100%;">
           <el-table-column label-class-name="table_head" header-align="center" align="center" label="序号"
                            width="100">
             <template slot-scope="scope">
@@ -314,18 +312,25 @@
 
 <script>
 
-  import {getLeft, getArr} from '../../utility/communApi'
+  import {recur} from '../../utility/communApi'
   import Hub from '../../utility/commun'
   import {getScrollHeight} from '../../utility/getScrollHeight'
-  import publicTree from '../../infrastructure/PublicManagement/publicTree'
   import {mapActions, mapGetters} from 'vuex';
+  import getApi1 from '../../infrastructure/DishesLibrary/dishesLibrary.service'
+  import {oneTwoApi} from '@/api/api.js';
 
   export default {
     components: {
-      publicTree
+
+    },
+    computed:{
+      ...mapGetters([
+        'getTreeArr','getBodyHeight'
+      ]),
     },
     data() {
       return {
+        levelName:'',
         dialogVisible: false,
         dialogFormVisible1:false,
         dialogFormVisible2:false,
@@ -353,7 +358,7 @@
           {type: "删除式下发", desc: "指把已选的菜品，从选中的门店中删除。"},
         ],
         storeName: '',
-        storeData: [{
+        tableData: [{
           dishesCode: '837893',
           dishesGroup: '大',
           bank: '999',
@@ -398,6 +403,8 @@
     },
     watch: {},
     methods: {
+      ...mapActions(['setDishesGroupTree','setDishesGroupLevelId']),
+      ...mapGetters(['getDishesGroupTree','getDishesGroupLevelId']),
       open(){
 
       },
@@ -508,38 +515,7 @@
           //
         });
       },
-      append(store, data) {
-        console.log(store)
-        console.log(data)
 
-        store.append({id: id++, label: 'testtest' + id, children: []}, data);
-      },
-
-
-      recur(data) {
-        data.forEach((map) => {
-          if (map.id === this.$localStorage.get_s('publicLevelId')) {
-            this.type = map.type
-          }
-          if (map.child) {
-            this.$set(map, "show", true);
-            this.$set(map, "selected", false);
-            this.recur(map.child)
-          }
-        })
-      },
-      recurSelected(data, levelId) {
-        data.forEach((map) => {
-          if (map.id === levelId) {
-            this.$set(map, "selected", true);
-          } else {
-            this.$set(map, "selected", false);
-          }
-          if (map.child) {
-            this.recurSelected(map.child, levelId)
-          }
-        })
-      },
       removeDomain(index) {
         this.formEdit.thirdPartyCoding.splice(index, 1)
       },
@@ -570,71 +546,74 @@
           });
         }
       },
+      showLevel() {
+        getApi1.getLevel('', 1).then((res) => {
+          if (res.data.errcode === 0) {
+
+            this.setDishesGroupTree({list:res.data.data});
+            if (this.getDishesGroupLevelId() === '') {
+              this.setDishesGroupLevelId({levelId: res.data.data[0].id});
+            }
+            //this.showResouce(this.p,this.categoryName);
+            recur(res.data.data,true,this.getDishesGroupLevelId(),this)
+          }
+        });
+      },
+      showResouce(p,categoryName = ''){
+        let params = {
+          redirect: "x2a.category.index",
+          levelid:this.getDishesGroupLevelId(),
+          categoryname:categoryName,
+          page: p.page,
+          pagesize:p.size
+
+        };
+        oneTwoApi(params).then((res) => {
+          if(res.errcode === 0){
+            this.tableData = res.data.list;
+            this.p.total = res.data.count;
+          }
+        })
+      },
     },
     created() {
-      getLeft('x1').then((res) => {
-        if (res.data.errcode === 0) {
-          //this.showResouce(this.$localStorage.get_s('publicLevelId')?this.$localStorage.get_s('publicLevelId'):res.data.data[0].id);
-          this.levelName = res.data.data[0].levelname
-          this.dataLeft = res.data.data;
-          this.recur(this.dataLeft);
-          this.recurSelected(this.dataLeft, this.$localStorage.get_s('publicLevelId') ? this.$localStorage.get_s('publicLevelId') : res.data.data[0].id)
-        }
-      });
+      if(this.getDishesGroupTree().length === 0){
+        this.showLevel()
+      }else {
+        this.showResouce(this.p,this.categoryName);
+        recur(this.getDishesGroupTree(),false,this.getDishesGroupLevelId(),this)
+      }
 
 
     },
     mounted() {
-      Hub.$on('showAddPub', (e) => {
-        this.levelName = e.levelName;
-        this.type = e.type;
-        this.$localStorage.set_s('publicLevelId', e.levelid);
-        //this.showResouce(e.levelid);
-        this.recurSelected(this.dataLeft, e.levelid)
+      Hub.$on('showAdd', (e) => {
+        this.setDishesGroupLevelId({levelId: e.levelid});
+        recur(this.getDishesGroupTree(),false,this.getDishesGroupLevelId(),this);
+        //this.showResouce(this.p={page: 1, size: this.p.size, total: 0},this.categoryName = '');
       });
+      Hub.$emit('mountedOk','mountedOk');
+      this.$nextTick(() => {
+        getScrollHeight(this.getBodyHeight).then((h) => {
+          this.tableHeight = h;
+        })
 
-      Hub.$on('arr', (e) => {
-        this.setTreeArr({obj: getArr(e)})
-      });
+      })
     },
     updated() {
       let bodyWidth = document.querySelector('.content div').clientWidth;
       this.tableWidth = bodyWidth - this.$refs.tree.clientWidth;
 
-      this.$nextTick(() => {
-        getScrollHeight().then((h) => {
-          this.tableHeight = h;
-        })
-
-      })
-
     },
     destroyed() {
-      Hub.$off("showAddPub");
-      Hub.$off("arr");
-    },
-    render() {
+      Hub.$off("showAdd");
 
-    }
+    },
+
   }
 </script>
 
 <style scoped lang="less">
-  .m-storeList {
-    height: 50px;
-    line-height: 50px;
-  }
-  .m-rank {
-    width: 40px;
-    .m-rank-child {
-      height: 18px;
-      border-bottom: 1px solid #000;
-    }
-  }
-
-  .m-storeCode {
-    font-size: 30px;
-  }
 
 
 

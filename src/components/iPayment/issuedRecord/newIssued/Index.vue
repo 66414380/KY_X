@@ -559,8 +559,7 @@
 
         var reserveAcc = [];
 
-        if (this.form.reserveAcc[value]) {
-          if (this.form.reserveAcc[value].accountId) {
+          if(this.form.reserveAcc[0].accountId !== ''){
             for (var value in this.form.reserveAcc) {
               console.log(value);
               var obj = {};
@@ -571,7 +570,6 @@
               reserveAcc.push(obj)
             }
           }
-        }
 
 
         var params = {

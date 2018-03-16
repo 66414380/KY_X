@@ -14,11 +14,6 @@
       </div>
 
 
-
-
-
-
-
       <div class="padding_l_10 " :style="{width:tableWidth + 'px'}">
 
         <div class="flex_es margin_b_10">

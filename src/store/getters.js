@@ -122,11 +122,17 @@ export default{
   getDishesCategoryLevelId(state){
     return state.dishesCategoryLevelId;
   },
-
   getStoreDishesManageTree(state){
     return state.storeDishesManageTree;
   },
   getStoreDishesManageLevelId(state){
     return state.storeDishesManageLevelId;
+  },
+
+  getDishesGroupTree(state){
+    return state.dishesGroupTree;
+  },
+  getDishesGroupLevelId(state){
+    return state.dishesGroupLevelId;
   },
 }

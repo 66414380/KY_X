@@ -115,11 +115,16 @@ export default {
   setDishesCategoryLevelId({commit},obj){
     commit(types.DISHESCATEGORYLEVELID,obj);
   },
-
   setStoreDishesManageTree({commit},obj){
     commit(types.STOREDISHESMANAGETREE,obj);
   },
   setStoreDishesManageLevelId({commit},obj){
     commit(types.STOREDISHESMANAGELEVELID,obj);
+  },
+  setDishesGroupTree({commit},obj){
+    commit(types.DISHESGROUPTREE,obj);
+  },
+  setDishesGroupLevelId({commit},obj){
+    commit(types.DISHESGROUPELEVELID,obj);
   },
 }
