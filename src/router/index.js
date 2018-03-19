@@ -89,7 +89,7 @@ import storeManagementTakeOut from '@/components/x2OperationScheme/storeManageme
 import printerConfig from '@/components/x2OperationScheme/printerConfig/Index.vue'
 import pushState from '@/components/x2OperationScheme/pushState/Index.vue'
 import scatterMap from '@/components/x2OperationScheme/scatterMap/index.vue'
-
+import storeLabel from '@/components/x2OperationScheme/storeLabel/index.vue'
 
 /************************** 商户资料核实 ***************************/
 
@@ -499,6 +499,14 @@ export default new Router({
           meta: { auth: false },
           name: 'x2门店管理',
           component: storeManagement
+        },
+
+        //门店标签
+        {
+          path: '/x2OperationScheme/storeLabel',
+          meta: { auth: false },
+          name: '门店标签',
+          component: storeLabel
         },
         //外卖平台映射
         {

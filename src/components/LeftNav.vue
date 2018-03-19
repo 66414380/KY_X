@@ -39,6 +39,15 @@
          //    ]
          //  },
 
+          {
+             name: 'X2管理',
+             children: [
+               {
+                 name: '门店标签',
+                 route: '/x2OperationScheme/storeLabel'
+               }
+             ]
+           },
 
           {
             name: '菜品管理',
@@ -52,7 +61,7 @@
               //   name: '菜品属性',
               //   route: '/dishesManagement/dishesAttr'
               // },
-
+              //
               // {
               //   name: '套餐管理',
               //   route: '/dishesManagement/mealManage'
