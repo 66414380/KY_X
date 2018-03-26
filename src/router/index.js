@@ -95,6 +95,9 @@ import storeLabel from '@/components/x2OperationScheme/storeLabel/index.vue'
 
 import businessList from '@/components/businessInformation/businessList/Index.vue'
 
+/**********************活动设置********************************/
+import activityData from '@/components/activitySetting/activityData/Index.vue'
+
 
 Vue.use(Router);
 
@@ -539,6 +542,16 @@ export default new Router({
           name: '商户列表',
           component: businessList
         },
+
+        /**********************活动设置***************************/
+        //活动设置/活动数据
+        {
+          path: '/activitySetting/activityData',
+          meta: { auth: false },
+          name: '活动数据',
+          component: activityData
+        },
+
 
       ]
     },

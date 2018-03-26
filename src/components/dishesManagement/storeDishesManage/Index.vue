@@ -262,11 +262,8 @@
         }
       },
       close2() {
-        for (let map in this.baseDishes) {
-          this.baseDishes[map].forEach((item) => {
-            item.OK = false
-          })
-        }
+        this.baseDishes = {};
+
       },
       getPage(page) {
         this.p.page = page;
@@ -369,14 +366,14 @@
 
         };
         oneTwoApi(params).then((res) => {
-          let totalBoxPrice = 0;
           if(res.errcode === 0){
             res.data.list.forEach((item)=>{
               item.select = false;
+              item.totalBoxPrice = 0;
               item.lunchboxes.forEach((item1)=>{
-                totalBoxPrice += item1.totalprice
+                item.totalBoxPrice += item1.totalprice * 1
               });
-              item.totalBoxPrice = totalBoxPrice
+              item.totalBoxPrice = item.totalBoxPrice.toFixed(2)
             });
             this.tableData = res.data.list;
             this.p.total = res.data.count;

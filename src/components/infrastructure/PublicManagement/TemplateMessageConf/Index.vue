@@ -171,12 +171,12 @@
         </el-form-item>
 
         <el-form-item label="小程序APPID" v-if="urlObj.radio2 === 2">
-          <el-input v-model="urlObj.wx_appid" class="form_width" placeholder="请输入网址">
+          <el-input v-model="urlObj.wx_appid" class="form_width" placeholder="请输入小程序APPID">
           </el-input>
         </el-form-item>
 
         <el-form-item label="页面路径" v-if="urlObj.radio2 === 2">
-          <el-input v-model="urlObj.pagepath" class="form_width" placeholder="请输入网址">
+          <el-input v-model="urlObj.pagepath" class="form_width" placeholder="请输入页面路径">
           </el-input>
         </el-form-item>
 
