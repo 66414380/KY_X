@@ -10,7 +10,7 @@
 
     <div class="flex_r">
       <div ref="tree" style="min-width: 200px;overflow-y: auto" :style="{height:tableHeight + 'px'}">
-        <!--<xo-pub-tree  :data='getDishesCategoryTree()' :count=0 style="width: max-content;"></xo-pub-tree>-->
+        <xo-pub-tree  :data='getStoreLabelTree()' :count=0 style="width: max-content;"></xo-pub-tree>
       </div>
 
 
@@ -19,14 +19,15 @@
         <div class="flex_es margin_b_10">
           <div class="flex_a">
             <h3>
-              品牌
+              {{levelName}}
             </h3>
-            <el-select v-model="bankId" clearable filterable placeholder="请选择品牌" size="small">
+
+            <el-select size="small" clearable filterable v-model="bankId" placeholder="请选择品牌" @change="handleStore">
               <el-option
                 v-for="item in bankList"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id">
+                :key="item.base_store_id"
+                :label="item.storename"
+                :value="item.base_store_id">
               </el-option>
             </el-select>
           </div>
@@ -265,8 +266,8 @@
     },
     watch: {},
     methods: {
-      ...mapActions(['setDishesCategoryTree','setDishesCategoryLevelId']),
-      ...mapGetters(['getDishesCategoryTree','getDishesCategoryLevelId']),
+      ...mapActions(['setStoreLabelTree','setStoreLabelLevelId']),
+      ...mapGetters(['getStoreLabelTree','getStoreLabelLevelId']),
       handleCheckedMt() {
         let list =  this.storeData.filter((item)=>{
           return item.mt === true
@@ -440,7 +441,7 @@
             if(this.showName === '新增'){
               let params = {
                 redirect: "x2a.category.create",
-                levelid:this.getDishesCategoryLevelId(),
+                levelid:this.getStoreLabelLevelId(),
                 categoryname:this.formEdit.categoryname,
                 morecodes:window.JSON.stringify(this.formEdit.morecodes),
                 sequence:this.formEdit.sequence,
@@ -484,7 +485,25 @@
         this.p.size = size;
         this.showResouce(this.p,this.categoryName);
       },
+      showStore(levelId) {
+        //获取门店列表
+        let params = {
+          redirect: "x2.store.index",
+          levelId: levelId,
+          storeName: '',
+          noPage:1
+        };
+        oneTwoApi(params).then((res) => {
+          if (res.errcode === 0) {
+            if (res.data.list.length !== 0) {
+              this.bankId = res.data.list[0].base_store_id;
+            }
+            this.bankList = res.data.list;
 
+          }
+        })
+
+      },
       del(id) {
         this.$confirm('此操作将删除选择的数据, 是否继续?', '提示', {
           confirmButtonText: '确定',
@@ -493,7 +512,7 @@
         }).then(() => {
           let params = {
             redirect: "x2a.category.delete",
-            levelid:this.getDishesCategoryLevelId(),
+            levelid:this.getStoreLabelLevelId(),
             id:id,
 
           };
@@ -553,23 +572,26 @@
         getApi1.getLevel('', 1).then((res) => {
           if (res.data.errcode === 0) {
 
-            this.setDishesCategoryTree({list:res.data.data});
-            if (this.getDishesCategoryLevelId() === '') {
-              this.setDishesCategoryLevelId({levelId: res.data.data[0].id});
+            this.setStoreLabelTree({list:res.data.data});
+            if (this.getStoreLabelLevelId() === '') {
+              this.setStoreLabelLevelId({levelId: res.data.data[0].id});
             }
-            this.showResouce(this.p,this.categoryName);
-            recur(res.data.data,true,this.getDishesCategoryLevelId(),this)
+            this.showStore(res.data.data[0].id);
+            recur(res.data.data,true,this.getStoreLabelLevelId(),this)
           }
         });
       },
-      showResouce(p,categoryName = ''){
+      handleStore() {
+        this.showResouce(this.p = {page: 1, size: this.p.size, total: 0})
+      },
+      showResouce(p,pgroupname = ''){
         let params = {
-          redirect: "x2a.category.index",
-          levelid:this.getDishesCategoryLevelId(),
-          categoryname:categoryName,
+          redirect: "x2a.sgroup.index",
+          levelid:this.getStoreLabelLevelId(),
+          pgroupname:pgroupname,
           page: p.page,
-          pagesize:p.size
-
+          pagesize:p.size,
+          // noPage:''
         };
         oneTwoApi(params).then((res) => {
           if(res.errcode === 0){
@@ -586,11 +608,11 @@
       },
     },
     created() {
-      if(this.getDishesCategoryTree().length === 0){
+      if(this.getStoreLabelTree().length === 0){
         this.showLevel()
       }else {
-        this.showResouce(this.p,this.categoryName);
-        recur(this.getDishesCategoryTree(),false,this.getDishesCategoryLevelId(),this)
+        this.showStore(this.getStoreLabelLevelId());
+        recur(this.getStoreLabelTree(),false,this.getStoreLabelLevelId(),this)
       }
 
 
@@ -598,9 +620,10 @@
 
     mounted() {
       Hub.$on('showAdd', (e) => {
-        this.setDishesCategoryLevelId({levelId: e.levelid});
-        recur(this.getDishesCategoryTree(),false,this.getDishesCategoryLevelId(),this);
-        this.showResouce(this.p={page: 1, size: this.p.size, total: 0},this.categoryName = '');
+        this.setStoreLabelLevelId({levelId: e.levelid});
+        recur(this.getStoreLabelTree(),false,this.getStoreLabelLevelId(),this);
+        this.bankId = "";
+        this.showStore(e.levelid);
       });
       Hub.$emit('mountedOk','mountedOk');
       this.$nextTick(() => {

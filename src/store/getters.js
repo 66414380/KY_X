@@ -135,4 +135,19 @@ export default{
   getDishesGroupLevelId(state){
     return state.dishesGroupLevelId;
   },
+
+  getStoreLabelTree(state){
+    return state.storeLabelTree;
+  },
+  getStoreLabelLevelId(state){
+    return state.storeLabelLevelId;
+  },
+
+
+  getOperationSchemeTree(state){
+    return state.operationSchemeTree;
+  },
+  getOperationSchemeLevelId(state){
+    return state.operationSchemeLevelId;
+  },
 }

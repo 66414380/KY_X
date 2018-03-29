@@ -22,7 +22,7 @@
 
           <div class="flex_a">
             <div class="margin_r_10">
-              <el-input size="small" v-model="dishesName" placeholder="请输入菜品组名称"></el-input>
+              <el-input size="small" v-model="pgroupname" placeholder="请输入菜品组名称"></el-input>
             </div>
             <el-button size="small" @click="search()">搜索</el-button>
             <el-button size="small" @click="addCategory()">+新增菜品组</el-button>
@@ -37,26 +37,18 @@
               {{scope.$index + 1 }}
             </template>
           </el-table-column>
-          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="dishesCode"
-                           label="编码" width="100"></el-table-column>
-          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="dishesGroup"
-                           label="菜品组">
-
+          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="id" label="编码" width="100">
           </el-table-column>
-          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="bank" label="所属品牌">
-
+          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="pgroupname" label="菜品组">
           </el-table-column>
-          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="remarks" label="备注">
-
+          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="remark" label="备注">
           </el-table-column>
-
           <el-table-column label-class-name="table_head" header-align="center" align="center" label="操作" width="300">
             <template slot-scope="scope">
               <el-button size="small" @click="down()">下发</el-button>
-              <el-button size="small" @click="edit('查看')">查看</el-button>
-              <el-button size="small" @click="edit('编辑')">编辑</el-button>
-              <el-button size="small" type="danger" @click="del()">删除</el-button>
-
+              <el-button size="small" @click="edit('查看',scope.row.id)">查看</el-button>
+              <el-button size="small" @click="edit('编辑',scope.row.id)">编辑</el-button>
+              <el-button size="small" type="danger" @click="del(scope.row.id)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -94,7 +86,7 @@
 
 
       <div class="margin_b_10">
-        <el-table :data="dishesList" border style="width: 100%;">
+        <el-table :data="downList" border style="width: 100%;">
           <el-table-column label-class-name="table_head" header-align="center" align="center" width="120" prop="type"
                            label="下发类型">
 
@@ -165,28 +157,13 @@
     <el-dialog :title="showName" :visible.sync="dialogFormVisible2">
       <el-form ref="formRules" :model="formEdit" label-width="100px">
 
-        <el-form-item label="菜品组名称	:" prop="name" :rules="{required: true, message: '请输入菜品组名称', trigger: 'blur'}">
-          <el-input v-model="formEdit.name" placeholder="请输入内容" :disabled="show"></el-input>
+        <el-form-item label="菜品组名称	:" prop="pgroupname" :rules="{required: true, message: '请输入菜品组名称', trigger: 'blur'}">
+          <el-input v-model="formEdit.pgroupname" placeholder="请输入名称" :disabled="show"></el-input>
         </el-form-item>
-
-        <!--<el-form-item label="所属品牌:" prop="bank" :rules="{type:'number',required: true, message: '请选择品牌', trigger: 'change'}">-->
-
-          <!--<el-select v-model="form.bank" placeholder="请选择">-->
-            <!--<el-option-->
-              <!--v-for="item in options"-->
-              <!--:key="item.id"-->
-              <!--:label="item.name"-->
-              <!--:value="item.id">-->
-            <!--</el-option>-->
-          <!--</el-select>-->
-
-        <!--</el-form-item>-->
-
         <el-form-item label="菜品组备注	:">
-          <el-input v-model="formEdit.remarks" placeholder="请输入内容" :disabled="show"></el-input>
+          <el-input v-model="formEdit.remark" placeholder="请输入备注" :disabled="show"></el-input>
         </el-form-item>
-
-        <div v-for="(domain, index) in formEdit.thirdPartyCoding" class="flex_r">
+        <div v-for="(domain, index) in formEdit.morecodes" class="flex_r">
           <el-form-item :label="index === 0?'第三方编码':''" :key="domain.key">
             <div>
               <el-row>
@@ -216,7 +193,7 @@
             <div class="m-storeCode margin_l_10" @click="addDomain">
               <i class="fa fa-plus-circle" aria-hidden="true"></i>
             </div>
-            <div v-if="(formEdit.thirdPartyCoding.length>1) && (index !== 0)" class="m-storeCode margin_l_10"
+            <div v-if="(formEdit.morecodes.length>1) && (index !== 0)" class="m-storeCode margin_l_10"
                  @click.prevent="removeDomain(index)">
               <i class="fa fa-minus-circle" aria-hidden="true"></i>
             </div>
@@ -228,10 +205,10 @@
         </el-form-item>
 
         <div class="margin_b_10">
-          <el-table :data="dishesList1" border style="width: 100%;">
-            <el-table-column label-class-name="table_head" header-align="center" align="center" prop="name" label="菜品名称" >
+          <el-table :data="dishesList" border style="width: 100%;">
+            <el-table-column label-class-name="table_head" header-align="center" align="center" prop="productname" label="菜品名称" >
             </el-table-column>
-            <el-table-column label-class-name="table_head" header-align="center" align="center" prop="code" label="菜品编码" >
+            <el-table-column label-class-name="table_head" header-align="center" align="center" prop="x0_productid" label="菜品编码" >
             </el-table-column>
             <!--<el-table-column label-class-name="table_head" header-align="center" align="center" label="操作">-->
               <!--<template slot-scope="scope">-->
@@ -244,7 +221,7 @@
       </el-form>
 
       <div class="margin_t_10">
-        <el-button type="primary" v-if="!show">保存</el-button>
+        <el-button type="primary" v-if="!show" @click="submitFrom('formRules')">保存</el-button>
         <el-button @click="dialogFormVisible2 = false">取消</el-button>
       </div>
     </el-dialog>
@@ -255,55 +232,38 @@
       <div class="flex_sb">
         <div class=" flex_a">
           <el-checkbox v-model="selectedAll" @change="handleCheckAll1">全选</el-checkbox>
-          <el-select v-model="bank" placeholder="请选择" class="margin_l_10">
-            <el-option
-              v-for="item in options"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id">
-            </el-option>
-          </el-select>
 
-          <el-select v-model="bank" placeholder="请选择" class="margin_l_10">
-            <el-option
-              v-for="item in options"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id">
-            </el-option>
-          </el-select>
         </div>
         <div class=" flex_a margin_l_10">
           <div class="margin_r_10" >
-            <el-input placeholder="菜品名称"></el-input>
+            <el-input placeholder="菜品名称" v-model="dishesName"></el-input>
           </div>
-          <el-button type="primary" @click="">搜索</el-button>
+          <el-button type="primary" @click="searchDishes()">搜索</el-button>
         </div>
       </div>
 
       <div class="margin_t_10">
         <el-table :data="dishesData" border style="width: 100%;">
-          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="code" label="菜品编码">
+          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="x0_productid" label="菜品编码">
             <template slot-scope="scope">
               <div>
-                <el-checkbox v-model="scope.row.select" @change="handleChecked1">{{scope.row.code}}</el-checkbox>
+                <el-checkbox v-model="scope.row.select" @change="handleChecked1">{{scope.row.x0_productid}}</el-checkbox>
               </div>
             </template>
 
           </el-table-column>
 
-          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="name" label="名称">
+          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="productname" label="名称">
           </el-table-column>
 
         </el-table>
       </div>
       <div class="margin_b_10 margin_t_10">
-        <xo-pagination :pageData=p @page="getPage" @pageSize="getPageSize"></xo-pagination>
+        <!--<xo-pagination :pageData=p @page="getPage" @pageSize="getPageSize"></xo-pagination>-->
       </div>
       <div class="margin_t_10">
-        <el-button type="primary">确认</el-button>
+        <el-button type="primary" @click="addDishes()">确认</el-button>
         <el-button @click="dialogFormVisible3 = false">取消</el-button>
-
       </div>
 
     </el-dialog>
@@ -335,13 +295,13 @@
         dialogFormVisible1:false,
         dialogFormVisible2:false,
         dialogFormVisible3:false,
-        dishesName: '',
+        dishesName:'',
         dataLeft: [],
         tableWidth: 0,
         tableHeight: 0,
         navList: [{name: "菜品管理", url: ''}, {name: "菜品组", url: ''}],
-        value: '',
 
+        pgroupname:'',
         selectedList: [],//选择了的数组
         formDown: {
           radio1: false,
@@ -349,52 +309,24 @@
           time:''
         },
         storeData1:[{select:false,id:1,name:'1',code:'222'},{select:false,id:2,name:'111',code:'222222'},],
-        dishesList1:[
-          {name:'1',code:'222'},{name:'122',code:'222'}
-        ],
-        dishesList: [
+
+        downList: [
           {type: "覆盖式下发", desc: "指把已选的菜品，覆盖下发至选中的门店并把门店原有的菜品全部删除。"},
           {type: "更新式下发", desc: "指把已选的菜品，更新下发至选中的门店，如选中的门店中菜品列表有已选菜品中，则更新该道菜，如选中的门店中菜品列表没有已选的菜品，则添加该菜。"},
           {type: "删除式下发", desc: "指把已选的菜品，从选中的门店中删除。"},
         ],
         storeName: '',
-        tableData: [{
-          dishesCode: '837893',
-          dishesGroup: '大',
-          bank: '999',
-          remarks: 1,
-        }, {
-          dishesCode: '837894',
-          dishesGroup: '中',
-          remarks: 122,
-
-        }],
+        tableData: [],
         p: {page: 1, size: 20, total: 0},
         formEdit:{
-          name: '123',
-          remarks: '45',
-          bank:'',
-          thirdPartyCoding: [
-            {code1: '11', code2: '22'}
-          ],
+          pgroupname: '',
+          remark: '',
+          morecodes: [{code1: '', code2: ''}],
         },
-        dishesData:[{
-          code: '33',
-          name:"11",
-
-        }, {
-          code: '11',
-          name:"22",
-
-        }],
+        dishesList:[],
+        dishesData:[],
         bank:'',
-        options: [{
-          id: 1,
-          name: '黄金糕'
-        }, {
-          id: 2,
-          name: '双皮奶'
-        }],
+
         selectedAll:false,
         showName:'',
         show:true,
@@ -405,8 +337,73 @@
     methods: {
       ...mapActions(['setDishesGroupTree','setDishesGroupLevelId']),
       ...mapGetters(['getDishesGroupTree','getDishesGroupLevelId']),
+      addDishes(){
+        let list = [];
+        list = this.dishesData.filter((item)=>{
+          return item.select
+        });
+
+        if(list.length === 0){
+          this.$message("最少选择一个菜品");
+        } else {
+          this.dishesList = list;
+          this.dialogFormVisible3 = false
+        }
+
+      },
+      submitFrom(formRules) {
+        this.$refs[formRules].validate((valid) => {
+          if (valid) {
+            let list = [];
+            this.dishesList.forEach((item)=>{
+              list.push(item.x0_productid)
+            });
+            let params = {
+              redirect: "x2a.pgroup.update",
+              id:this.formEdit.id,
+              pgroupname:this.formEdit.pgroupname,
+              morecodes: window.JSON.stringify(this.formEdit.morecodes),
+              remark:this.formEdit.remark,
+              productids:list.join(',')
+            };
+            oneTwoApi(params).then((res) => {
+              if(res.errcode === 0){
+                this.$message("操作成功");
+                this.dialogFormVisible2 = false;
+                this.showResouce(this.p,this.pgroupname);
+              }
+            })
+
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
+      },
       open(){
 
+      },
+      searchDishes(){
+        let params = {
+          redirect: "x2a.product.index",
+          levelid:this.getDishesGroupLevelId(),
+          productname:this.dishesName,
+          noPage:1
+        };
+        oneTwoApi(params).then((res) => {
+          if(res.errcode === 0){
+            this.dialogFormVisible = true;
+            this.selectedAll = false;
+            res.data.list.forEach((item)=>{
+              this.$set(item,'select',false)
+            });
+            this.dishesData = res.data.list;
+
+          }
+        })
+      },
+      search(){
+        this.showResouce(this.p = {page: 1, size: 20, total: 0},this.pgroupname);
       },
       handleCheckAll1(bool){
         if (bool.target.checked === true) {
@@ -420,20 +417,10 @@
         }
       },
       handleChecked1(){
-        let count =0;
-        this.dishesData.forEach((data) => {
-          if (data.select === true) {
-            count += data.select*1
-          }
+        let list =  this.dishesData.filter((item)=>{
+          return item.select === true
         });
-
-        if(count === this.dishesData.length){
-          this.selectedAll = true;
-
-        }else {
-          this.selectedAll = false;
-        }
-
+        (list.length === this.dishesData.length)? this.selectedAll = true:this.selectedAll = false;
       },
       searchStore(){
 
@@ -443,9 +430,19 @@
       },
       openDialogDishes(){
         this.selectedAll = false;
-        this.dialogFormVisible3 = true;
-        this.dishesData.forEach((data)=>{
-          this.$set(data,'select',false)
+        let params = {
+          redirect: "x2a.product.index",
+          levelid:this.getDishesGroupLevelId(),
+          noPage:1
+        };
+        oneTwoApi(params).then((res) => {
+          if(res.errcode === 0){
+            this.dialogFormVisible3 = true;
+            res.data.list.forEach((item)=>{
+              this.$set(item,'select',false)
+            });
+            this.dishesData = res.data.list;
+          }
         })
       },
       changeStoresStatus(){
@@ -462,54 +459,55 @@
         this.dialogVisible = true
       },
       addCategory() {
-        this.$router.push('/dishesManagement/dishesGroup/addDishesGroup')
-      },
-      handle() {
-        console.log(this)
-
+        this.$router.push({path:`/dishesManagement/dishesGroup/addDishesGroup/${this.getDishesGroupLevelId()}`})
       },
 
       getPage(page) {
         this.p.page = page;
-        //this.showResouce(this.p, this.levelId,this.searchName);
+        this.showResouce(this.p,this.pgroupname);
       },
       getPageSize(size) {
         this.p.size = size;
-        //this.showResouce(this.p, this.levelId,this.searchName);
+        this.showResouce(this.p,this.pgroupname);
       },
 
-
-      getOneList() {
-
-        //this.$router.push('/storeManage/storeList/seeTheStore')
-        console.log(document.querySelectorAll('#all span input'))
-      },
-
-      edit(name) {
+      edit(name,id) {
         this.showName = name;
-        if(name === "编辑"){
-          this.show = false
-        }else {
-          this.show = true
-        }
-        this.dialogFormVisible2 = true
+        (name === "编辑") ? this.show = false : this.show = true;
+
+        let params = {
+          redirect: "x2a.pgroup.view",
+          id:id,
+        };
+        oneTwoApi(params).then((res) => {
+          if(res.errcode === 0){
+            this.formEdit = res.data[0];
+            if(res.data[0].morecodes === null){
+              res.data[0].morecodes = [{code1: '', code2: ''}]
+            }
+            this.dishesList = res.data[0].products;
+            this.dialogFormVisible2 = true;
+          }
+        })
+
+
       },
-      del() {
+      del(id) {
         this.$confirm('此操作将删除选择的数据, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          // getApi.delChannel(row.id).then((res) => {
-          //   if (res.data.errcode === 0) {
-          //     this.$message({
-          //       type: 'info',
-          //       message: '删除成功'
-          //     });
-          //     this.getChannelList(this.p = {page: 1, size: 20, total: 0});
-          //   }
-          //
-          // })
+          let params = {
+            redirect: "x2a.pgroup.delete",
+            id:id,
+          };
+          oneTwoApi(params).then((res) => {
+            if(res.errcode === 0){
+              this.$message("操作成功");
+              this.showResouce(this.p,this.pgroupname);
+            }
+          })
 
         }).catch(() => {
           //
@@ -517,10 +515,10 @@
       },
 
       removeDomain(index) {
-        this.formEdit.thirdPartyCoding.splice(index, 1)
+        this.formEdit.morecodes.splice(index, 1)
       },
       addDomain() {
-        this.formEdit.thirdPartyCoding.push( {code1: '', code2: ''});
+        this.formEdit.morecodes.push( {code1: '', code2: ''});
       },
 
       handleChecked(data) {
@@ -554,19 +552,19 @@
             if (this.getDishesGroupLevelId() === '') {
               this.setDishesGroupLevelId({levelId: res.data.data[0].id});
             }
-            //this.showResouce(this.p,this.categoryName);
+            this.showResouce(this.p,this.pgroupname);
             recur(res.data.data,true,this.getDishesGroupLevelId(),this)
           }
         });
       },
-      showResouce(p,categoryName = ''){
+      showResouce(p,pgroupname = ''){
         let params = {
-          redirect: "x2a.category.index",
+          redirect: "x2a.pgroup.index",
           levelid:this.getDishesGroupLevelId(),
-          categoryname:categoryName,
+          pgroupname:pgroupname,
           page: p.page,
-          pagesize:p.size
-
+          pagesize:p.size,
+          // noPage:''
         };
         oneTwoApi(params).then((res) => {
           if(res.errcode === 0){
@@ -580,17 +578,16 @@
       if(this.getDishesGroupTree().length === 0){
         this.showLevel()
       }else {
-        this.showResouce(this.p,this.categoryName);
+        this.showResouce(this.p,this.pgroupname);
         recur(this.getDishesGroupTree(),false,this.getDishesGroupLevelId(),this)
       }
-
 
     },
     mounted() {
       Hub.$on('showAdd', (e) => {
         this.setDishesGroupLevelId({levelId: e.levelid});
         recur(this.getDishesGroupTree(),false,this.getDishesGroupLevelId(),this);
-        //this.showResouce(this.p={page: 1, size: this.p.size, total: 0},this.categoryName = '');
+        this.showResouce(this.p={page: 1, size: this.p.size, total: 0},this.pgroupname = '');
       });
       Hub.$emit('mountedOk','mountedOk');
       this.$nextTick(() => {

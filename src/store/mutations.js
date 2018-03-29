@@ -45,9 +45,13 @@ const state = {
   dishesCategoryLevelId:'',//菜品品类levelid
   storeDishesManageTree:[],//菜品列表树
   storeDishesManageLevelId:'',//菜品列表levelid
-
   dishesGroupTree:[],//菜品组树
   dishesGroupLevelId:'',//菜品组levelid
+  storeLabelTree:[],//门店标签树
+  storeLabelLevelId:'',//门店标签levelid
+
+  operationSchemeTree:[],//x2运营方案树
+  operationSchemeLevelId:''//x2运营方案levelId
 };
 
 const mutations = {
@@ -177,6 +181,19 @@ const mutations = {
   },
   [types.DISHESGROUPELEVELID](state, obj){
     state.dishesGroupLevelId = obj.levelId
+  },
+  [types.STORELABELTREE](state,obj){
+    state.storeLabelTree = obj.list;
+  },
+  [types.STORELABELLEVELID](state, obj){
+    state.storeLabelLevelId = obj.levelId
+  },
+
+  [types.OPERATIONSCHEMETREE](state,obj){
+    state.operationSchemeTree = obj.list;
+  },
+  [types.OPERATIONSCHEMELEVELID](state, obj){
+    state.operationSchemeLevelId = obj.levelId
   },
 };
 

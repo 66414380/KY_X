@@ -17,21 +17,8 @@
                 <el-input v-model="form.name" placeholder="请输入内容"></el-input>
               </el-form-item>
 
-              <el-form-item label="所属品牌:" prop="bank" :rules="{type:'number',required: true, message: '请选择品牌', trigger: 'change'}">
-
-                <el-select v-model="form.bank" placeholder="请选择">
-                  <el-option
-                    v-for="item in options"
-                    :key="item.id"
-                    :label="item.name"
-                    :value="item.id">
-                  </el-option>
-                </el-select>
-
-              </el-form-item>
-
               <el-form-item label="菜品组备注	:" >
-                <el-input v-model="form.remarks" placeholder="请输入内容"></el-input>
+                <el-input v-model="form.remark" placeholder="请输入内容"></el-input>
               </el-form-item>
 
               <div v-for="(domain, index) in form.thirdPartyCoding" class="flex_r">
@@ -77,12 +64,12 @@
 
               <div class="margin_b_10">
                 <el-table :data="dishesList" border style="width: 100%;">
-                  <el-table-column label-class-name="table_head" header-align="center" align="center" prop="name" label="菜品名称" >
+                  <el-table-column label-class-name="table_head" header-align="center" align="center" prop="productname" label="菜品名称" >
 
                   </el-table-column>
                   <el-table-column label-class-name="table_head" header-align="center" align="center" label="操作">
                     <template slot-scope="scope">
-                      <el-button size="small" type="danger" @click="del()">删除</el-button>
+                      <el-button size="small" type="danger" @click="del(scope.$index)">删除</el-button>
                     </template>
                   </el-table-column>
                 </el-table>
@@ -111,56 +98,38 @@
       <div class="flex_a">
         <div class="flex_1">
           <el-checkbox v-model="selectedAll" @change="handleCheckAll">全选</el-checkbox>
-          <el-select v-model="bank" placeholder="请选择">
-            <el-option
-              v-for="item in options"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id">
-            </el-option>
-          </el-select>
-
-          <el-select v-model="bank" placeholder="请选择">
-            <el-option
-              v-for="item in options"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id">
-            </el-option>
-          </el-select>
         </div>
         <div class="flex_1 flex_a">
           <div class="margin_r_10" >
-            <el-input placeholder="菜品名称"></el-input>
+            <el-input placeholder="菜品名称" v-model="dishesName"></el-input>
           </div>
-          <el-button type="primary" @click="">搜索</el-button>
+          <el-button type="primary" @click="search()">搜索</el-button>
         </div>
       </div>
 
       <div class="margin_t_10">
         <el-table :data="storeData" border style="width: 100%;">
-          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="code" label="菜品编码">
+          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="x0_productid" label="菜品编码">
             <template slot-scope="scope">
               <div>
-                <el-checkbox v-model="scope.row.select" @change="handleChecked"> {{scope.row.code}}</el-checkbox>
+                <el-checkbox v-model="scope.row.select" @change="handleChecked"> {{scope.row.x0_productid}}</el-checkbox>
               </div>
             </template>
 
           </el-table-column>
 
-          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="name" label="名称">
+          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="productname" label="名称">
 
           </el-table-column>
 
         </el-table>
       </div>
       <div class="margin_b_10 margin_t_10">
-        <xo-pagination :pageData=p @page="getPage" @pageSize="getPageSize"></xo-pagination>
+        <!--<xo-pagination :pageData=p @page="getPage" @pageSize="getPageSize"></xo-pagination>-->
       </div>
       <div class="margin_t_10">
-        <el-button type="primary">确认</el-button>
+        <el-button type="primary" @click="addDishes()" >确认</el-button>
         <el-button @click="dialogFormVisible = false">取消</el-button>
-
       </div>
 
     </el-dialog>
@@ -168,7 +137,7 @@
   </div>
 </template>
 <script>
-
+  import {oneTwoApi} from '@/api/api.js';
   export default {
     data() {
       return {
@@ -177,40 +146,55 @@
         navList: [{name: "菜单管理", url: ''}, {name: "菜品组", url: '/dishesManagement/dishesGroup'}, {name: "新增菜品组", url: ''}],
         form: {
           name: '',
-          remarks: '',
-          bank:'',
+          remark: '',
          thirdPartyCoding: [
            {code1: '', code2: ''}
          ],
         },
-        dishesList:[
-          {name:"鱼香肉丝"},
-          {name:"水煮鱼"},
-        ],
+        dishesList:[],
         selectedAll:false,
         value1: 1,
-        storeData: [{
-          code: '33',
-          name:"11",
-
-        }, {
-          code: '11',
-          name:"22",
-
-        }],
-        options: [{
-          id: 1,
-          name: '黄金糕'
-        }, {
-          id: 2,
-          name: '双皮奶'
-        }],
+        storeData: [],
+        dishesName:'',
         p: {page: 1, size: 20, total: 0},
       }
     },
     components: {
     },
     methods: {
+      search(){
+        let params = {
+          redirect: "x2a.product.index",
+          levelid:this.$route.params.id,
+          productname:this.dishesName,
+          noPage:1
+        };
+        oneTwoApi(params).then((res) => {
+          if(res.errcode === 0){
+            this.dialogFormVisible = true;
+            this.selectedAll = false;
+            res.data.list.forEach((item)=>{
+              this.$set(item,'select',false)
+            });
+            this.storeData = res.data.list;
+
+          }
+        })
+      },
+      addDishes(){
+        let list = [];
+        list = this.storeData.filter((item)=>{
+          return item.select
+        });
+
+        if(list.length === 0){
+          this.$message("最少选择一个菜品");
+        } else {
+          this.dishesList = list;
+          this.dialogFormVisible = false
+        }
+
+      },
       getPage(page) {
         this.p.page = page;
         //this.showResouce(this.p, this.levelId,this.searchName);
@@ -220,7 +204,6 @@
         //this.showResouce(this.p, this.levelId,this.searchName);
       },
       handleCheckAll(bool) {
-
         if (bool.target.checked === true) {
           this.storeData.forEach((data) => {
             data.select = true
@@ -232,29 +215,29 @@
         }
       },
       handleChecked(){
-        let count =0;
-        this.storeData.forEach((data) => {
-          if (data.select === true) {
-            count += data.select*1
-          }
+        let list =  this.storeData.filter((item)=>{
+          return item.select === true
         });
-
-        if(count === this.storeData.length){
-          this.selectedAll = true;
-
-        }else {
-          this.selectedAll = false;
-        }
-
+        (list.length === this.storeData.length) ? this.selectedAll = true : this.selectedAll = false;
       },
-      del(){
-
+      del(i){
+        this.dishesList.splice(i, 1)
       },
       openDialog() {
         this.selectedAll = false;
-        this.dialogFormVisible = true;
-        this.storeData.forEach((data)=>{
-          this.$set(data,'select',false)
+        let params = {
+          redirect: "x2a.product.index",
+          levelid:this.$route.params.id,
+          noPage:1
+        };
+        oneTwoApi(params).then((res) => {
+          if(res.errcode === 0){
+            this.dialogFormVisible = true;
+            res.data.list.forEach((item)=>{
+              this.$set(item,'select',false)
+            });
+            this.storeData = res.data.list;
+          }
         })
 
       },
@@ -267,28 +250,39 @@
       submitFrom(formRules) {
         this.$refs[formRules].validate((valid) => {
           if (valid) {
-            alert('submit!');
+            let list = [];
+            this.dishesList.forEach((item)=>{
+              list.push(item.x0_productid)
+            });
+            let params = {
+              redirect: "x2a.pgroup.create",
+              levelid:this.$route.params.id,
+              pgroupname:this.form.name,
+              morecodes: window.JSON.stringify(this.form.thirdPartyCoding),
+              remark:this.form.remark,
+              productids:list.join(','),
+            };
+            oneTwoApi(params).then((res) => {
+              if(res.errcode === 0){
+                this.$message("操作成功");
+                this.$router.go(-1)
+              }
+            })
+
           } else {
             console.log('error submit!!');
             return false;
           }
         });
       }
-    }
-  }
+    },
+    created() {
+      console.log(this.$route.params.id)
+    },
+  };
+
 </script>
 <style scoped lang="less">
-  .m-rank {
-    width: 40px;
-    .m-rank-child {
-      height: 18px;
-      border-bottom: 1px solid #000;
-    }
-  }
-
-  .m-storeCode {
-    font-size: 30px;
-  }
 
   .contentMsg {
     padding: 0 0 25px 0;

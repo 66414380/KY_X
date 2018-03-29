@@ -84,6 +84,8 @@ import pageDesign from '@/components/invoice/pageDesign/Index.vue'
 
 
 /************************** x2运营方案 ***************************/
+
+import operationScheme from '@/components/x2OperationScheme/operationScheme/Index.vue'
 import storeManagement from '@/components/x2OperationScheme/storeManagement/Index.vue'
 import storeManagementTakeOut from '@/components/x2OperationScheme/storeManagement/takeOut/Index.vue'
 import printerConfig from '@/components/x2OperationScheme/printerConfig/Index.vue'
@@ -431,7 +433,7 @@ export default new Router({
         },
         //新增菜品组
         {
-          path: '/dishesManagement/dishesGroup/addDishesGroup',
+          path: '/dishesManagement/dishesGroup/addDishesGroup/:id',
           meta: { auth: false },
           name: '菜品管理/菜品组/新增菜品组',
           component: addDishesGroup
@@ -496,6 +498,16 @@ export default new Router({
         },
 
         /**********************x2运营方案***************************/
+
+        //x2运营方案
+        {
+          path: '/x2OperationScheme/operationScheme',
+          meta: { auth: false },
+          name: 'x2运营方案',
+          component: operationScheme
+        },
+
+
         //门店管理
         {
           path: '/x2OperationScheme/storeManagement',

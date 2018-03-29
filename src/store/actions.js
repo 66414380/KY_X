@@ -127,4 +127,18 @@ export default {
   setDishesGroupLevelId({commit},obj){
     commit(types.DISHESGROUPELEVELID,obj);
   },
+  setStoreLabelTree({commit},obj){
+    commit(types.STORELABELTREE,obj);
+  },
+  setStoreLabelLevelId({commit},obj){
+    commit(types.STORELABELLEVELID,obj);
+  },
+
+
+  setOperationSchemeTree({commit},obj){
+    commit(types.OPERATIONSCHEMETREE,obj);
+  },
+  setOperationSchemeLevelId({commit},obj){
+    commit(types.OPERATIONSCHEMELEVELID,obj);
+  },
 }

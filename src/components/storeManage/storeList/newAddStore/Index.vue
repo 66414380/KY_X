@@ -147,7 +147,7 @@
         <el-table-column label-class-name="table_head" header-align="center" align="center" label="所属品牌" width="200">
           <template slot-scope="scope">
             <el-form-item label="" :prop="'storeData.' + scope.$index + '.brand'" :rules="{type:'number',required: true, message: '请选择品牌', trigger: 'change'}">
-              <el-select v-model="scope.row.brand" clearable filterable placeholder="请选择" class="m_t_22">
+              <el-select v-model="scope.row.brand"  disabled placeholder="请选择" class="m_t_22">
                 <el-option
                   v-for="item in brandList"
                   :key="item.id"
@@ -420,7 +420,12 @@
       });
 
       getApi.getBrand(this.$route.params.levelid).then((res)=>{
-        this.brandList = res.data.data
+        this.brandList = res.data.data;
+        this.form.storeData.forEach((item)=>{
+          item.brand = res.data.data[0].id
+        })
+
+
       })
     },
     mounted() {
