@@ -521,7 +521,7 @@
         this.formEdit.morecodes.push( {code1: '', code2: ''});
       },
 
-      handleChecked(data) {
+      handleChecked() {
         let list =  this.storeData1.filter((item)=>{
           return item.select === true
         });

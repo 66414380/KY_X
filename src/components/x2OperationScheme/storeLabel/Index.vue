@@ -1,5 +1,5 @@
 <template>
-  <div >
+  <div>
 
     <div class="bodyTop padding_b_10">
       <div class="margin_b_10">
@@ -10,7 +10,7 @@
 
     <div class="flex_r">
       <div ref="tree" style="min-width: 200px;overflow-y: auto" :style="{height:tableHeight + 'px'}">
-        <xo-pub-tree  :data='getStoreLabelTree()' :count=0 style="width: max-content;"></xo-pub-tree>
+        <xo-pub-tree :data='getStoreLabelTree()' :count=0 style="width: max-content;"></xo-pub-tree>
       </div>
 
 
@@ -22,20 +22,12 @@
               {{levelName}}
             </h3>
 
-            <el-select size="small" clearable filterable v-model="bankId" placeholder="请选择品牌" @change="handleStore">
-              <el-option
-                v-for="item in bankList"
-                :key="item.base_store_id"
-                :label="item.storename"
-                :value="item.base_store_id">
-              </el-option>
-            </el-select>
           </div>
 
 
           <div class="flex_a">
             <div class="margin_r_10">
-              <el-input size="small" v-model="categoryName" placeholder="请输入门店标签"></el-input>
+              <el-input size="small" v-model="sgroupname" placeholder="请输入门店标签"></el-input>
             </div>
             <el-button size="small" @click="search()">搜索</el-button>
             <el-button size="small" @click="option('新增')" :disabled="showAdd !== 4">+新增门店标签</el-button>
@@ -51,18 +43,19 @@
             </template>
           </el-table-column>
 
-          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="sequence" label="标签编码"></el-table-column>
-          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="categoryname" label="标签名称"
-                           ></el-table-column>
-          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="id" label="所属品牌"
-                           ></el-table-column>
+          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="id"
+                           label="标签编码"></el-table-column>
+          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="sgroupname"
+                           label="标签名称"
+          ></el-table-column>
+
 
           <el-table-column label-class-name="table_head" header-align="center" align="center" label="操作" width="220">
             <template slot-scope="scope">
 
-              <el-button size="small" @click="option('查看',scope.row.id,scope.row.levelid)">查看门店</el-button>
-              <el-button size="small" @click="option('编辑',scope.row.id,scope.row.levelid)" >编辑</el-button>
-              <el-button size="small" type="danger" @click="del(scope.row.id)" >删除</el-button>
+              <el-button size="small" @click="optionShow('查看',scope.row.id)">查看门店</el-button>
+              <el-button size="small" @click="option('编辑',scope.row.id)">编辑</el-button>
+              <el-button size="small" type="danger" @click="del(scope.row.id)">删除</el-button>
 
             </template>
           </el-table-column>
@@ -76,25 +69,15 @@
 
     </div>
 
-    <!--编辑/查看-->
-    <el-dialog :title="showName" :visible.sync="dialogFormVisible2">
+    <!--编辑-->
+    <el-dialog :title="showName" :visible.sync="dialogFormVisible2" @open="open" @close="close">
       <el-form ref="formRules" :model="formEdit" label-width="100px">
-        <el-form-item label="选择品牌:" v-if="showName !== '新增'">
-          <el-select v-model="bankId" clearable filterable placeholder="请选择品牌" size="small">
-            <el-option
-              v-for="item in bankList"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id">
-            </el-option>
-          </el-select>
-        </el-form-item>
 
         <el-form-item label="标签编码:" v-if="showName !== '新增'">
           <el-input v-model="formEdit.id" placeholder="" disabled></el-input>
         </el-form-item>
-        <el-form-item label="标签名称:" prop="categoryname" :rules="{required: true, message: '请输入品类名称', trigger: 'blur'}">
-          <el-input v-model="formEdit.categoryname" placeholder="请输入品类名称" :disabled="show"></el-input>
+        <el-form-item label="标签名称:" prop="sgroupname" :rules="{required: true, message: '请输入品类名称', trigger: 'blur'}">
+          <el-input v-model="formEdit.sgroupname" placeholder="请输入品类名称"></el-input>
         </el-form-item>
 
         <div v-for="(domain, index) in formEdit.morecodes" class="flex_r">
@@ -103,7 +86,7 @@
               <el-row>
                 <el-col>
                   <div style="width:150px">
-                    <el-input v-model="domain.code1" placeholder="请输入第三方名称" :disabled="show"></el-input>
+                    <el-input v-model="domain.code1" placeholder="请输入第三方名称"></el-input>
                   </div>
                 </el-col>
               </el-row>
@@ -117,7 +100,7 @@
               <el-row>
                 <el-col>
                   <div style="width:150px">
-                    <el-input v-model="domain.code2" placeholder="请输入第三方编码" :disabled="show"></el-input>
+                    <el-input v-model="domain.code2" placeholder="请输入第三方编码"></el-input>
                   </div>
                 </el-col>
               </el-row>
@@ -135,63 +118,103 @@
         </div>
 
         <el-form-item label="门店:">
+          <el-table :data="formEdit.stores" border>
+            <el-table-column label-class-name="table_head" header-align="center" align="center" prop="storename"
+                             label="门店">
+            </el-table-column>
+            <el-table-column label-class-name="table_head" header-align="center" align="center" prop="mt" label="美团">
+              <template slot-scope="scope">
+
+                <el-checkbox v-model="scope.row.mt"></el-checkbox>
+              </template>
+            </el-table-column>
+            <el-table-column label-class-name="table_head" header-align="center" align="center" prop="el" label="饿了么">
+              <template slot-scope="scope">
+                <el-checkbox v-model="scope.row.el"></el-checkbox>
+              </template>
+            </el-table-column>
+
+          </el-table>
+
+
+        </el-form-item>
+        <el-form-item label="">
           <el-button @click='openDialog()'>添加门店</el-button>
         </el-form-item>
-
-
       </el-form>
 
       <div class="margin_t_10">
-        <el-button type="primary" v-if="!show" @click="submitFrom('formRules')">保存</el-button>
+        <el-button type="primary" @click="submitFrom('formRules')">保存</el-button>
         <el-button @click="dialogFormVisible2 = false">取消</el-button>
       </div>
     </el-dialog>
+
+
     <el-dialog title="选择门店" :visible.sync="dialogFormVisible">
 
       <div class="flex_a">
-        <div>所在地</div>
+        <div></div>
         <div class="margin_l_10">
-          <el-select v-model="value1" placeholder="请选择">
-            <el-option v-for="item in bankList" :key="item.value" :label="item.label" :value="item.value"></el-option>
-          </el-select>
+
         </div>
 
         <div class="margin_l_10">
-          <el-select v-model="value1" placeholder="请选择">
-            <el-option v-for="item in bankList" :key="item.value" :label="item.label" :value="item.value"></el-option>
-          </el-select>
+
         </div>
-        <div class="margin_l_10 flex_1" >
-          <el-input placeholder="门店名称/编码"></el-input>
+        <div class="margin_r_10 flex_1">
+          <el-input size="small" placeholder="门店名称/编码" v-model="storeName"></el-input>
+
         </div>
+        <el-button size="small" @click="searchStore()">搜索</el-button>
       </div>
 
       <div class="margin_t_10">
         <el-table :data="storeData" border style="width: 100%;">
-          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="storeName" label="门店"></el-table-column>
+          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="storename"
+                           label="门店"></el-table-column>
 
           <el-table-column :render-header="selectMt" label-class-name="table_head" header-align="center" align="center">
             <template slot-scope="scope">
               <el-checkbox v-model="scope.row.mt" @change="handleCheckedMt"></el-checkbox>
             </template>
           </el-table-column>
-          <el-table-column :render-header="selectEl"  label-class-name="table_head" header-align="center" align="center">
+
+          <el-table-column :render-header="selectEl" label-class-name="table_head" header-align="center" align="center">
             <template slot-scope="scope">
-              <el-checkbox v-model="scope.row.el"  @change="handleCheckedEl"></el-checkbox>
+              <el-checkbox v-model="scope.row.el" @change="handleCheckedEl"></el-checkbox>
             </template>
           </el-table-column>
-          <el-table-column :render-header="selectBd" label-class-name="table_head" header-align="center" align="center">
-            <template slot-scope="scope">
-              <el-checkbox v-model="scope.row.bd" @change="handleCheckedBd"></el-checkbox>
-            </template>
-          </el-table-column>
+          <!--<el-table-column :render-header="selectBd" label-class-name="table_head" header-align="center" align="center">-->
+          <!--<template slot-scope="scope">-->
+          <!--<el-checkbox v-model="scope.row.bd" @change="handleCheckedBd"></el-checkbox>-->
+          <!--</template>-->
+          <!--</el-table-column>-->
         </el-table>
       </div>
       <div class="margin_t_10">
         <el-button @click="dialogFormVisible = false">取消</el-button>
-        <el-button type="primary">确认</el-button>
+        <el-button type="primary" @click="submitStore()">确认</el-button>
 
       </div>
+
+    </el-dialog>
+
+    <el-dialog title="查看门店" :visible.sync="dialogFormVisible1">
+      <el-table :data="storeDataShow" border>
+        <el-table-column label-class-name="table_head" header-align="center" align="center" prop="storename" label="门店">
+        </el-table-column>
+        <el-table-column label-class-name="table_head" header-align="center" align="center" prop="mt" label="美团">
+          <template slot-scope="scope">
+            <div v-if="scope.row.mt === 1">√</div>
+          </template>
+        </el-table-column>
+        <el-table-column label-class-name="table_head" header-align="center" align="center" prop="el" label="饿了么">
+          <template slot-scope="scope">
+            <div v-if="scope.row.el === 1">√</div>
+          </template>
+        </el-table-column>
+
+      </el-table>
 
     </el-dialog>
   </div>
@@ -206,123 +229,113 @@
   import {mapActions, mapGetters} from 'vuex';
   import {oneTwoApi} from '@/api/api.js';
   import getApi1 from '../../infrastructure/DishesLibrary/dishesLibrary.service'
-  export default {
-    components: {
 
-    },
-    computed:{
+  export default {
+    components: {},
+    computed: {
       ...mapGetters([
-        'getTreeArr','getBodyHeight'
+        'getTreeArr', 'getBodyHeight'
       ]),
     },
     data() {
       return {
-        levelName:'',
-        dialogFormVisible:false,
-        dialogFormVisible2:false,
-        showName:'',
+        levelName: '',
+        dialogFormVisible: false,
+        dialogFormVisible1: false,
+        dialogFormVisible2: false,
+        showName: '',
         tableWidth: 0,
         tableHeight: 0,
         navList: [{name: "门店管理", url: ''}, {name: "门店标签", url: ''}],
-        bankList:[{value: 1, label: '饿了么门店1'}, {value: 2, label: '饿了么门店2'}],
-        bankId:'',
-        show:true,
-        categoryName: '',
+
+        sgroupname: '',
+        storeName: '',
         tableData: [],
         p: {page: 1, size: 20, total: 0},
-        formEdit:{
-          categoryname: '',
+        formEdit: {
+          sgroupname: '',
           sequence: '',
           morecodes: [
             {code1: '', code2: ''}
           ],
+          stores: []
         },
-        showAdd:'',
-        storeData: [{
-          storeName: '炳胜（马场店）',
-          mt:false,
-          el:true,
-          bd:false
-        }, {
-          storeName: '炳胜（马场店）',
-          mt:false,
-          el:true,
-          bd:false
-        }, {
-          storeName: '炳胜（马场店）',
-          mt:false,
-          el:true,
-          bd:false
-        }, {
-          storeName: '炳胜（马场店）',
-          mt:false,
-          el:true,
-          bd:false
-
-        }],
-        value1:'',
-
+        showAdd: '',
+        storeData: [],
+        storeDataShow: []
       }
     },
     watch: {},
     methods: {
-      ...mapActions(['setStoreLabelTree','setStoreLabelLevelId']),
-      ...mapGetters(['getStoreLabelTree','getStoreLabelLevelId']),
+      ...mapActions(['setStoreLabelTree', 'setStoreLabelLevelId']),
+      ...mapGetters(['getStoreLabelTree', 'getStoreLabelLevelId']),
+      open() {
+
+      },
+
+
+      closeCheck(){
+        let all = document.querySelector('#mt');
+        all.checked = false;
+        let all1 = document.querySelector('#el');
+        all1.checked = false
+      },
+
+      close() {
+        this.storeName = '';
+        this.$nextTick(() => {
+          this.closeCheck()
+
+        });
+
+      },
       handleCheckedMt() {
-        let list =  this.storeData.filter((item)=>{
+        let list = this.storeData.filter((item) => {
           return item.mt === true
         });
-        if(list.length === this.storeData.length){
-          this.$nextTick(()=>{
-            let all = document.querySelector('#mt span');
-            all.classList.add('is-checked');
-            let allInput = document.querySelector('#mt span input');
-            allInput.checked = true
+        if (list.length === this.storeData.length) {
+          this.$nextTick(() => {
+            let all = document.querySelector('#mt');
+            all.checked = true
           })
-        }else {
-          this.$nextTick(()=>{
-            let all = document.querySelector('#mt span');
-            all.classList.remove('is-checked');
-            let allInput = document.querySelector('#mt span input');
-            allInput.checked = false
+        } else {
+          this.$nextTick(() => {
+            let all = document.querySelector('#mt');
+            all.checked = false
           })
         }
 
       },
       handleCheckedEl() {
-        let list =  this.storeData.filter((item)=>{
+        let list = this.storeData.filter((item) => {
           return item.el === true
         });
-        if(list.length === this.storeData.length){
-          this.$nextTick(()=>{
-            let all = document.querySelector('#el span');
-            all.classList.add('is-checked');
-            let allInput = document.querySelector('#el span input');
-            allInput.checked = true
+        if (list.length === this.storeData.length) {
+          this.$nextTick(() => {
+            let all = document.querySelector('#el');
+            all.checked = true
           })
-        }else {
-          this.$nextTick(()=>{
-            let all = document.querySelector('#el span');
-            all.classList.remove('is-checked');
-            let allInput = document.querySelector('#el span input');
-            allInput.checked = false
+        } else {
+          this.$nextTick(() => {
+            let all = document.querySelector('#el');
+            all.checked = false
           })
         }
 
       },
       handleCheckedBd() {
-        let list =  this.storeData.filter((item)=>{
+        let list = this.storeData.filter((item) => {
           return item.bd === true
         });
-        if(list.length === this.storeData.length){
-          this.$nextTick(()=>{
+        if (list.length === this.storeData.length) {
+          this.$nextTick(() => {
             let all = document.querySelector('#bd span');
             all.classList.add('is-checked');
             let allInput = document.querySelector('#bd span input');
             allInput.checked = true
           })
-        }else {
-          this.$nextTick(()=>{
+        } else {
+          this.$nextTick(() => {
             let all = document.querySelector('#bd span');
             all.classList.remove('is-checked');
             let allInput = document.querySelector('#bd span input');
@@ -331,48 +344,62 @@
         }
 
       },
+
       selectMt(h) {
-        return h(
-          'div',
-          {},
-          [
-            h('el-checkbox', {
-                attrs: {id: "mt"},
-                'class': {
-                },
+        return h('label', {}, [
+            h('input', {
+              attrs: {id: "mt",  type: "checkbox",},
+              class: {myCheckBox:true},
+              style: {
+                display: 'none'
+
+              },
                 on: {
-                  change: this.handleCheckMt,
-                  input: (event)=> {
-                    // console.log(this)
-                    // console.log(event)
+                  click: (event) => {
+                    if (event.target.checked === true) {
+                      this.storeData.forEach((data) => {
+                        data.mt = true
+                      })
+                    } else {
+                      this.storeData.forEach((data) => {
+                        data.mt = false
+                      })
+                    }
                   }
                 }
-              }, ['美团']
-            )
+              }
+            ), h('label',{attrs: {for: "mt"}}),h('span',{'class': {pointer:true}},['美团'])
           ]
         );
 
       },
       selectEl(h) {
-        return h(
-          'div',
-          {},
-          [
-            h('el-checkbox', {
-                attrs: {id: "el"},
-                'class': {
+        return h('label', {}, [
+            h('input', {
+                attrs: {id: "el", type: "checkbox",},
+                class: {myCheckBox:true},
+                style: {
+                  display: 'none'
+
                 },
                 on: {
-                  change: this.handleCheckEl,
-                  input: (event)=> {
-                    // console.log(this)
-                    // console.log(event)
+                  click: (event) => {
+                    if (event.target.checked === true) {
+                      this.storeData.forEach((data) => {
+                        data.el = true
+                      })
+                    } else {
+                      this.storeData.forEach((data) => {
+                        data.el = false
+                      })
+                    }
                   }
                 }
-              }, ['饿了么']
-            )
+              }
+            ), h('label',{attrs: {for: "el"}}),h('span',{'class': {pointer:true}},['饿了么'])
           ]
         );
+
 
       },
       selectBd(h) {
@@ -382,13 +409,19 @@
           [
             h('el-checkbox', {
                 attrs: {id: "bd"},
-                'class': {
-                },
+                'class': {},
                 on: {
-                  change: this.handleCheckBd,
-                  input: (event)=> {
-                    // console.log(this)
-                    // console.log(event)
+
+                  input: (event) => {
+                    if (event.target.checked === true) {
+                      this.storeData.forEach((data) => {
+                        data.bd = true
+                      })
+                    } else {
+                      this.storeData.forEach((data) => {
+                        data.bd = false
+                      })
+                    }
                   }
                 }
               }, ['百度']
@@ -397,73 +430,103 @@
         );
 
       },
-      handleCheckEl(bool) {
-        if (bool.target.checked === true) {
-          this.storeData.forEach((data) => {
-            data.el = true
-          })
-        } else {
-          this.storeData.forEach((data) => {
-            data.el = false
-          })
+
+
+
+
+      submitStore() {
+        let list = [];
+        list = this.storeData.filter((item) => {
+          return item.mt || item.el
+        });
+        if (list.length === 0) {
+          this.$message({
+            message: '最少选择一间门店',
+            type: 'warning'
+          });
+          return
         }
-      },
-      handleCheckMt(bool) {
-        if (bool.target.checked === true) {
-          this.storeData.forEach((data) => {
-            data.mt = true
-          })
-        } else {
-          this.storeData.forEach((data) => {
-            data.mt = false
-          })
-        }
-      },
-      handleCheckBd(bool) {
-        if (bool.target.checked === true) {
-          this.storeData.forEach((data) => {
-            data.bd = true
-          })
-        } else {
-          this.storeData.forEach((data) => {
-            data.bd = false
-          })
-        }
+        this.dialogFormVisible = false;
+        this.formEdit.stores = list
+
       },
       openDialog() {
         this.dialogFormVisible = true;
       },
+      searchStore() {
 
-      submitFrom(formName){
+        let params = {
+          redirect: "x2.store.index",
+          levelid: this.getStoreLabelLevelId(),
+          storeName: this.storeName,
+          noPage: 1
+        };
+        oneTwoApi(params).then((res) => {
+          if (res.errcode === 0) {
+            res.data.list.forEach((item) => {
+              item.mt = false;
+              item.el = false
+            });
+            this.storeData = res.data.list;
+          }
+          this.$nextTick(() => {
+            this.closeCheck()
+          })
+        })
+      },
+      submitFrom(formName) {
+        let list = [], storeSgroups = [];
+        this.formEdit.stores.forEach((item) => {
+          (item.mt === true) ? item.mt = 1 : item.mt = 0;
+          (item.el === true) ? item.el = 1 : item.el = 0;
+          storeSgroups.push({base_store_id: item.base_store_id, mt: item.mt, el: item.el})
+        });
+
+        list = storeSgroups.filter((item) => {
+          return item.mt !== 0 || item.el !== 0
+        });
+        if (list.length === 0) {
+          this.$message({
+            message: '最少选择一间门店',
+            type: 'warning'
+          });
+          return
+        }
+        console.log(list)
+        console.log(storeSgroups)
 
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            if(this.showName === '新增'){
+            if (this.showName === '新增') {
               let params = {
-                redirect: "x2a.category.create",
-                levelid:this.getStoreLabelLevelId(),
-                categoryname:this.formEdit.categoryname,
-                morecodes:window.JSON.stringify(this.formEdit.morecodes),
-                sequence:this.formEdit.sequence,
+                redirect: "x2a.sgroup.create",
+                levelid: this.getStoreLabelLevelId(),
+                sgroupname: this.formEdit.sgroupname,
+                morecodes: window.JSON.stringify(this.formEdit.morecodes),
+                remark: '',
+                storeSgroups: window.JSON.stringify(list)
               };
               oneTwoApi(params).then((res) => {
-                if(res.errcode === 0){
-                  this.showResouce(this.p = {page: 1, size: 20, total: 0},this.categoryName = '');
+                if (res.errcode === 0) {
+                  this.showResouce(this.p = {page: 1, size: 20, total: 0}, this.sgroupname = '');
                   this.$message("操作成功");
                   this.dialogFormVisible2 = false
                 }
               })
-            }else {
+            } else {
               let params = {
-                redirect: "x2a.category.update",
-                id:this.formEdit.id,
-                categoryname:this.formEdit.categoryname,
-                morecodes:window.JSON.stringify(this.formEdit.morecodes),
-                sequence:this.formEdit.sequence,
+                redirect: "x2a.sgroup.update",
+                levelid: this.getStoreLabelLevelId(),
+                id: this.formEdit.id,
+                sgroupname: this.formEdit.sgroupname,
+                morecodes: window.JSON.stringify(this.formEdit.morecodes),
+                remark: '',
+                storeSgroups: window.JSON.stringify(list)
+
               };
               oneTwoApi(params).then((res) => {
-                if(res.errcode === 0){
-                  this.showResouce(this.p,this.categoryName);
+                if (res.errcode === 0) {
+                  this.showResouce(this.p, this.sgroupname);
                   this.$message("操作成功");
                   this.dialogFormVisible2 = false
                 }
@@ -472,38 +535,20 @@
 
           } else {
             console.log('error submit!!');
-            return false;
+            //return false;
           }
         });
 
       },
       getPage(page) {
         this.p.page = page;
-        this.showResouce(this.p,this.categoryName);
+        this.showResouce(this.p, this.sgroupname);
       },
       getPageSize(size) {
         this.p.size = size;
-        this.showResouce(this.p,this.categoryName);
+        this.showResouce(this.p, this.sgroupname);
       },
-      showStore(levelId) {
-        //获取门店列表
-        let params = {
-          redirect: "x2.store.index",
-          levelId: levelId,
-          storeName: '',
-          noPage:1
-        };
-        oneTwoApi(params).then((res) => {
-          if (res.errcode === 0) {
-            if (res.data.list.length !== 0) {
-              this.bankId = res.data.list[0].base_store_id;
-            }
-            this.bankList = res.data.list;
 
-          }
-        })
-
-      },
       del(id) {
         this.$confirm('此操作将删除选择的数据, 是否继续?', '提示', {
           confirmButtonText: '确定',
@@ -511,14 +556,14 @@
           type: 'warning'
         }).then(() => {
           let params = {
-            redirect: "x2a.category.delete",
-            levelid:this.getStoreLabelLevelId(),
-            id:id,
+            redirect: "x2a.sgroup.delete",
+            levelid: this.getStoreLabelLevelId(),
+            id: id,
 
           };
           oneTwoApi(params).then((res) => {
-            if(res.errcode === 0){
-              this.showResouce(this.p,this.categoryName);
+            if (res.errcode === 0) {
+              this.showResouce(this.p, this.sgroupname);
               this.$message("操作成功");
 
             }
@@ -529,72 +574,105 @@
         });
       },
       search() {
-        this.showResouce(this.p = {page: 1, size: 20, total: 0},this.categoryName);
+        this.showResouce(this.p = {page: 1, size: 20, total: 0}, this.sgroupname);
       },
-      showView(id,levelid){
+
+      optionShow(name, id) {
+        this.dialogFormVisible1 = true;
         let params = {
-          redirect: "x2a.category.view",
-          levelid:levelid,
-          id:id,
+          redirect: "x2a.sgroup.view",
+          levelid: this.getStoreLabelLevelId(),
+          id: id,
         };
         oneTwoApi(params).then((res) => {
-          if(res.errcode === 0){
-            this.formEdit = res.data[0]
+          if (res.errcode === 0) {
+            this.storeDataShow = res.data[0].stores
           }
         })
       },
-      option(name,id,levelid) {
+      option(name, id) {
         this.showName = name;
-        switch (name){
+        switch (name) {
           case "新增":
+
             this.formEdit = {
-              categoryname: '',
+              sgroupname: '',
               sequence: '',
               morecodes: [
                 {code1: '', code2: ''}
               ],
+              stores: []
             };
-            this.show = false;
+
             break;
           case "编辑":
-            this.showView(id,levelid);
-            this.show = false;
-            break;
-          case "查看":
-            this.showView(id,levelid);
-            this.show = true;
+            let params = {
+              redirect: "x2a.sgroup.view",
+              levelid: this.getStoreLabelLevelId(),
+              id: id,
+            };
+            oneTwoApi(params).then((res) => {
+              if (res.errcode === 0) {
+
+                res.data[0].stores.forEach((item) => {
+                  (item.mt === 1) ? item.mt = true : item.mt = false;
+                  (item.el === 1) ? item.el = true : item.el = false;
+                })
+
+
+                this.formEdit = res.data[0]
+              }
+            })
+
             break;
         }
 
-        this.dialogFormVisible2 = true
+        this.dialogFormVisible2 = true;
+        //x2门店
+        let params = {
+          redirect: "x2.store.index",
+          levelid: this.getStoreLabelLevelId(),
+          storeName: '',
+          noPage: 1
+        };
+        oneTwoApi(params).then((res) => {
+          if (res.errcode === 0) {
+            res.data.list.forEach((item) => {
+              item.mt = false;
+              item.el = false
+            });
+            this.storeData = res.data.list
+
+          }
+        })
       },
+
       showLevel() {
         getApi1.getLevel('', 1).then((res) => {
           if (res.data.errcode === 0) {
 
-            this.setStoreLabelTree({list:res.data.data});
+            this.setStoreLabelTree({list: res.data.data});
             if (this.getStoreLabelLevelId() === '') {
               this.setStoreLabelLevelId({levelId: res.data.data[0].id});
             }
-            this.showStore(res.data.data[0].id);
-            recur(res.data.data,true,this.getStoreLabelLevelId(),this)
+            this.showResouce(this.p, this.sgroupname);
+            recur(res.data.data, true, this.getStoreLabelLevelId(), this)
           }
         });
       },
-      handleStore() {
-        this.showResouce(this.p = {page: 1, size: this.p.size, total: 0})
-      },
-      showResouce(p,pgroupname = ''){
+
+      showResouce(p, sgroupname = '') {
+        console.log(123)
         let params = {
           redirect: "x2a.sgroup.index",
-          levelid:this.getStoreLabelLevelId(),
-          pgroupname:pgroupname,
+          levelid: this.getStoreLabelLevelId(),
+          sgroupname: sgroupname,
           page: p.page,
-          pagesize:p.size,
+          pagesize: p.size,
           // noPage:''
         };
         oneTwoApi(params).then((res) => {
-          if(res.errcode === 0){
+          if (res.errcode === 0) {
             this.tableData = res.data.list;
             this.p.total = res.data.count;
           }
@@ -604,15 +682,15 @@
         this.formEdit.morecodes.splice(index, 1)
       },
       addDomain() {
-        this.formEdit.morecodes.push( {code1: '', code2: ''});
+        this.formEdit.morecodes.push({code1: '', code2: ''});
       },
     },
     created() {
-      if(this.getStoreLabelTree().length === 0){
+      if (this.getStoreLabelTree().length === 0) {
         this.showLevel()
-      }else {
-        this.showStore(this.getStoreLabelLevelId());
-        recur(this.getStoreLabelTree(),false,this.getStoreLabelLevelId(),this)
+      } else {
+        this.showResouce(this.p);
+        recur(this.getStoreLabelTree(), false, this.getStoreLabelLevelId(), this)
       }
 
 
@@ -621,11 +699,11 @@
     mounted() {
       Hub.$on('showAdd', (e) => {
         this.setStoreLabelLevelId({levelId: e.levelid});
-        recur(this.getStoreLabelTree(),false,this.getStoreLabelLevelId(),this);
-        this.bankId = "";
-        this.showStore(e.levelid);
+        recur(this.getStoreLabelTree(), false, this.getStoreLabelLevelId(), this);
+
+        this.showResouce(this.p = {page: 1, size: this.p.size, total: 0});
       });
-      Hub.$emit('mountedOk','mountedOk');
+      Hub.$emit('mountedOk', 'mountedOk');
       this.$nextTick(() => {
         getScrollHeight(this.getBodyHeight).then((h) => {
           this.tableHeight = h;
@@ -640,7 +718,7 @@
 
 
     },
-    destroyed(){
+    destroyed() {
       Hub.$off("showAdd");
 
     }
