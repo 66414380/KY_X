@@ -18,14 +18,20 @@
         <div class="flex_es margin_b_10">
 
           <div class="flex_a">
-            <h3 class="margin_r_10">
-              {{levelName}}
-            </h3>
-            <div v-if="!canEdit">
+            <h3 class="margin_r_10">{{levelName}}</h3>
+            <el-select size="small" clearable filterable v-model="storeData_id" placeholder="请选择" @change="handleStore" @visible-change="canSelect">
+              <el-option
+                v-for="item in storeData"
+                :key="item.base_store_id"
+                :label="item.storename"
+                :value="item.base_store_id">
+              </el-option>
+            </el-select>
+            <div v-if="!canEdit" class="margin_l_10">
               <el-button size="small" @click="edit()" >进入编辑状态</el-button>
               <el-button size="small" @click="del()" >同步至其他门店及外卖平台</el-button>
             </div>
-            <div v-if="canEdit">
+            <div v-if="canEdit" class="margin_l_10">
               <el-button size="small" @click="save()" >保存并退出编辑状态</el-button>
             </div>
 
@@ -33,13 +39,13 @@
 
           <div class="flex_a">
             <div class="margin_r_10">
-              <el-input size="small" v-model="dishesName" placeholder="请输入菜品名称"></el-input>
+              <el-input size="small" v-model="dishname" placeholder="请输入菜品名称"></el-input>
             </div>
             <el-button size="small" @click="search()">搜索</el-button>
           </div>
         </div>
         <el-form ref="formRules" :model="form">
-        <el-table :data="form.tableData" border :height="tableHeight - 40" style="width: 100%;" @select-all="handleSelectionChange" ref="multipleTable">
+        <el-table :data="form.tableData" border :height="tableHeight - 40" style="width: 100%;" @select-all="handleSelectionChange" ref="multipleTable" @cell-dblclick="test">
           <el-table-column
             header-align="center" align="center"
             type="selection"
@@ -67,7 +73,7 @@
           </el-table-column>
           <el-table-column label-class-name="table_head" header-align="center" align="center" prop="x0_productid" label="菜品编码"
                            width="100"></el-table-column>
-          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="productname" label="名称"
+          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="dishname" label="名称"
                            width="120"></el-table-column>
           <el-table-column label-class-name="table_head" header-align="center" align="center"
                            label="第三方编码" width="180">
@@ -79,7 +85,7 @@
 
 
           </el-table-column>
-          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="CategoryName" label="所属品类"
+          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="categoryname" label="所属品类"
                            width="120"></el-table-column>
           <el-table-column label-class-name="table_head" header-align="center" align="center" prop="price" label="参考价格"
                            width="120"></el-table-column>
@@ -130,7 +136,7 @@
           </el-table-column>
           <el-table-column label-class-name="table_head" header-align="center" align="center" label="餐盒" width="240">
             <template slot-scope="scope">
-              <div v-if="scope.row.lunchboxes.length !== 0">
+              <div v-if="scope.row.lunchboxes !== null">
                 <div v-for="(item,index) in scope.row.lunchboxes">
                   <span>{{item.lunchboxname}} X{{item.count}} ￥{{item.price}} </span>
                 </div>
@@ -162,29 +168,27 @@
 
           </el-table-column>
 
-          <el-table-column label-class-name="table_head" header-align="center" align="center" label="上下架操作" width="120">
-            <template slot-scope="scope">
+          <!--<el-table-column label-class-name="table_head" header-align="center" align="center" label="上下架操作" width="120">-->
+            <!--<template slot-scope="scope">-->
 
-              <div  @click.prevent="handleSwitch(scope.row.id,scope.row.is_pay_invoice)">
-                <el-switch
-                  v-model="scope.row.is_pay_invoice"
-                  on-color="#13ce66"
-                  off-color="#ff4949">
-                </el-switch>
-              </div>
-            </template>
-          </el-table-column>
+              <!--<div  @click.prevent="handleSwitch(scope.row.id,scope.row.is_pay_invoice)">-->
+                <!--<el-switch-->
+                  <!--v-model="scope.row.is_pay_invoice"-->
+                  <!--on-color="#13ce66"-->
+                  <!--off-color="#ff4949">-->
+                <!--</el-switch>-->
+              <!--</div>-->
+            <!--</template>-->
+          <!--</el-table-column>-->
 
-          <el-table-column label-class-name="table_head" header-align="center" align="center" label="更新记录" width="240">
-            <template slot-scope="scope">
-                <div class="flex_f">
-                  <span>黄秀 2017-12-06-11:11</span>
-                  <el-button type="text" @click="dialogVisible2 = true">查看历史</el-button>
-                </div>
-
-
-            </template>
-          </el-table-column>
+          <!--<el-table-column label-class-name="table_head" header-align="center" align="center" label="更新记录" width="240">-->
+            <!--<template slot-scope="scope">-->
+                <!--<div class="flex_f">-->
+                  <!--<span>黄秀 2017-12-06-11:11</span>-->
+                  <!--<el-button type="text" @click="dialogVisible2 = true">查看历史</el-button>-->
+                <!--</div>-->
+            <!--</template>-->
+          <!--</el-table-column>-->
 
 
         </el-table>
@@ -230,17 +234,29 @@
         tableHeight: 0,
         navList: [{name: "运营方案", url: ''}],
         levelName:'',
-        dishesName: '',
         form:{tableData: []},
         p: {page: 1, size: 20, total: 0},
         showAdd:'',
         baseDishes: {},
+        storeData:[],
+        storeData_id:'',
+        dishname:'',
+        selectOne:false,
       }
     },
     watch: {},
     methods: {
       ...mapActions(['setOperationSchemeTree','setOperationSchemeLevelId']),
       ...mapGetters(['getOperationSchemeTree','getOperationSchemeLevelId']),
+      test(row, column, cell, event){
+        console.log(row)
+        console.log(column)
+
+        console.log(cell)
+
+        console.log(event)
+
+      },
       checkNumber_1(rule, value, callback,str1,str2){
         let re = /^[1-9]\d*$/;
         if (value === '') {
@@ -284,11 +300,11 @@
       },
       getPage(page) {
         this.p.page = page;
-        this.showResouce(this.p,this.dishesName);
+        this.getSchemeData(this.p);
       },
       getPageSize(size) {
         this.p.size = size;
-        this.showResouce(this.p,this.dishesName);
+        this.getSchemeData(this.p);
       },
       save(){
         this.canEdit = false
@@ -301,9 +317,54 @@
 
       },
       search() {
-        this.showResouce(this.p = {page: 1, size: 20, total: 0},this.dishesName);
+        this.getSchemeData(this.p = {page: 1, size: 20, total: 0})
+      },
+      handleStore() {
+        if(this.selectOne === true) {
+          this.getSchemeData(this.p = {page: 1, size: this.p.size, total: 0})
+        }
+      },
+      getSchemeData(p) {
+        //获取运营方案列表
+        let params = {
+          redirect: "x2a.dish.index",
+          base_store_id:this.storeData_id,
+          dishname: this.dishname,
+          page: p.page,
+          pagesize: p.size
+
+        };
+        oneTwoApi(params).then((res) => {
+          if (res.errcode === 0) {
+            this.form.tableData = res.data.list;
+            this.p.total = res.data.count;
+
+          }
+        })
+
       },
 
+      showResouce(){
+        //获取门店列表
+        let params = {
+          redirect: "x2.store.index",
+          levelId: this.getOperationSchemeLevelId(),
+          storeName: '',
+          noPage:1
+        };
+        oneTwoApi(params).then((res) => {
+          if (res.errcode === 0) {
+            if (res.data.list.length !== 0) {
+              this.storeData_id = res.data.list[0].base_store_id;
+            }
+            this.storeData = res.data.list;
+
+             this.getSchemeData(this.p = {page: 1, size: this.p.size, total: 0})
+          }
+        })
+
+
+      },
       handleSelectionChange(val) {
         if(val.length === this.form.tableData.length){
           this.form.tableData.forEach((map) => {
@@ -316,7 +377,7 @@
         }
       },
 
-      handleChecked(data) {
+      handleChecked() {
         let list =  this.form.tableData.filter((item)=>{
           return item.select === true
         });
@@ -330,32 +391,9 @@
         }
 
       },
-
-      showResouce(p,productName = ''){
-        let params = {
-          redirect: "x2a.product.index",
-          levelid:this.getOperationSchemeLevelId(),
-          productname:productName,
-          page: p.page,
-          pagesize:p.size
-
-        };
-        oneTwoApi(params).then((res) => {
-          if(res.errcode === 0){
-            res.data.list.forEach((item)=>{
-              item.select = false;
-              item.totalBoxPrice = 0;
-              item.lunchboxes.forEach((item1)=>{
-                item.totalBoxPrice += item1.totalprice * 1
-              });
-              item.totalBoxPrice = item.totalBoxPrice.toFixed(2)
-            });
-            this.form.tableData = res.data.list;
-            this.p.total = res.data.count;
-          }
-        })
+      canSelect(e){
+        (e === true)? this.selectOne = true: this.selectOne = false
       },
-
       showLevel() {
         getApi1.getLevel('', 1).then((res) => {
           if (res.data.errcode === 0) {
@@ -364,7 +402,7 @@
             if (this.getOperationSchemeLevelId() === '') {
               this.setOperationSchemeLevelId({levelId: res.data.data[0].id});
             }
-            this.showResouce(this.p,this.dishesName);
+            this.showResouce();
             recur(res.data.data,true,this.getOperationSchemeLevelId(),this)
           }
         });
@@ -374,7 +412,7 @@
       if(this.getOperationSchemeTree().length === 0){
         this.showLevel()
       }else {
-        this.showResouce(this.p,this.dishesName);
+        this.showResouce();
         recur(this.getOperationSchemeTree(),false,this.getOperationSchemeLevelId(),this)
       }
     },
@@ -383,7 +421,8 @@
       Hub.$on('showAdd', (e) => {
         this.setOperationSchemeLevelId({levelId: e.levelid});
         recur(this.getOperationSchemeTree(),false,this.getOperationSchemeLevelId(),this);
-        this.showResouce(this.p={page: 1, size: this.p.size, total: 0},this.dishesName = '');
+        this.storeData_id = "";
+        this.showResouce();
       });
       Hub.$emit('mountedOk','mountedOk');
       this.$nextTick(() => {

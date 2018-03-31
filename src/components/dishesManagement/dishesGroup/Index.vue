@@ -45,7 +45,7 @@
           </el-table-column>
           <el-table-column label-class-name="table_head" header-align="center" align="center" label="操作" width="300">
             <template slot-scope="scope">
-              <el-button size="small" @click="down()">下发</el-button>
+              <el-button size="small" @click="down(scope.row.id)">下发</el-button>
               <el-button size="small" @click="edit('查看',scope.row.id)">查看</el-button>
               <el-button size="small" @click="edit('编辑',scope.row.id)">编辑</el-button>
               <el-button size="small" type="danger" @click="del(scope.row.id)">删除</el-button>
@@ -72,10 +72,18 @@
       <el-form ref="formRules" :model="formDown" label-width="140px">
 
         <el-form-item label="下发至多门店:">
-          <el-button @click='openDialogStore()'>选择门店</el-button>
+          <el-table :data="formDown.storeSelected" border style="width: 100%;">
+            <el-table-column label-class-name="table_head" header-align="center" align="center" prop="sgroupname" label="门店标签名称">
+            </el-table-column>
+            <el-table-column label-class-name="table_head" header-align="center" align="center" prop="id" label="门店标签编码">
+            </el-table-column>
+          </el-table>
+
         </el-form-item>
 
-
+        <el-form-item label="">
+          <el-button @click='openDialogStore()'>选择门店</el-button>
+        </el-form-item>
         <el-form-item class="lable1" label="下发类型:">
 
           <el-radio class="radio margin_b_10" :label="1" v-model="formDown.radio1">覆盖式下发</el-radio>
@@ -98,12 +106,13 @@
         </el-table>
       </div>
         <el-form-item class="lable2" label="时间:">
-          <el-radio class="radio margin_b_10" :label="1" v-model="formDown.radio2">立即生效</el-radio>
-          <el-radio class="radio margin_b_10" :label="2" v-model="formDown.radio2">定时下发</el-radio>
-          <div v-if="formDown.radio2 === 2">
+          <el-radio class="radio margin_b_10" :label="0" v-model="formDown.radio2">立即生效</el-radio>
+          <el-radio class="radio margin_b_10" :label="1" v-model="formDown.radio2">定时下发</el-radio>
+          <div v-if="formDown.radio2 === 1">
             <el-date-picker
               v-model="formDown.time"
               type="datetime"
+              :picker-options="pickerOptions0"
               placeholder="选择日期时间">
             </el-date-picker>
           </div>
@@ -123,12 +132,12 @@
     <el-dialog title="选择门店" :visible.sync="dialogFormVisible1" @open="open">
       <div class="flex_ce">
         <div class="flex_a">
-          <el-input size="small" placeholder="门店标签名称" class="margin_r_10"></el-input>
+          <el-input size="small" placeholder="门店标签名称" class="margin_r_10" v-model="storeName"></el-input>
           <el-button size="small" @click="searchStore()">搜索</el-button>
         </div>
       </div>
       <div class="margin_t_10">
-        <el-table :data="storeData1" border style="width: 100%;" @select-all="handleSelectionChange" ref="multipleTable">
+        <el-table :data="storeData" border style="width: 100%;" @select-all="handleSelectionChange" ref="multipleTable">
 
           <el-table-column
             header-align="center" align="center"
@@ -141,14 +150,14 @@
           </el-table-column>
 
 
-          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="name" label="门店标签名称">
+          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="sgroupname" label="门店标签名称">
           </el-table-column>
-          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="code" label="门店标签编码">
+          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="id" label="门店标签编码">
           </el-table-column>
         </el-table>
       </div>
       <div class="margin_t_10">
-        <el-button type="primary">确认</el-button>
+        <el-button type="primary" @click="submit()">确认</el-button>
         <el-button @click="dialogFormVisible1 = false">取消</el-button>
       </div>
     </el-dialog>
@@ -290,6 +299,12 @@
     },
     data() {
       return {
+        pickerOptions0: {
+
+          disabledDate(time) {
+            return time.getTime() < Date.now() - 8.64e7 || time.getTime() > Date.now() +  3600 * 24 * 1000 * 7;
+          }
+        },
         levelName:'',
         dialogVisible: false,
         dialogFormVisible1:false,
@@ -300,15 +315,14 @@
         tableWidth: 0,
         tableHeight: 0,
         navList: [{name: "菜品管理", url: ''}, {name: "菜品组", url: ''}],
-
         pgroupname:'',
-        selectedList: [],//选择了的数组
         formDown: {
-          radio1: false,
-          radio2: false,
-          time:''
+          radio1: '',
+          radio2: '',
+          time:'',
+          storeSelected:[],
         },
-        storeData1:[{select:false,id:1,name:'1',code:'222'},{select:false,id:2,name:'111',code:'222222'},],
+        storeData:[],
 
         downList: [
           {type: "覆盖式下发", desc: "指把已选的菜品，覆盖下发至选中的门店并把门店原有的菜品全部删除。"},
@@ -325,7 +339,7 @@
         },
         dishesList:[],
         dishesData:[],
-        bank:'',
+        dishesId:'',
 
         selectedAll:false,
         showName:'',
@@ -337,6 +351,18 @@
     methods: {
       ...mapActions(['setDishesGroupTree','setDishesGroupLevelId']),
       ...mapGetters(['getDishesGroupTree','getDishesGroupLevelId']),
+      submit(){
+       let list =  this.storeData.filter((item) =>{
+          return item.select === true
+        })
+
+        if(list.length === 0){
+          this.$message.warning("最少选择一个门店标签");
+        }else {
+         this.formDown.storeSelected = list;
+          this.dialogFormVisible1 = false
+        }
+      },
       addDishes(){
         let list = [];
         list = this.dishesData.filter((item)=>{
@@ -344,7 +370,7 @@
         });
 
         if(list.length === 0){
-          this.$message("最少选择一个菜品");
+          this.$message.warning("最少选择一个菜品");
         } else {
           this.dishesList = list;
           this.dialogFormVisible3 = false
@@ -422,11 +448,33 @@
         });
         (list.length === this.dishesData.length)? this.selectedAll = true:this.selectedAll = false;
       },
+
+
+      getSgroup(sgroupname = ''){
+        let params = {
+          redirect: "x2a.sgroup.index",
+          levelid:this.getDishesGroupLevelId(),
+          sgroupname:sgroupname,
+          noPage:1
+        };
+        oneTwoApi(params).then((res) => {
+          if(res.errcode === 0){
+            res.data.list.forEach((item)=>{
+              item.select = false
+            });
+            this.storeData = res.data.list
+          }
+        })
+      },
       searchStore(){
+
+        this.getSgroup(this.storeName)
+
 
       },
       openDialogStore(){
-        this.dialogFormVisible1 = true
+        this.dialogFormVisible1 = true;
+        this.getSgroup()
       },
       openDialogDishes(){
         this.selectedAll = false;
@@ -446,17 +494,64 @@
         })
       },
       changeStoresStatus(){
+        if(this.formDown.storeSelected.length === 0){
+          this.$message.warning("最少选择一个门店标签");
+          return
+        }
+
+        let list = [];
+        this.formDown.storeSelected.forEach((item)=>{
+          list.push(item.id)
+        })
+        if(this.formDown.radio1 === ''){
+          this.$message.warning("请选择下发类型");
+          return
+        }
+        if(this.formDown.radio2 === ''){
+          this.$message.warning("请选择生效时间");
+          return
+        }
+        if(this.formDown.radio2 === 1 && this.formDown.time === ''){
+          this.$message.warning("请选择时间");
+          return
+        }
+        // console.log(this.formDown.time * 1)
+        // console.log(Date.now())
+        // if(this.formDown.time * 1 < Date.now()){
+        //   this.$message.warning("请选择正确时间");
+        //   return
+        // }
+
+        //菜品组下发
+        let params = {
+          redirect: "x2a.pgroup.publish",
+          pgroupid:list.join(','),
+          sgroupid:this.dishesId,
+          plantype:this.formDown.radio1,
+          timetype:this.formDown.radio2 === 0?0: new Date(this.formDown.time * 1).format("yyyy-MM-dd hh:mm:ss")
+        };
+        oneTwoApi(params).then((res) => {
+          if(res.errcode === 0){
+            this.$message("操作成功");
+            this.dialogVisible = false;
+
+          }
+        })
 
       },
       close(){
+        this.dishesId = '';
         this.formDown= {
-          radio1: false,
-            radio2: false,
-            time:''
+          radio1: '',
+            radio2: '',
+            time:'',
+          storeSelected:[]
         }
       },
-      down() {
-        this.dialogVisible = true
+      down(id) {
+        this.dialogVisible = true;
+        this.dishesId = id
+
       },
       addCategory() {
         this.$router.push({path:`/dishesManagement/dishesGroup/addDishesGroup/${this.getDishesGroupLevelId()}`})
@@ -522,10 +617,10 @@
       },
 
       handleChecked() {
-        let list =  this.storeData1.filter((item)=>{
+        let list =  this.storeData.filter((item)=>{
           return item.select === true
         });
-        if (list.length === this.storeData1.length) {
+        if (list.length === this.storeData.length) {
           list.forEach((item)=>{
             this.$refs.multipleTable.toggleRowSelection(item)
           })
@@ -534,12 +629,12 @@
         }
       },
       handleSelectionChange(val) {
-        if(val.length === this.storeData1.length){
-          this.storeData1.forEach((map) => {
+        if(val.length === this.storeData.length){
+          this.storeData.forEach((map) => {
             this.$set(map, 'select', true)
           });
         }else {
-          this.storeData1.forEach((map) => {
+          this.storeData.forEach((map) => {
             this.$set(map, 'select', false)
           });
         }

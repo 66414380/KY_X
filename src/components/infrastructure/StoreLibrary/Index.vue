@@ -124,10 +124,10 @@
       width="50%">
       <el-form ref="formRules" :model="formEdit" label-width="100px">
         <el-form-item label="编码:" prop="id" >
-          <el-input v-model="formEdit.id" placeholder="请输入内容" disabled></el-input>
+          <el-input v-model="formEdit.id" placeholder="" disabled></el-input>
         </el-form-item>
         <el-form-item label="名称:" prop="storename" :rules="{required: true, message: '请输入名称', trigger: 'blur'}">
-          <el-input v-model="formEdit.storename" placeholder="请输入内容"></el-input>
+          <el-input v-model="formEdit.storename" placeholder="请输入名称"></el-input>
         </el-form-item>
 
         <div v-for="(domain, index) in formEdit.storecodes" class="flex_r">
@@ -777,10 +777,10 @@
           img = true
         }else {
           img = false;
-          this.$message.error('上传头像图片只能是 JPG,PNG 格式!');
+          this.$message.error('上传证件图片只能是 JPG,PNG 格式!');
         }
         if (!isLt5M) {
-          this.$message.error('上传头像图片大小不能超过 5MB!');
+          this.$message.error('上传证件图片大小不能超过 5MB!');
         }
         return img && isLt5M;
       },

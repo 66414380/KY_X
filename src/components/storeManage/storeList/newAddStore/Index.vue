@@ -111,7 +111,7 @@
         <el-table-column label-class-name="table_head" header-align="center" align="center" label="门店名称" width="200">
           <template slot-scope="scope">
             <el-form-item label="" :prop="'storeData.' + scope.$index + '.storename'" :rules="{required: true, message: '请输入门店名称', trigger: 'blur'}">
-              <el-input v-model="scope.row.storename" placeholder="门店名称" class="m_t_22">
+              <el-input v-model="scope.row.storename" placeholder="请输入门店名称" class="m_t_22">
               </el-input>
             </el-form-item>
           </template>
@@ -187,7 +187,7 @@
               </div>
               <div class="margin_l_10">
                 <el-form-item label="" :prop="'storeData.' + scope.$index + '.address'" :rules="{required: true, message: '请输入详细地址', trigger: 'blur'}">
-                  <el-input v-model="scope.row.address" placeholder="详细地址" class="m_t_22">
+                  <el-input v-model="scope.row.address" placeholder="请输入详细地址" class="m_t_22">
                   </el-input>
                 </el-form-item>
               </div>
@@ -292,10 +292,10 @@
           img = true
         }else {
           img = false;
-          this.$message.error('上传头像图片只能是 JPG,PNG 格式!');
+          this.$message.error('上传证件图片只能是 JPG,PNG 格式!');
         }
         if (!isLt5M) {
-          this.$message.error('上传头像图片大小不能超过 5MB!');
+          this.$message.error('上传证件图片大小不能超过 5MB!');
         }
         return img && isLt5M;
       },

@@ -49,11 +49,11 @@
                   :show-file-list="false"
                   :on-success="handleAvatarSuccess2"
                   :before-upload="beforeAvatarUpload">
-                  <img v-show="form2.log_img" :src="form2.log_img" style="display: block" ref="img">
+                  <img v-show="form2.log_img" :src="form2.log_img" style="display: block;width: 178px;height: 178px" ref="img">
                   <!--<i v-show="!form2.log_img" class="el-icon-plus avatar-uploader-icon"></i>-->
                   <div v-show="!form2.log_img" class="avatar-uploader-icon"><i class="el-icon-plus"></i></div>
                 </el-upload>
-                <div>建议图片尺寸350*350px，格式为png,jpg,jprg,且小于500kb</div>
+                <div>图片格式为png,jpg,jprg,且小于500kb</div>
 
               </el-form-item>
 
@@ -313,12 +313,12 @@
           this.$message.error('上传头像图片大小不能超过 500kb!');
         }
 
-        setTimeout(() => {
-          if (this.$refs.img.clientHeight > 350 || this.$refs.img.clientWidth > 350) {
-            this.$message.error('图片尺寸不能超过350px!');
-            this.form2.log_img = ''
-          }
-        }, 400);
+        // setTimeout(() => {
+        //   if (this.$refs.img.clientHeight > 350 || this.$refs.img.clientWidth > 350) {
+        //     this.$message.error('图片尺寸不能超过350px!');
+        //     this.form2.log_img = ''
+        //   }
+        // }, 400);
 
         return img && isLt5;
 

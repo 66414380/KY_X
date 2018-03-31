@@ -383,7 +383,7 @@
         this.$refs.auth.openDialog();
       },
       checkPhone(rule, value, callback){
-        let re = /^1[3|5|7|8]\d{9}$/;
+        let re = /^1[3|4|5|7|8]\d{9}$/;
         if (value === '') {
           callback(new Error('请输入手机'));
         }else {
