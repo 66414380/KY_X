@@ -45,7 +45,7 @@
           </div>
         </div>
         <el-form ref="formRules" :model="form">
-        <el-table :data="form.tableData" border :height="tableHeight - 40" style="width: 100%;" @select-all="handleSelectionChange" ref="multipleTable" @cell-dblclick="test">
+        <el-table :data="form.tableData" border :height="tableHeight - 40" style="width: 100%;" @select-all="handleSelectionChange" ref="multipleTable" @cell-dblclick="clickOne">
           <el-table-column
             header-align="center" align="center"
             type="selection"
@@ -57,24 +57,35 @@
           </el-table-column>
 
           <el-table-column label-class-name="table_head" header-align="center" align="center" prop="sequence" label="排序">
-            <template slot-scope="scope">
-            <div class="flex" v-if="!canEdit">
+            <template slot-scope="scope" >
 
-              {{scope.row.sequence}}
-            </div>
 
-            <el-form-item v-if="canEdit" label="" :prop="'tableData.' + scope.$index + '.sequence'" :rules="{required: true, validator: (rule, value, callback) => {
+            <el-form-item v-if="scope.row.id === clickId && 'sequence' === clickProp " label="" :prop="'tableData.' + scope.$index + '.sequence'" :rules="{required: true, validator: (rule, value, callback) => {
                 return checkNumber_1(rule, value, callback,'请输入排序','排序格式错误')
                 }, trigger: 'blur'}">
               <el-input v-model="scope.row.sequence" ></el-input>
             </el-form-item>
+              <div class="flex" v-else>
 
+                {{scope.row.sequence}}
+              </div>
             </template>
           </el-table-column>
           <el-table-column label-class-name="table_head" header-align="center" align="center" prop="x0_productid" label="菜品编码"
                            width="100"></el-table-column>
           <el-table-column label-class-name="table_head" header-align="center" align="center" prop="dishname" label="名称"
-                           width="120"></el-table-column>
+                           width="120">
+
+            <template slot-scope="scope" >
+            <el-form-item v-if="scope.row.id === clickId && 'dishname' === clickProp " label="" >
+              <el-input v-model="scope.row.dishname" ></el-input>
+            </el-form-item>
+            <div class="flex" v-else>
+
+              {{scope.row.dishname}}
+            </div>
+            </template>
+          </el-table-column>
           <el-table-column label-class-name="table_head" header-align="center" align="center"
                            label="第三方编码" width="180">
             <template slot-scope="scope">
@@ -242,20 +253,17 @@
         storeData_id:'',
         dishname:'',
         selectOne:false,
+        clickId:'',
+        clickProp:''
       }
     },
     watch: {},
     methods: {
       ...mapActions(['setOperationSchemeTree','setOperationSchemeLevelId']),
       ...mapGetters(['getOperationSchemeTree','getOperationSchemeLevelId']),
-      test(row, column, cell, event){
-        console.log(row)
-        console.log(column)
-
-        console.log(cell)
-
-        console.log(event)
-
+      clickOne(row, column, cell, event){
+        this.clickId = row.id;
+        this.clickProp = column.property
       },
       checkNumber_1(rule, value, callback,str1,str2){
         let re = /^[1-9]\d*$/;
