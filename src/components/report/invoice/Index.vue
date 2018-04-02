@@ -49,66 +49,72 @@
         <el-table-column header-align="center" align="center" prop="phone" label="电话"></el-table-column>
         <el-table-column header-align="center" align="center" prop="price" label="开票金额"></el-table-column>
         <el-table-column header-align="center" align="center" prop="add_time" label="开票时间"></el-table-column>
-        <el-table-column header-align="center" align="center" label="操作">
+        <el-table-column header-align="center" align="center" label="操作" width="200">
           <template slot-scope="scope">
-            <el-popover
-              ref="popover4"
-              placement="right"
-              width="300"
-              trigger="click" @show="()=>{
+
+              <el-button size="small" type="danger" slot="reference" v-if="scope.row.type === '电子发票'" @click="showRedInvoice(scope.row.id)">红冲发票</el-button>
+
+              <el-popover
+                ref="popover4"
+                placement="right"
+                width="300"
+                trigger="click" @show="()=>{
                 return showPop(scope.row.id)
               }">
-             <div>
-               <div class="flex_a pop_cell">
-                 <div class="flex_1">购买方名称</div>
-                 <div class="flex_2">{{invoiceInfo.name}}</div>
-               </div>
+                <div>
+                  <div class="flex_a pop_cell">
+                    <div class="flex_1">购买方名称</div>
+                    <div class="flex_2">{{invoiceInfo.name}}</div>
+                  </div>
 
-               <div class="flex_a pop_cell">
-                 <div class="flex_1">购买方税号</div>
-                 <div class="flex_2">{{invoiceInfo.number}}</div>
-               </div>
-               <div class="flex_a pop_cell">
-                 <div class="flex_1">购买方地址</div>
-                 <div class="flex_2">{{invoiceInfo.address}}</div>
-               </div>
-               <div class="flex_a pop_cell">
-                 <div class="flex_1">购买电话</div>
-                 <div class="flex_2">{{invoiceInfo.tel}}</div>
-               </div>
+                  <div class="flex_a pop_cell">
+                    <div class="flex_1">购买方税号</div>
+                    <div class="flex_2">{{invoiceInfo.number}}</div>
+                  </div>
+                  <div class="flex_a pop_cell">
+                    <div class="flex_1">购买方地址</div>
+                    <div class="flex_2">{{invoiceInfo.address}}</div>
+                  </div>
+                  <div class="flex_a pop_cell">
+                    <div class="flex_1">购买电话</div>
+                    <div class="flex_2">{{invoiceInfo.tel}}</div>
+                  </div>
 
-               <div class="flex_a pop_cell">
-                 <div class="flex_1">金额</div>
-                 <div class="flex_2">¥{{invoiceInfo.price}}</div>
-               </div>
-               <div class="flex_a pop_cell">
-                 <div class="flex_1">税额</div>
-                 <div class="flex_2">¥{{invoiceInfo.tax_price}}</div>
-               </div>
-               <div class="flex_a pop_cell">
-                 <div class="flex_1">价税合计</div>
-                 <div class="flex_2">¥{{invoiceInfo.count_price}}</div>
-               </div>
-               <div style="border-bottom: 1px solid #bfcbd9;width: 100%">
+                  <div class="flex_a pop_cell">
+                    <div class="flex_1">金额</div>
+                    <div class="flex_2">¥{{invoiceInfo.price}}</div>
+                  </div>
+                  <div class="flex_a pop_cell">
+                    <div class="flex_1">税额</div>
+                    <div class="flex_2">¥{{invoiceInfo.tax_price}}</div>
+                  </div>
+                  <div class="flex_a pop_cell">
+                    <div class="flex_1">价税合计</div>
+                    <div class="flex_2">¥{{invoiceInfo.count_price}}</div>
+                  </div>
+                  <div style="border-bottom: 1px solid #bfcbd9;width: 100%">
 
-               </div>
+                  </div>
 
-               <div class="flex_a pop_cell">
-                 <div class="flex_1">发票代码</div>
-                 <div class="flex_2 pop_cell_color">{{invoiceInfo.invoice_code}}</div>
-               </div>
-               <div class="flex_a pop_cell">
-                 <div class="flex_1">发票号码</div>
-                 <div class="flex_2 pop_cell_color">{{invoiceInfo.invoice_number}}</div>
-               </div>
-               <div class="flex_a pop_cell">
-                 <div class="flex_1">开票日期</div>
-                 <div class="flex_2"> {{invoiceInfo.add_time}}</div>
-               </div>
+                  <div class="flex_a pop_cell">
+                    <div class="flex_1">发票代码</div>
+                    <div class="flex_2 pop_cell_color">{{invoiceInfo.invoice_code}}</div>
+                  </div>
+                  <div class="flex_a pop_cell">
+                    <div class="flex_1">发票号码</div>
+                    <div class="flex_2 pop_cell_color">{{invoiceInfo.invoice_number}}</div>
+                  </div>
+                  <div class="flex_a pop_cell">
+                    <div class="flex_1">开票日期</div>
+                    <div class="flex_2"> {{invoiceInfo.add_time}}</div>
+                  </div>
 
-             </div>
-              <el-button size="small" type="primary"  slot="reference" v-show="getTreeArr['详情']">查看详情</el-button>
-            </el-popover>
+                </div>
+                <el-button size="small" type="primary"  slot="reference" v-show="getTreeArr['详情']">查看详情</el-button>
+              </el-popover>
+
+
+
 
           </template>
         </el-table-column>
@@ -157,6 +163,18 @@
       out(){
         this.getInvoiceList(this.p,this.store_id,this.dateSelected[0] ,this.dateSelected[1],1)
       },
+      showRedInvoice(id){
+        let params = {
+          redirect: "x1.invoice.redInvoice",
+          id: id,
+        };
+        oneTwoApi(params).then((res) => {
+          if (res.errcode === 0) {
+            this.$message('操作成功')
+          }
+        });
+      },
+
       showPop(id){
         let params = {
           redirect: "x1.invoice.invoiceInfo",
