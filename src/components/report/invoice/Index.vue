@@ -49,6 +49,7 @@
         <el-table-column header-align="center" align="center" prop="phone" label="电话"></el-table-column>
         <el-table-column header-align="center" align="center" prop="price" label="开票金额"></el-table-column>
         <el-table-column header-align="center" align="center" prop="add_time" label="开票时间"></el-table-column>
+        <el-table-column header-align="center" align="center" prop="status" width="80" label="状态"></el-table-column>
         <el-table-column header-align="center" align="center" label="操作" width="200">
           <template slot-scope="scope">
 

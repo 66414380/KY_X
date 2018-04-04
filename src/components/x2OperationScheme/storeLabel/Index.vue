@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-show="getTreeArr['门店标签']">
 
     <div class="bodyTop padding_b_10">
       <div class="margin_b_10">
@@ -27,10 +27,10 @@
 
           <div class="flex_a">
             <div class="margin_r_10">
-              <el-input size="small" v-model="sgroupname" placeholder="请输入门店标签"></el-input>
+              <el-input size="small" v-model="sgroupname" placeholder="请输入门店标签名称"></el-input>
             </div>
             <el-button size="small" @click="search()">搜索</el-button>
-            <el-button size="small" @click="option('新增')" :disabled="showAdd !== 4">+新增门店标签</el-button>
+            <el-button size="small" @click="option('新增')" :disabled="showAdd !== 4" v-show="getTreeArr['新增门店标签']">+新增门店标签</el-button>
           </div>
         </div>
 
@@ -50,13 +50,11 @@
           ></el-table-column>
 
 
-          <el-table-column label-class-name="table_head" header-align="center" align="center" label="操作" width="220">
+          <el-table-column label-class-name="table_head" header-align="center" align="center" label="操作" width="260">
             <template slot-scope="scope">
-
               <el-button size="small" @click="optionShow('查看',scope.row.id)">查看门店</el-button>
-              <el-button size="small" @click="option('编辑',scope.row.id)">编辑</el-button>
-              <el-button size="small" type="danger" @click="del(scope.row.id)">删除</el-button>
-
+              <el-button size="small" @click="option('编辑',scope.row.id)" v-show="getTreeArr['修改菜品标签']">编辑</el-button>
+              <el-button size="small" type="danger" @click="del(scope.row.id)" v-show="getTreeArr['删除菜品标签']">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -76,8 +74,8 @@
         <el-form-item label="标签编码:" v-if="showName !== '新增'">
           <el-input v-model="formEdit.id" placeholder="" disabled></el-input>
         </el-form-item>
-        <el-form-item label="标签名称:" prop="sgroupname" :rules="{required: true, message: '请输入品类名称', trigger: 'blur'}">
-          <el-input v-model="formEdit.sgroupname" placeholder="请输入品类名称"></el-input>
+        <el-form-item label="标签名称:" prop="sgroupname" :rules="{required: true, message: '请输入标签名称', trigger: 'blur'}">
+          <el-input v-model="formEdit.sgroupname" placeholder="请输入标签名称"></el-input>
         </el-form-item>
 
         <div v-for="(domain, index) in formEdit.morecodes" class="flex_r">
@@ -162,7 +160,7 @@
 
         </div>
         <div class="margin_r_10 flex_1">
-          <el-input size="small" placeholder="门店名称/编码" v-model="storeName"></el-input>
+          <el-input size="small" placeholder="请输入门店名称" v-model="storeName"></el-input>
 
         </div>
         <el-button size="small" @click="searchStore()">搜索</el-button>

@@ -19,7 +19,7 @@
 
           <div class="flex_a">
             <h3 class="margin_r_10">{{levelName}}</h3>
-            <el-select size="small" filterable v-model="storeData_id" placeholder="请选择" @change="handleStore" @visible-change="canSelect">
+            <el-select size="small" clearable filterable v-model="storeData_id" placeholder="请选择" @change="handleStore" @visible-change="canSelect">
               <el-option
                 v-for="item in storeData"
                 :key="item.base_store_id"
@@ -30,7 +30,7 @@
             <div class="margin_l_10 flex_a">
               <el-button size="small" @click="reLoadData()" >重置</el-button>
 
-              <!--<el-button size="small" @click="step()" >同步至外卖平台</el-button>-->
+              <el-button size="small" @click="step()" >同步至外卖平台</el-button>
               <el-button size="small" @click="stepTakeOut()" >同步至其他门店及外卖平台</el-button>
             </div>
 
@@ -522,40 +522,6 @@
       </div>
     </el-dialog>
 
-    <!--选择门店-->
-    <el-dialog title="选择门店" :visible.sync="dialogFormVisible1" >
-      <div class="flex_ce">
-        <div class="flex_a">
-          <el-input size="small" placeholder="门店标签名称" class="margin_r_10" v-model="storeName"></el-input>
-          <el-button size="small" @click="searchStore()">搜索</el-button>
-        </div>
-      </div>
-      <div class="margin_t_10">
-        <el-table :data="storeData1" border style="width: 100%;" @select-all="handleSelectionChange1" ref="multipleTable1">
-
-          <el-table-column
-            header-align="center" align="center"
-            type="selection"
-            label-class-name="mySelect"
-            width="100">
-            <template slot-scope="scope">
-              <el-checkbox v-model="scope.row.select" @change="handleChecked1">{{scope.$index + 1 }}</el-checkbox>
-            </template>
-          </el-table-column>
-
-
-          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="storename" label="门店名称">
-          </el-table-column>
-          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="base_store_id" label="门店编码">
-          </el-table-column>
-        </el-table>
-      </div>
-      <div class="margin_t_10">
-        <el-button type="primary" @click="submit()">确认</el-button>
-        <el-button @click="dialogFormVisible1 = false">取消</el-button>
-      </div>
-    </el-dialog>
-
   </div>
 </template>
 
@@ -588,7 +554,6 @@
         time:'',
         radio2:'',
         checkList:[],
-        dialogFormVisible1:false,
         dialogVisible2: false,
         tableWidth: 0,
         tableHeight: 0,
@@ -607,83 +572,14 @@
         categoryList:[],
         skuList:[],
         boxList:[],
-        storeName:'',
-        storeData1:[]
       }
     },
     watch: {},
     methods: {
       ...mapActions(['setOperationSchemeTree','setOperationSchemeLevelId']),
       ...mapGetters(['getOperationSchemeTree','getOperationSchemeLevelId']),
-      submit(){
-        let storeList = [],dishesList = [];
-        this.storeData1.forEach((item)=>{
-          if(item.select === true){
-            storeList.push(item.base_store_id)
-          }
-          });
-
-        this.form.tableData.forEach((item)=>{
-          if (item.select === true){
-            dishesList.push(item.id)
-          }
-        });
-
-        if(storeList.length === 0){
-          this.$message.warning('请选择门店');
-          return
-        }
-        if(dishesList.length === 0){
-          this.$message.warning('请选择菜品');
-          return
-        }
-        let params = {
-          redirect: "x2a.dish.publish",
-          id: dishesList.join(','),
-          from_storeid: this.storeData_id,
-          to_storeid: storeList.join(',')
-        };
-        oneTwoApi(params).then((res) => {
-          if (res.errcode === 0) {
-            this.$message('操作成功');
-            this.dialogFormVisible1 = false;
-            this.getSchemeData(this.p)
-          }
-        })
-      },
-      store(storeName){
-        //获取门店列表
-        let list = [];
-        let params = {
-          redirect: "x2.store.index",
-          levelId: this.getOperationSchemeLevelId(),
-          storeName: storeName,
-          noPage:1
-        };
-        oneTwoApi(params).then((res) => {
-          if (res.errcode === 0) {
-            res.data.list.forEach((item)=>{
-              item.select = false
-            });
-
-             list = res.data.list.filter((item)=>{
-             return item.base_store_id !== this.storeData_id
-            });
-
-
-            this.storeData1 = list;
-
-          }
-        })
-      },
-      searchStore(){
-        this.store(this.storeName)
-      },
-
       stepTakeOut(){
-        this.storeName = '';
-        this.dialogFormVisible1 = true;
-        this.store('')
+
       },
       save(){
         if(this.checkList.length === 0){
@@ -898,24 +794,21 @@
         oneTwoApi(params).then((res) => {
           if (res.errcode === 0) {
             res.data.list.forEach((item)=>{
-              item.select = false;
               item.totalBoxPrice = 0;
-              if(item.lunchboxes === null){
-                item.lunchboxes = [{lunchboxid: '', count: ''}]
-              }else {
-                item.lunchboxes.forEach((item1)=>{
-                  if(item1.lunchboxid !== ''){
-                    item.totalBoxPrice += item1.totalprice * 1
-                  }
-                });
-                if(item.totalBoxPrice !== 0){
-                  item.totalBoxPrice = item.totalBoxPrice.toFixed(2)
+              item.lunchboxes.forEach((item1)=>{
+                if(item1.lunchboxid !== ''){
+                  item.totalBoxPrice += item1.totalprice * 1
                 }
+              });
+              if(item.totalBoxPrice !== 0){
+                item.totalBoxPrice = item.totalBoxPrice.toFixed(2)
               }
-
 
               if(item.skus === null){
                 item.skus = [{skuid: '', price: ''}]
+              }
+              if(item.lunchboxes === null){
+                item.lunchboxes = [{lunchboxid: '', count: ''}]
               }
 
               if(item.property === null){
@@ -944,7 +837,6 @@
             if (res.data.list.length !== 0) {
               this.storeData_id = res.data.list[0].base_store_id;
             }
-
             this.storeData = res.data.list;
 
              this.getSchemeData(this.p = {page: 1, size: this.p.size, total: 0})
@@ -1005,33 +897,6 @@
           })
         }else {
           this.$refs.multipleTable.clearSelection();
-        }
-
-      },
-
-      handleSelectionChange1(val) {
-        if(val.length === this.storeData1.length){
-          this.storeData1.forEach((map) => {
-            this.$set(map, 'select', true)
-          });
-        }else {
-          this.storeData1.forEach((map) => {
-            this.$set(map, 'select', false)
-          });
-        }
-      },
-
-      handleChecked1() {
-        let list =  this.storeData1.filter((item)=>{
-          return item.select === true
-        });
-
-        if (list.length === this.storeData1.length) {
-          list.forEach((item)=>{
-            this.$refs.multipleTable1.toggleRowSelection(item)
-          })
-        }else {
-          this.$refs.multipleTable1.clearSelection();
         }
 
       },

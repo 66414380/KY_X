@@ -133,12 +133,17 @@ export default {
   setStoreLabelLevelId({commit},obj){
     commit(types.STORELABELLEVELID,obj);
   },
-
-
   setOperationSchemeTree({commit},obj){
     commit(types.OPERATIONSCHEMETREE,obj);
   },
   setOperationSchemeLevelId({commit},obj){
     commit(types.OPERATIONSCHEMELEVELID,obj);
+  },
+
+  setDishesRecordTree({commit},obj){
+    commit(types.DISHESRECORDTREE,obj);
+  },
+  setDishesRecordLevelId({commit},obj){
+    commit(types.DISHESRECORDLEVELID,obj);
   },
 }

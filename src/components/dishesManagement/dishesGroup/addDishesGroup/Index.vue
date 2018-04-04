@@ -14,11 +14,11 @@
             <el-form ref="formRules" :model="form" label-width="100px">
 
               <el-form-item label="菜品组名称	:" prop="name" :rules="{required: true, message: '请输入菜品组名称', trigger: 'blur'}">
-                <el-input v-model="form.name" placeholder="请输入内容"></el-input>
+                <el-input v-model="form.name" placeholder="请输入菜品组名称"></el-input>
               </el-form-item>
 
               <el-form-item label="菜品组备注	:" >
-                <el-input v-model="form.remark" placeholder="请输入内容"></el-input>
+                <el-input v-model="form.remark" placeholder="请输入备注内容"></el-input>
               </el-form-item>
 
               <div v-for="(domain, index) in form.thirdPartyCoding" class="flex_r">
@@ -101,7 +101,7 @@
         </div>
         <div class="flex_1 flex_a">
           <div class="margin_r_10" >
-            <el-input placeholder="菜品名称" v-model="dishesName"></el-input>
+            <el-input placeholder="请输入菜品名称" v-model="dishesName"></el-input>
           </div>
           <el-button type="primary" @click="search()">搜索</el-button>
         </div>
@@ -254,20 +254,26 @@
             this.dishesList.forEach((item)=>{
               list.push(item.x0_productid)
             });
-            let params = {
-              redirect: "x2a.pgroup.create",
-              levelid:this.$route.params.id,
-              pgroupname:this.form.name,
-              morecodes: window.JSON.stringify(this.form.thirdPartyCoding),
-              remark:this.form.remark,
-              productids:list.join(','),
-            };
-            oneTwoApi(params).then((res) => {
-              if(res.errcode === 0){
-                this.$message("操作成功");
-                this.$router.go(-1)
-              }
-            })
+
+
+            if(list.length === 0){
+              this.$message("最少选择一个菜品");
+            }else {
+              let params = {
+                redirect: "x2a.pgroup.create",
+                levelid:this.$route.params.id,
+                pgroupname:this.form.name,
+                morecodes: window.JSON.stringify(this.form.thirdPartyCoding),
+                remark:this.form.remark,
+                productids:list.join(','),
+              };
+              oneTwoApi(params).then((res) => {
+                if(res.errcode === 0){
+                  this.$message("操作成功");
+                  this.$router.go(-1)
+                }
+              })
+            }
 
           } else {
             console.log('error submit!!');
@@ -290,6 +296,6 @@
 
   .cell {
     margin-top: 20px;
-    width: 50%;
+    width: 65%;
   }
 </style>

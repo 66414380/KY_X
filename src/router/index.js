@@ -92,6 +92,10 @@ import printerConfig from '@/components/x2OperationScheme/printerConfig/Index.vu
 import pushState from '@/components/x2OperationScheme/pushState/Index.vue'
 import scatterMap from '@/components/x2OperationScheme/scatterMap/index.vue'
 import storeLabel from '@/components/x2OperationScheme/storeLabel/index.vue'
+import storeRecord from '@/components/x2OperationScheme/storeRecord/index.vue'
+import dishesRecord from '@/components/x2OperationScheme/dishesRecord/index.vue'
+
+import dishesRecordDetail from '@/components/x2OperationScheme/dishesRecord/dishesRecordDetail/index.vue'
 
 /************************** 商户资料核实 ***************************/
 
@@ -546,6 +550,29 @@ export default new Router({
           component: pushState
         },
 
+        //门店同步记录
+        {
+          path: '/x2OperationScheme/storeRecord',
+          meta: { auth: false },
+          name: '门店同步记录',
+          component: storeRecord
+        },
+
+
+        //菜品同步记录
+        {
+          path: '/x2OperationScheme/dishesRecord',
+          meta: { auth: false },
+          name: '菜品同步记录',
+          component: dishesRecord
+        },
+        //菜品同步记录/详情
+        {
+          path: '/x2OperationScheme/dishesRecord/dishesRecordDetail/:id',
+          meta: { auth: false },
+          name: '菜品同步记录/详情',
+          component: dishesRecordDetail
+        },
         /**********************商户资料核实***************************/
         //商户列表
         {

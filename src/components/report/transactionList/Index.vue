@@ -166,11 +166,15 @@
         <el-table-column header-align="center" align="center" prop="refund_time" label="退款时间"
                          width="200"></el-table-column>
         <el-table-column header-align="center" align="center" prop="refund_user" label="退款人" width="100"></el-table-column>
-        <el-table-column header-align="center" align="center" label="操作" fixed="right" width="70">
+        <el-table-column header-align="center" align="center" label="操作" fixed="right" width="140">
           <template slot-scope="scope">
-            <div class="flex" v-if="scope.row.is_refund == 0 && scope.row.pay_status == '支付完成'">
-              <el-button size="small" @click="refund(scope.row)">退款</el-button>
+            <div class="flex">
+              <el-button size="small" @click="orderStatus(scope.row)" >查询</el-button>
+              <div class="margin_l_10" v-if="scope.row.is_refund == 0 && scope.row.pay_status == '支付完成'">
+                <el-button size="small" @click="refund(scope.row)">退款</el-button>
+              </div>
             </div>
+
           </template>
         </el-table-column>
       </el-table>
@@ -314,6 +318,24 @@
 
     methods: {
       ...mapActions(['setTreeArr']),
+      orderStatus(row){
+        let params = {
+          redirect: 'x1.order.checkOrderStatus',
+          orderId: row.id,
+
+        };
+        oneTwoApi(params).then((res) => {
+          if (res.errcode === 0 &&  res.errmsg === "success"){
+            this.$message({
+              message: "操作成功",
+              type: 'success'
+            });
+            let store = this.store();
+            this.orderList(this.dateSelected[0] ,this.dateSelected[1],store,this.iway,this.ichannel,this.account,this.pay_status,this.order_no,this.out_order_no,this.scavengingForm,this.receive_terminal,this.p)
+
+          }
+        })
+      },
       checkRefund(rule, value, callback){
 
         if (value === '') {

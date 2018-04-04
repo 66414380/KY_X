@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-show="getTreeArr['菜品组']">
 
     <div class="bodyTop padding_b_10">
       <div class="margin_b_10">
@@ -25,7 +25,7 @@
               <el-input size="small" v-model="pgroupname" placeholder="请输入菜品组名称"></el-input>
             </div>
             <el-button size="small" @click="search()">搜索</el-button>
-            <el-button size="small" @click="addCategory()">+新增菜品组</el-button>
+            <el-button size="small" @click="addCategory()" v-show="getTreeArr['新增菜品组']" :disabled="showAdd !== 4">+新增菜品组</el-button>
 
           </div>
         </div>
@@ -47,8 +47,8 @@
             <template slot-scope="scope">
               <el-button size="small" @click="down(scope.row.id)">下发</el-button>
               <el-button size="small" @click="edit('查看',scope.row.id)">查看</el-button>
-              <el-button size="small" @click="edit('编辑',scope.row.id)">编辑</el-button>
-              <el-button size="small" type="danger" @click="del(scope.row.id)">删除</el-button>
+              <el-button size="small" @click="edit('编辑',scope.row.id)" v-show="getTreeArr['修改菜品组']">编辑</el-button>
+              <el-button size="small" type="danger" @click="del(scope.row.id)" v-show="getTreeArr['删除菜品组']">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -82,7 +82,7 @@
         </el-form-item>
 
         <el-form-item label="">
-          <el-button @click='openDialogStore()'>选择门店</el-button>
+          <el-button @click='openDialogStore()'>选择门店标签</el-button>
         </el-form-item>
         <el-form-item class="lable1" label="下发类型:">
 
@@ -132,7 +132,7 @@
     <el-dialog title="选择门店" :visible.sync="dialogFormVisible1" @open="open">
       <div class="flex_ce">
         <div class="flex_a">
-          <el-input size="small" placeholder="门店标签名称" class="margin_r_10" v-model="storeName"></el-input>
+          <el-input size="small" placeholder="请输入门店标签名称" class="margin_r_10" v-model="storeName"></el-input>
           <el-button size="small" @click="searchStore()">搜索</el-button>
         </div>
       </div>
@@ -151,6 +151,13 @@
 
 
           <el-table-column label-class-name="table_head" header-align="center" align="center" prop="sgroupname" label="门店标签名称">
+
+            <template slot-scope="scope">
+              <div @click="showStore(scope.row.id)" class="pointer">
+                {{scope.row.sgroupname}}
+              </div>
+            </template>
+
           </el-table-column>
           <el-table-column label-class-name="table_head" header-align="center" align="center" prop="id" label="门店标签编码">
           </el-table-column>
@@ -276,6 +283,26 @@
       </div>
 
     </el-dialog>
+
+
+    <el-dialog title="查看门店" :visible.sync="dialogFormVisible" @close="close1">
+      <el-table :data="storeDataShow" border>
+        <el-table-column label-class-name="table_head" header-align="center" align="center" prop="storename" label="门店">
+        </el-table-column>
+        <el-table-column label-class-name="table_head" header-align="center" align="center" prop="mt" label="美团">
+          <template slot-scope="scope">
+            <div v-if="scope.row.mt === 1">√</div>
+          </template>
+        </el-table-column>
+        <el-table-column label-class-name="table_head" header-align="center" align="center" prop="el" label="饿了么">
+          <template slot-scope="scope">
+            <div v-if="scope.row.el === 1">√</div>
+          </template>
+        </el-table-column>
+
+      </el-table>
+
+    </el-dialog>
   </div>
 </template>
 
@@ -305,8 +332,10 @@
             return time.getTime() < Date.now() - 8.64e7 || time.getTime() > Date.now() +  3600 * 24 * 1000 * 7;
           }
         },
+        showAdd:'',
         levelName:'',
         dialogVisible: false,
+        dialogFormVisible:false,
         dialogFormVisible1:false,
         dialogFormVisible2:false,
         dialogFormVisible3:false,
@@ -340,7 +369,7 @@
         dishesList:[],
         dishesData:[],
         dishesId:'',
-
+        storeDataShow: [],
         selectedAll:false,
         showName:'',
         show:true,
@@ -351,6 +380,22 @@
     methods: {
       ...mapActions(['setDishesGroupTree','setDishesGroupLevelId']),
       ...mapGetters(['getDishesGroupTree','getDishesGroupLevelId']),
+      close1(){
+        this.storeDataShow = []
+      },
+      showStore(id){
+        this.dialogFormVisible = true;
+        let params = {
+          redirect: "x2a.sgroup.view",
+          levelid: this.getDishesGroupLevelId(),
+          id: id,
+        };
+        oneTwoApi(params).then((res) => {
+          if (res.errcode === 0) {
+            this.storeDataShow = res.data[0].stores
+          }
+        })
+      },
       submit(){
        let list =  this.storeData.filter((item) =>{
           return item.select === true
@@ -384,21 +429,26 @@
             this.dishesList.forEach((item)=>{
               list.push(item.x0_productid)
             });
-            let params = {
-              redirect: "x2a.pgroup.update",
-              id:this.formEdit.id,
-              pgroupname:this.formEdit.pgroupname,
-              morecodes: window.JSON.stringify(this.formEdit.morecodes),
-              remark:this.formEdit.remark,
-              productids:list.join(',')
-            };
-            oneTwoApi(params).then((res) => {
-              if(res.errcode === 0){
-                this.$message("操作成功");
-                this.dialogFormVisible2 = false;
-                this.showResouce(this.p,this.pgroupname);
-              }
-            })
+
+            if(list.length === 0){
+              this.$message("最少选择一个菜品");
+            }else {
+              let params = {
+                redirect: "x2a.pgroup.update",
+                id:this.formEdit.id,
+                pgroupname:this.formEdit.pgroupname,
+                morecodes: window.JSON.stringify(this.formEdit.morecodes),
+                remark:this.formEdit.remark,
+                productids:list.join(',')
+              };
+              oneTwoApi(params).then((res) => {
+                if(res.errcode === 0){
+                  this.$message("操作成功");
+                  this.dialogFormVisible2 = false;
+                  this.showResouce(this.p,this.pgroupname);
+                }
+              })
+            }
 
           } else {
             console.log('error submit!!');
@@ -525,8 +575,8 @@
         //菜品组下发
         let params = {
           redirect: "x2a.pgroup.publish",
-          pgroupid:list.join(','),
-          sgroupid:this.dishesId,
+          pgroupid:this.dishesId,
+          sgroupid:list.join(','),
           plantype:this.formDown.radio1,
           timetype:this.formDown.radio2 === 0?0: new Date(this.formDown.time * 1).format("yyyy-MM-dd hh:mm:ss")
         };
