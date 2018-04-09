@@ -10,7 +10,7 @@
           <el-button size="small" @click="addStore()" v-show="getTreeArr['添加门店']">新增门店</el-button>
           <el-button size="small" @click="delSelected()" v-show="getTreeArr['删除']">批量删除</el-button>
           <el-button size="small" @click="isSwitch()" v-show="getTreeArr['批量开启、关闭']">批量开启/关闭</el-button>
-          <el-button size="small" @click="setUrl()" v-show="getTreeArr['设置url']">批量设置url</el-button>
+          <!--<el-button size="small" @click="setUrl()" v-show="getTreeArr['设置url']">批量设置url</el-button>-->
         </div>
 
         <div class="flex_a">
@@ -48,7 +48,7 @@
                            width="150"
                            label="门店"></el-table-column>
           <el-table-column label-class-name="table_head" header-align="center" align="center"
-                           width="250" label="账户 -- 支付方式 -- 支付通道">
+                           min-width="300" label="账户 -- 支付方式 -- 支付通道">
             <template slot-scope="scope">
               <div v-for="(item,index) in scope.row.account">
                 <div>
@@ -75,17 +75,17 @@
             </template>
           </el-table-column>
 
-          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="payJumpUrl"
-                           label="支付后跳转url"
-                           width="320">
-            <template slot-scope="scope">
-              <div class="flex_a">
-                <el-input class="margin_r_10" v-model="scope.row.payJumpUrl" :disabled="scope.row.inputChecked"></el-input>
-                <el-button type="primary" :disabled="scope.row.inputChecked" @click="setOneUrl(scope.row)">确定</el-button>
-              </div>
+          <!--<el-table-column label-class-name="table_head" header-align="center" align="center" prop="payJumpUrl"-->
+                           <!--label="支付后跳转url"-->
+                           <!--width="320">-->
+            <!--<template slot-scope="scope">-->
+              <!--<div class="flex_a">-->
+                <!--<el-input class="margin_r_10" v-model="scope.row.payJumpUrl" :disabled="scope.row.inputChecked"></el-input>-->
+                <!--<el-button type="primary" :disabled="scope.row.inputChecked" @click="setOneUrl(scope.row)">确定</el-button>-->
+              <!--</div>-->
 
-            </template>
-          </el-table-column>
+            <!--</template>-->
+          <!--</el-table-column>-->
           <el-table-column label-class-name="table_head" header-align="center" align="center" prop="status" label="状态"
                            width="100">
             <template slot-scope="scope">
@@ -205,11 +205,12 @@
       :visible.sync="dialogVisible2"
       @close="close2"
       width="50%" size="tiny">
+      <el-checkbox v-model="checkAll" @change="changeAll(checkAll)">全选</el-checkbox>
       <div class="margin_b_10" v-for="(item,index) in baseStore">
         <div>
           {{index}}
           <div class="padding_l_10" v-for="(item1,index1) in item">
-           <el-checkbox v-model="item1.OK">{{item1.storename}}</el-checkbox>
+           <el-checkbox v-model="item1.OK" @change="changeOne">{{item1.storename}}</el-checkbox>
           </div>
         </div>
       </div>
@@ -273,12 +274,40 @@
         }],
         p: {page: 1, size: 20, total: 0},
         baseStore: {},//点击新增时的门店
+        totalSelect:0,//点击新增时的门店的选择总数
+        checkAll:false
       }
     },
     watch: {},
     methods: {
       ...mapActions(['setX1StoreLevelId','setX1storeTree']),
       ...mapGetters(['getX1StoreLevelId','getX1storeTree']),
+      changeOne(){
+        let i = 0;
+        for(let map in this.baseStore){
+          this.baseStore[map].forEach((item)=>{
+            if(item.OK === true){
+              i++
+            }
+          })
+        }
+        (i === this.totalSelect)? this.checkAll = true: this.checkAll = false
+      },
+      changeAll(bool){
+        if(bool){
+          for(let map in this.baseStore){
+            this.baseStore[map].forEach((item)=>{
+              item.OK = true
+            })
+          }
+        }else {
+          for(let map in this.baseStore){
+            this.baseStore[map].forEach((item)=>{
+              item.OK = false
+            })
+          }
+        }
+      },
       handleChecked(data) {
         let list =  this.storeData.filter((item)=>{
           return item.select === true
@@ -350,13 +379,17 @@
           this.$message('请选择门店所属部门');
         }else {
           this.dialogVisible2 = true;
+          this.totalSelect = 0;
+          this.checkAll = false;
           getApi.getBaseStore(this.getX1StoreLevelId()).then((res)=>{
             if(res.data.errcode === 0){
               for(let map in res.data.data){
                 res.data.data[map].forEach((item)=>{
+                  this.totalSelect++;
                   item.OK = false
                 })
               }
+              console.log(this.totalSelect)
               this.baseStore = res.data.data
             }
           })

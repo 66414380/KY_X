@@ -78,7 +78,7 @@
     <div v-show="showFrist">
       <el-form ref="clientForm" :model="clientForm" label-width="180px">
         <el-form-item label="方案名称:" prop="name" :rules="{required: true, message: '请输入方案名称', trigger: 'blur'}">
-          <el-input v-model="clientForm.name" style="width: 200px;" :disabled="showName === '查看'"></el-input>
+          <el-input v-model="clientForm.name" style="width: 200px;" :disabled="showName === '查看'" placeholder="请输入方案名称"></el-input>
         </el-form-item>
 
         <div v-for="(domain, index) in clientForm.third_code" class="flex_r">

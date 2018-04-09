@@ -15,7 +15,7 @@
           </div>
         </div>
         <div class="flex_a">
-          <el-input size="small" v-model="storeName" icon="search" placeholder="请输入内容">
+          <el-input size="small" v-model="roleGroupName" icon="search" placeholder="请输入内容">
             <i slot="prefix" class="el-input__icon el-icon-search"></i>
           </el-input>
           <el-button class="margin_l_10" size="small" @click="search()">搜索</el-button>
@@ -309,7 +309,7 @@
         navList: [{name: "基础设置", url: ''}, {name: "权限管理", url: ''}],
         storeStatusValue: false,
 
-        storeName: '',
+        roleGroupName: '',
         groupList: [],
         dataLeft: [],
         defaultProps: {
@@ -347,13 +347,13 @@
       ...mapActions(['setPermissionLevelId','setPermissionTree']),
       ...mapGetters(['getPermissionLevelId','getPermissionTree']),
       search(){
-        if(this.storeName === ''){
+        if(this.roleGroupName === ''){
           //this.showRoleList(this.p = {page: 1, size: 20, total: 0})
 
 
 
         }else {
-          //this.showRoleList(this.p = {page: 1, size: 20, total: 0},this.storeName)
+          //this.showRoleList(this.p = {page: 1, size: 20, total: 0},this.roleGroupName)
 
 
         }

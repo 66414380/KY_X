@@ -92,25 +92,23 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column header-align="center" align="center" prop="order_source" label="来源"
-                       width="100"></el-table-column>
-      <el-table-column header-align="center" align="center" prop="order_no" label="平台单号"
-                       width="150"></el-table-column>
-      <el-table-column header-align="center" align="center" prop="store_name" label="门店"
-                       width="150"></el-table-column>
-      <el-table-column header-align="center" align="center" prop="order_status" label="订单状态"
-                       width="100"></el-table-column>
-      <el-table-column header-align="center" align="center" prop="shop_money" label="实收金额"
-                       width="100"></el-table-column>
-      <el-table-column header-align="center" align="center" prop="add_time" label="下单时间"
-                       ></el-table-column>
-      <el-table-column header-align="center" align="center" prop="op_time" label="完成时间"
-                       ></el-table-column>
-
-      <el-table-column header-align="center" align="center" prop="wm_name" label="用户"
-                       ></el-table-column>
-      <el-table-column header-align="center" align="center" prop="pay_status" label="操作"
-                       width="80">
+      <el-table-column header-align="center" align="center" prop="order_source" label="来源" width="100">
+      </el-table-column>
+      <el-table-column header-align="center" align="center" prop="order_no" label="平台单号" min-width="240">
+      </el-table-column>
+      <el-table-column header-align="center" align="center" prop="store_name" label="门店" width="150">
+      </el-table-column>
+      <el-table-column header-align="center" align="center" prop="order_status" label="订单状态" width="100">
+      </el-table-column>
+      <el-table-column header-align="center" align="center" prop="shop_money" label="实收金额" width="140">
+      </el-table-column>
+      <el-table-column header-align="center" align="center" prop="add_time" label="下单时间" width="160">
+      </el-table-column>
+      <el-table-column header-align="center" align="center" prop="op_time" label="完成时间" width="160">
+      </el-table-column>
+      <el-table-column header-align="center" align="center" prop="wm_name" label="用户" width="140">
+      </el-table-column>
+      <el-table-column header-align="center" align="center" prop="pay_status" label="操作" width="80">
         <template slot-scope="scope">
           <el-button size="small" @click="info(scope.row.id)" v-show="getTreeArr['订单详情']">详情</el-button>
         </template>

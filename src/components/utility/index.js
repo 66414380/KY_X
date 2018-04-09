@@ -5,4 +5,5 @@ import xoButton from './Button.vue'
 import xoAuth from './Auth.vue'
 import xoAffiliatedStore from './AffiliatedStore.vue'
 import xoPubTree from './PubTree.vue'
-export default {xoPagination,xoDatePicker,xoNavPath,xoButton,xoAuth,xoAffiliatedStore,xoPubTree}
+import xoDishes from './Dishes'
+export default {xoPagination,xoDatePicker,xoNavPath,xoButton,xoAuth,xoAffiliatedStore,xoPubTree,xoDishes}

@@ -43,17 +43,24 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column header-align="center" align="center" prop="invoice_number" label="发票号码"></el-table-column>
-        <el-table-column header-align="center" align="center" prop="store_name" label="开票门店"></el-table-column>
-        <el-table-column header-align="center" align="center" prop="title" label="购买方名称"></el-table-column>
-        <el-table-column header-align="center" align="center" prop="phone" label="电话"></el-table-column>
-        <el-table-column header-align="center" align="center" prop="price" label="开票金额"></el-table-column>
-        <el-table-column header-align="center" align="center" prop="add_time" label="开票时间"></el-table-column>
-        <el-table-column header-align="center" align="center" prop="status" width="80" label="状态"></el-table-column>
+        <el-table-column header-align="center" align="center" prop="invoice_number" label="发票号码" min-width="140">
+        </el-table-column>
+        <el-table-column header-align="center" align="center" prop="store_name" label="开票门店" min-width="160">
+        </el-table-column>
+        <el-table-column header-align="center" align="center" prop="title" label="购买方名称" min-width="120">
+        </el-table-column>
+        <el-table-column header-align="center" align="center" prop="phone" label="电话" min-width="140">
+        </el-table-column>
+        <el-table-column header-align="center" align="center" prop="price" label="开票金额" min-width="120">
+        </el-table-column>
+        <el-table-column header-align="center" align="center" prop="add_time" label="开票时间" min-width="180">
+        </el-table-column>
+        <el-table-column header-align="center" align="center" prop="status" width="80" label="状态">
+        </el-table-column>
         <el-table-column header-align="center" align="center" label="操作" width="200">
           <template slot-scope="scope">
 
-              <el-button size="small" type="danger" slot="reference" v-if="scope.row.type === '电子发票'" @click="showRedInvoice(scope.row.id)">红冲发票</el-button>
+              <el-button size="small" type="danger" slot="reference" v-if="scope.row.type === '电子发票'" :disabled="scope.row.status === '红冲'" @click="showRedInvoice(scope.row.id)">红冲发票</el-button>
 
               <el-popover
                 ref="popover4"
@@ -165,15 +172,27 @@
         this.getInvoiceList(this.p,this.store_id,this.dateSelected[0] ,this.dateSelected[1],1)
       },
       showRedInvoice(id){
-        let params = {
-          redirect: "x1.invoice.redInvoice",
-          id: id,
-        };
-        oneTwoApi(params).then((res) => {
-          if (res.errcode === 0) {
-            this.$message('操作成功')
-          }
+        this.$confirm('是否红冲发票?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+
+          let params = {
+            redirect: "x1.invoice.redInvoice",
+            id: id,
+          };
+          oneTwoApi(params).then((res) => {
+            if (res.errcode === 0) {
+              this.$message('操作成功')
+              this.getInvoiceList(this.p,this.store_id,this.dateSelected[0] ,this.dateSelected[1],'');
+            }
+          });
+        }).catch(() => {
+          //
         });
+
+
       },
 
       showPop(id){

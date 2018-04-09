@@ -135,11 +135,11 @@
         <el-table-column header-align="center" align="center" prop="additional_data" label="桌号"
                          width="100"></el-table-column>
         <el-table-column header-align="center" align="center" prop="order_no" label="支付单号（款易）"
-                         width="150"></el-table-column>
+                         min-width="200"></el-table-column>
         <el-table-column header-align="center" align="center" prop="out_order_no" label="商家单号（pos）"
-                         width="150"></el-table-column>
+                         min-width="200"></el-table-column>
         <el-table-column header-align="center" align="center" prop="store_name" label="门店"
-                         width="270"></el-table-column>
+                         min-width="160"></el-table-column>
         <el-table-column header-align="center" align="center" prop="iway" label="支付方式"
                          width="100"></el-table-column>
 
@@ -170,7 +170,7 @@
           <template slot-scope="scope">
             <div class="flex">
               <el-button size="small" @click="orderStatus(scope.row)" >查询</el-button>
-              <div class="margin_l_10" v-if="scope.row.is_refund == 0 && scope.row.pay_status == '支付完成'">
+              <div class="margin_l_10" v-if="scope.row.is_refund == 0 && scope.row.pay_status == '支付完成' && scope.row.iway !== '其他'">
                 <el-button size="small" @click="refund(scope.row)">退款</el-button>
               </div>
             </div>

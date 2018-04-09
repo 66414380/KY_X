@@ -46,15 +46,24 @@
             {{scope.$index + 1 }}
           </template>
         </el-table-column>
-        <el-table-column header-align="center" align="center" prop="date" label="差异日期" ></el-table-column>
-        <el-table-column header-align="center" align="center" prop="storeName" label="差异门店" ></el-table-column>
-        <el-table-column header-align="center" align="center" prop="money" label="差异金额" ></el-table-column>
-        <el-table-column header-align="center" align="center" prop="posMoney" label="pos金额" ></el-table-column>
-        <el-table-column header-align="center" align="center" prop="payMoney" label="支付金额" ></el-table-column>
-        <el-table-column header-align="center" align="center" prop="outOrderNo" label="差异账单号(pos)" ></el-table-column>
-        <el-table-column header-align="center" align="center" prop="orderNo" label="支付单号（款易）" ></el-table-column>
-        <el-table-column header-align="center" align="center" prop="payment" label="支付方式" ></el-table-column>
-        <el-table-column header-align="center" align="center" prop="payTime" label="支付时间" ></el-table-column>
+        <el-table-column header-align="center" align="center" prop="date" label="差异日期" width="140">
+        </el-table-column>
+        <el-table-column header-align="center" align="center" prop="storeName" label="差异门店" min-width="160">
+        </el-table-column>
+        <el-table-column header-align="center" align="center" prop="money" label="差异金额" width="140">
+        </el-table-column>
+        <el-table-column header-align="center" align="center" prop="posMoney" label="pos金额" width="140">
+        </el-table-column>
+        <el-table-column header-align="center" align="center" prop="payMoney" label="支付金额" width="140">
+        </el-table-column>
+        <el-table-column header-align="center" align="center" prop="outOrderNo" label="差异账单号(pos)" min-width="180">
+        </el-table-column>
+        <el-table-column header-align="center" align="center" prop="orderNo" label="支付单号（款易）" min-width="240">
+        </el-table-column>
+        <el-table-column header-align="center" align="center" prop="payment" label="支付方式" width="140">
+        </el-table-column>
+        <el-table-column header-align="center" align="center" prop="payTime" label="支付时间" width="180">
+        </el-table-column>
 
       </el-table>
 

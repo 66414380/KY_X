@@ -41,9 +41,9 @@
 
           <el-table-column label-class-name="table_head" header-align="center" align="center" prop="id" label="序号" width="80">
           </el-table-column>
-          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="pgroupname" label="菜品分组名称" width="140">
+          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="pgroupname" label="菜品分组名称" min-width="140">
           </el-table-column>
-          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="sgroupname" label="店铺分组名称" width="140">
+          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="sgroupname" label="店铺分组名称" min-width="140">
           </el-table-column>
           <!--<el-table-column label-class-name="table_head" header-align="center" align="center" prop="sequence" label="下发平台" width="140">-->
           <!--</el-table-column>-->
@@ -53,14 +53,14 @@
           </el-table-column>
           <!--<el-table-column label-class-name="table_head" header-align="center" align="center" prop="sequence" label="执行状态" width="140">-->
           <!--</el-table-column>-->
-          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="created_at" label="添加时间" >
+          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="created_at" label="添加时间" width="200">
           </el-table-column>
           <el-table-column label-class-name="table_head" header-align="center" align="center" prop="timetype" label="下发方式" width="140">
           </el-table-column>
           <!--<el-table-column label-class-name="table_head" header-align="center" align="center" prop="sequence" label="总数/成功个数" width="140">-->
           <!--</el-table-column>-->
-          <!--<el-table-column label-class-name="table_head" header-align="center" align="center" prop="sequence" label="失败原因" width="140">-->
-          <!--</el-table-column>-->
+          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="username" label="操作人" width="140">
+          </el-table-column>
           <el-table-column label-class-name="table_head" header-align="center" align="center" label="操作" width="100">
           <template slot-scope="scope">
               <el-button size="small"  @click="show(scope.row.id)" v-show="getTreeArr['菜品同步记录详情']">查看详情</el-button>

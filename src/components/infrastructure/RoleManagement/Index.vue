@@ -12,7 +12,7 @@
           <el-button size="small" type="danger" @click="del()" v-show="getTreeArr['删除']">删除</el-button>
         </div>
         <div class="flex_r">
-          <el-input size="small" v-model="searchName" icon="search" placeholder="请输入内容">
+          <el-input size="small" v-model="searchName" icon="search" placeholder="请输入角色名称">
             <i slot="prefix" class="el-input__icon el-icon-search"></i>
           </el-input>
           <el-button class="margin_l_10" size="small" @click="search()">搜索</el-button>
@@ -66,7 +66,7 @@
         <!--</el-form-item>-->
 
         <el-form-item label="名称:" prop="name" :rules="{required: true, message: '请输入名称', trigger: 'blur'}">
-          <el-input v-model="form.name" placeholder="请输入内容"></el-input>
+          <el-input v-model="form.name" placeholder="请输入名称"></el-input>
         </el-form-item>
 
         <el-form-item label="角色类型:" prop="typeId"

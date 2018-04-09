@@ -452,6 +452,16 @@
             </template>
 
           </el-table-column>
+          <!--<el-table-column label-class-name="table_head" header-align="center" align="center" label="ERP菜品信息" width="140">-->
+            <!--<template slot-scope="scope">-->
+
+              <!--<el-button size="small" type="primary" @click="link(scope.row.id)">关联菜品</el-button>-->
+
+              <!--<div >-->
+                <!--<el-button size="small" @click="unlink(scope.row.id)">解除关联</el-button>-->
+              <!--</div>-->
+            <!--</template>-->
+          <!--</el-table-column>-->
 
           <!--<el-table-column label-class-name="table_head" header-align="center" align="center" label="上下架操作" width="120">-->
             <!--<template slot-scope="scope">-->
@@ -475,10 +485,11 @@
             <!--</template>-->
           <!--</el-table-column>-->
 
-          <el-table-column label-class-name="table_head" header-align="center" align="center" label="操作" width="80">
+          <el-table-column label-class-name="table_head" header-align="center" align="center" label="操作" width="160">
           <template slot-scope="scope">
 
               <el-button size="small" type="danger" @click="del(scope.row.id)">删除</el-button>
+            <el-button size="small"  @click="gq(scope.row.id)" v-show="scope.row.stocktype === 1">沽清</el-button>
           </template>
           </el-table-column>
         </el-table>
@@ -556,6 +567,9 @@
       </div>
     </el-dialog>
 
+
+    <!--选择菜品-->
+    <xo-dishes ref="dishes"></xo-dishes>
   </div>
 </template>
 
@@ -608,13 +622,20 @@
         skuList:[],
         boxList:[],
         storeName:'',
-        storeData1:[]
+        storeData1:[],
       }
     },
     watch: {},
     methods: {
       ...mapActions(['setOperationSchemeTree','setOperationSchemeLevelId']),
       ...mapGetters(['getOperationSchemeTree','getOperationSchemeLevelId']),
+      unlink(id){
+
+      },
+      link(id){
+
+        this.$refs.dishes.openDialog();
+      },
       submit(){
         let storeList = [],dishesList = [];
         this.storeData1.forEach((item)=>{
@@ -676,6 +697,9 @@
           }
         })
       },
+      searchDishes(){
+
+  },
       searchStore(){
         this.store(this.storeName)
       },
@@ -856,6 +880,28 @@
 
 
       },
+      gq(id){
+        this.$confirm('确认沽清吗?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          let params = {
+            redirect: "x2a.dish.update-stock",
+            x2dishid:id,
+            type:1
+          };
+          oneTwoApi(params).then((res) => {
+            if(res.errcode === 0){
+              this.$message("操作成功");
+              this.getSchemeData(this.p)
+            }
+          })
+
+        }).catch(() => {
+          //
+        });
+      },
       del(id) {
         this.$confirm('此操作将删除选择的数据, 是否继续?', '提示', {
           confirmButtonText: '确定',
@@ -1035,6 +1081,8 @@
         }
 
       },
+
+
       canSelect(e){
         (e === true)? this.selectOne = true: this.selectOne = false
       },
@@ -1123,6 +1171,7 @@
         this.clickProp = '';
         this.showResouce()
       },
+
     },
     created() {
       if(this.getOperationSchemeTree().length === 0){

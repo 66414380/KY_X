@@ -148,11 +148,17 @@ export default{
   getOperationSchemeLevelId(state){
     return state.operationSchemeLevelId;
   },
-
   getDishesRecordTree(state){
     return state.dishesRecordTree;
   },
   getDishesRecordLevelId(state){
     return state.dishesRecordLevelId;
+  },
+
+  getStoreRecordTree(state){
+    return state.storeRecordTree;
+  },
+  getStoreRecordLevelId(state){
+    return state.storeRecordLevelId;
   },
 }

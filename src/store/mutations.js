@@ -51,9 +51,11 @@ const state = {
   storeLabelLevelId:'',//门店标签levelid
   operationSchemeTree:[],//x2运营方案树
   operationSchemeLevelId:'',//x2运营方案levelId
-
   dishesRecordTree:[],//菜品同步记录树
-  dishesRecordLevelId:''//菜品同步记录levelId
+  dishesRecordLevelId:'',//菜品同步记录levelId
+
+  storeRecordTree:[],//门店同步记录树
+  storeRecordLevelId:''//门店同步记录levelId
 };
 
 const mutations = {
@@ -203,6 +205,13 @@ const mutations = {
   },
   [types.DISHESRECORDLEVELID](state, obj){
     state.dishesRecordLevelId = obj.levelId
+  },
+
+  [types.STORERECORDTREE](state,obj){
+    state.storeRecordTree = obj.list;
+  },
+  [types.STORERECORDLEVELID](state, obj){
+    state.storeRecordLevelId = obj.levelId
   },
 };
 

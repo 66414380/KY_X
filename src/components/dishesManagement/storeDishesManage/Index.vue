@@ -144,7 +144,17 @@
             <!--</template>-->
 
           <!--</el-table-column>-->
+          <el-table-column label-class-name="table_head" header-align="center" align="center" label="ERP菜品" width="140">
+            <template slot-scope="scope">
 
+              <el-button size="small" type="primary" @click="link(scope.row.x0_productid)" v-if="scope.row.erpcode ===null">关联菜品</el-button>
+
+              <div class="">
+                <span>{{scope.row.erpcode}}</span>
+                <el-button size="small" @click="unlink(scope.row.x0_productid)" v-if="scope.row.erpcode !==null">解除关联</el-button>
+              </div>
+            </template>
+          </el-table-column>
 
         </el-table>
 
@@ -155,7 +165,8 @@
 
 
     </div>
-
+    <!--选择菜品-->
+    <xo-dishes ref="dishes" name="名称" :list="erpList" :currentRow="currentRow" :id="id" @submitErp="submitErp"></xo-dishes>
     <!--新增菜品-->
     <el-dialog
       title="新增菜品"
@@ -209,12 +220,56 @@
         p: {page: 1, size: 20, total: 0},
         showAdd:'',
         baseDishes: {},
+        erpList:[],
+        id:'',
+        currentRow:{check:null}
       }
     },
     watch: {},
     methods: {
       ...mapActions(['setStoreDishesManageTree','setStoreDishesManageLevelId']),
       ...mapGetters(['getStoreDishesManageTree','getStoreDishesManageLevelId']),
+      submitErp(){
+        this.currentRow.check = null;
+        this.showResouce(this.p,this.dishesName);
+      },
+      unlink(id){
+        this.$confirm('此操作将解除关联, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          let params = {
+            redirect: "x2a.product.linkerp",
+            x0_productid: id,
+            erpfoodid:''
+          };
+          oneTwoApi(params).then((res) => {
+            if(res.errcode === 0){
+              this.$message("操作成功");
+              this.showResouce(this.p,this.dishesName);
+            }
+          });
+        }).catch(() => {
+          //
+        });
+      },
+      link(id){
+        let params = {
+          redirect: "x2a.product.erpdish",
+          levelid:this.getStoreDishesManageLevelId(),
+
+        };
+        oneTwoApi(params).then((res) => {
+          if(res.errcode === 0){
+            this.id = id;
+            this.erpList = res.data;
+            this.$refs.dishes.openDialog();
+          }
+        });
+
+
+      },
       add() {
         let list = [];
         for (let map in this.baseDishes) {

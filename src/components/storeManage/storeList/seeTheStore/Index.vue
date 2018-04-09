@@ -48,10 +48,10 @@
                   <el-form-item label="预结单提示语:">
                     <span>{{storeData.orderPrompting}}</span>
                   </el-form-item>
-                  <el-form-item label="支付成功后跳转的URL:">
-                    <el-input v-model="storeData.payJumpUrl" :disabled="true"></el-input>
-                    <span>（为空表现不跳转）</span>
-                  </el-form-item>
+                  <!--<el-form-item label="支付成功后跳转的URL:">-->
+                    <!--<el-input v-model="storeData.payJumpUrl" :disabled="true"></el-input>-->
+                    <!--<span>（为空表现不跳转）</span>-->
+                  <!--</el-form-item>-->
                   <el-form-item label="URL是否带门店编码:">
                     <el-radio-group v-model="storeData.urlCode">
                       <el-radio disabled :label="1">是</el-radio>

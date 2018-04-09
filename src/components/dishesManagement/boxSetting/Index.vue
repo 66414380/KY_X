@@ -44,11 +44,23 @@
           </el-table-column>
           <el-table-column label-class-name="table_head" header-align="center" align="center" prop="remark" label="备注">
           </el-table-column>
+          <el-table-column label-class-name="table_head" header-align="center" align="center" label="ERP餐盒" width="140">
+            <template slot-scope="scope">
+
+              <el-button size="small" type="primary" @click="link(scope.row.id)" v-if="scope.row.erpcode ===null">关联餐盒</el-button>
+
+              <div >
+                <span>{{scope.row.erpcode}}</span>
+                <el-button size="small" @click="unlink(scope.row.id)" v-if="scope.row.erpcode !==null">解除关联</el-button>
+              </div>
+            </template>
+          </el-table-column>
+
           <el-table-column label-class-name="table_head" header-align="center" align="center" label="操作" width="200">
             <template slot-scope="scope">
 
               <el-button size="small" @click="option('查看',scope.row.id,scope.row.levelid)" >查看</el-button>
-              <el-button size="small" @click="option('编辑',scope.row.id,scope.row.levelid)" v-show="getTreeArr['修改菜品餐盒']">编辑</el-button>
+              <el-button size="small" @click="option('编辑',scope.row.id,scope.row.levelid)" :disabled="scope.row.erpcode !== null" v-show="getTreeArr['修改菜品餐盒']">编辑</el-button>
               <el-button size="small" type="danger" @click="del(scope.row.id)" v-show="getTreeArr['删除菜品餐盒']">删除</el-button>
 
             </template>
@@ -119,7 +131,8 @@
       </div>
     </el-dialog>
 
-
+    <!--选择菜品-->
+    <xo-dishes ref="dishes" name="餐盒名称" :list="erpbox" :currentRow="currentRow" :id="id" @submitErp="submitErp"></xo-dishes>
   </div>
 </template>
 
@@ -163,12 +176,56 @@
         showName:'',
         show:true,
         options: [],
+        erpbox:[],
+        id:'',
+        currentRow:{check:null}
       }
     },
     watch: {},
     methods: {
       ...mapActions(['setBoxSettingTree','setBoxSettingLevelId']),
       ...mapGetters(['getBoxSettingTree','getBoxSettingLevelId']),
+      submitErp(){
+        this.currentRow.check = null;
+        this.showResouce(this.p);
+      },
+      unlink(id){
+        this.$confirm('此操作将解除关联, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          let params = {
+            redirect: "x2a.lunchbox.linkerp",
+            lunboxid: id,
+            erpfoodid:''
+          };
+          oneTwoApi(params).then((res) => {
+            if(res.errcode === 0){
+              this.$message("操作成功");
+              this.showResouce(this.p);
+            }
+          });
+        }).catch(() => {
+          //
+        });
+      },
+      link(id){
+        let params = {
+          redirect: "x2a.lunchbox.erpbox",
+          levelid:this.getBoxSettingLevelId(),
+
+        };
+        oneTwoApi(params).then((res) => {
+          if(res.errcode === 0){
+            this.id = id;
+            this.erpbox = res.data;
+            this.$refs.dishes.openDialog();
+          }
+        });
+
+
+      },
       checkNumber(rule, value, callback){
         //可以是0 0.0 0.00
         let re = /^0{1}([.]([0-9][0-9]?)|[.][0-9][1-9])?$|^[1-9]\d*([.]{1}[0-9]{1,2})?$/;
