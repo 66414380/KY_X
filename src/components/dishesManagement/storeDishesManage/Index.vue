@@ -25,6 +25,8 @@
             <el-button size="small" @click="edit()" v-show="getTreeArr['修改外卖菜品']">批量编辑</el-button>
             <el-button size="small" @click="del()" v-show="getTreeArr['删除外卖菜品']">批量删除</el-button>
             <!--<el-button size="small" @click="issued()">批量下发</el-button>-->
+            <el-button size="small" @click="erpUp()" >从erp上新增菜品</el-button>
+
           </div>
 
           <div class="flex_a">
@@ -166,7 +168,7 @@
 
     </div>
     <!--选择菜品-->
-    <xo-dishes ref="dishes" name="名称" :list="erpList" :currentRow="currentRow" :id="id" @submitErp="submitErp"></xo-dishes>
+    <xo-dishes ref="dishes" name="名称" select="菜品" :list="erpList" :currentRow="currentRow" :id="id" :levelid="this.getStoreDishesManageLevelId()" @submitErp="submitErp"></xo-dishes>
     <!--新增菜品-->
     <el-dialog
       title="新增菜品"
@@ -229,6 +231,18 @@
     methods: {
       ...mapActions(['setStoreDishesManageTree','setStoreDishesManageLevelId']),
       ...mapGetters(['getStoreDishesManageTree','getStoreDishesManageLevelId']),
+      erpUp(){
+        let params = {
+          redirect: "x2a.product.erpcreate",
+          levelid: this.getStoreDishesManageLevelId(),
+        };
+        oneTwoApi(params).then((res) => {
+          if(res.errcode === 0){
+            this.$message("新增菜品成功");
+            this.showResouce(this.p,this.dishesName);
+          }
+        });
+      },
       submitErp(){
         this.currentRow.check = null;
         this.showResouce(this.p,this.dishesName);

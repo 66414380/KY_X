@@ -608,7 +608,7 @@
         let list = [];
         this.storeData0.forEach((item) => {
           if (item.select) {
-            list.push(item.id)
+            list.push(item.stores)
           }
         });
         if (list.length === 0) {

@@ -39,18 +39,6 @@
          //    ]
          //  },
 
-          {
-             name: 'X2管理',
-             children: [
-                    {
-                      name: '门店同步记录',
-                      route: '/x2OperationScheme/storeRecord'
-                    },
-
-
-             ]
-           },
-
           // {
           //   name: '菜品管理',
           //   children: [

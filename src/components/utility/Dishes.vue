@@ -1,9 +1,9 @@
 <template>
-  <el-dialog title="请选择" :visible.sync="dialogVisible" @close="close">
+  <el-dialog title="请选择" :visible.sync="dialogVisible" @close="close" @open="open">
     <div class="flex_ce">
       <div class="flex_a">
-        <!--<el-input size="small" placeholder="门店标签名称" class="margin_r_10" v-model="dishesName"></el-input>-->
-        <!--<el-button size="small" @click="searchDishes()">搜索</el-button>-->
+        <el-input size="small" placeholder="请输入编码、名称" class="margin_r_10" v-model="dishesName"></el-input>
+        <el-button size="small" @click="searchDishes()">搜索</el-button>
       </div>
     </div>
     <div class="margin_t_10">
@@ -25,7 +25,7 @@
   import {oneTwoApi} from '@/api/api.js';
     export default {
         name: "dishes",
-      props: ['id','name','list','currentRow'],
+      props: ['id','name','list','currentRow','select','x2dishid','storeData_id','levelid'],
       data() {
         return {
           dishesName:'',
@@ -33,6 +33,61 @@
         }
       },
       methods:{
+        searchDishes(){
+          if(this.select === "营运菜品"){
+            let params = {
+              redirect: "x2a.dish.erpdish",
+              storeid: this.storeData_id,
+              type:1,
+              search:this.dishesName
+            };
+            oneTwoApi(params).then((res) => {
+              if(res.errcode === 0){
+                this.list = res.data;
+              }
+            });
+          }
+          if(this.select === "营运餐盒"){
+            let params = {
+              redirect: "x2a.dish.erpdish",
+              storeid: this.storeData_id,
+              type:2,
+              search:this.dishesName
+            };
+            oneTwoApi(params).then((res) => {
+              if(res.errcode === 0){
+                this.list = res.data;
+              }
+            });
+          }
+          if(this.select === "餐盒"){
+            let params = {
+              redirect: "x2a.lunchbox.erpbox",
+              levelid: this.levelid,
+              search:this.dishesName
+            };
+            oneTwoApi(params).then((res) => {
+              if(res.errcode === 0){
+                this.list = res.data;
+              }
+            });
+          }
+          if(this.select === "菜品"){
+            let params = {
+              redirect: "x2a.product.erpdish",
+              levelid: this.levelid,
+              search:this.dishesName
+            };
+            oneTwoApi(params).then((res) => {
+              if(res.errcode === 0){
+                this.list = res.data;
+              }
+            });
+          }
+        },
+        open(){
+          this.dishesName = ''
+        },
         close(){
           this.currentRow.check = null
 
@@ -41,7 +96,47 @@
           this.currentRow.check = val;
         },
         submitDishes(){
-          if(this.name === "名称"){
+          if(this.select === "营运餐盒"){
+            if(this.currentRow.check === null){
+              this.$message("请选择餐盒");
+              return
+            }
+            let params = {
+              redirect: "x2a.dish.linkerpbox",
+              x2dishid: this.x2dishid,
+              lunchboxid:this.id,
+              erpfoodid:this.currentRow.check.id
+            };
+            oneTwoApi(params).then((res) => {
+              if(res.errcode === 0){
+                this.$message("操作成功");
+                this.$emit("submitErp", "ok");
+                this.dialogVisible = false
+              }
+            });
+          }
+          if(this.select === "营运菜品"){
+            if(this.currentRow.check === null){
+              this.$message("请选择菜品");
+              return
+            }
+
+            let params = {
+              redirect: "x2a.dish.linkerpdish",
+              x2dishid: this.id,
+              erpfoodid:this.currentRow.check.id
+            };
+            oneTwoApi(params).then((res) => {
+              if(res.errcode === 0){
+                this.$message("操作成功");
+                this.$emit("submitErp", "ok");
+                this.dialogVisible = false
+              }
+            });
+          }
+
+
+          if(this.select === "菜品"){
             if(this.currentRow.check === null){
               this.$message("请选择菜品");
               return
@@ -60,7 +155,7 @@
               }
             });
           }
-          if(this.name === "餐盒名称"){
+          if(this.select === "餐盒"){
             if(this.currentRow.check === null){
               this.$message("请选择餐盒");
               return

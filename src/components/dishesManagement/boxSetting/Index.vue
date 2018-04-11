@@ -132,7 +132,7 @@
     </el-dialog>
 
     <!--选择菜品-->
-    <xo-dishes ref="dishes" name="餐盒名称" :list="erpbox" :currentRow="currentRow" :id="id" @submitErp="submitErp"></xo-dishes>
+    <xo-dishes ref="dishes" name="餐盒名称" select="餐盒" :list="erpbox" :currentRow="currentRow" :id="id" :levelid="this.getBoxSettingLevelId()" @submitErp="submitErp"></xo-dishes>
   </div>
 </template>
 

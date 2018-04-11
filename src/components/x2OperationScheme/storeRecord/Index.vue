@@ -1,5 +1,5 @@
 <template>
-  <div >
+  <div v-show="getTreeArr['门店同步记录']">
 
     <div class="bodyTop padding_b_10">
       <div class="margin_b_10">
@@ -28,17 +28,12 @@
               </el-option>
             </el-select>
             <div class="margin_l_10 flex_a">
-
             </div>
-
-
           </div>
 
         </div>
 
         <el-table :data="tableData" border :height="tableHeight - 40" style="width: 100%;" >
-
-
           <el-table-column label-class-name="table_head" header-align="center" align="center" prop="sequence" label="排序" width="80">
             <template slot-scope="scope" >
               <div class="flex">
@@ -46,23 +41,25 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="x0_productid" label="同步时间" >
+          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="x2dishname" label="菜品" width="100">
           </el-table-column>
-          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="x0_productid" label="同步平台" >
+          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="created_at" label="同步时间" >
           </el-table-column>
-          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="x0_productid" label="同步状态" >
+          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="source" label="同步平台" >
           </el-table-column>
-          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="x0_productid" label="失败原因" >
+          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="result" label="同步状态" >
           </el-table-column>
-          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="x0_productid" label="操作人" width="100">
+          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="errmsg" label="失败原因" >
+          </el-table-column>
+          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="username" label="操作人" width="100">
           </el-table-column>
 
-          <el-table-column label-class-name="table_head" header-align="center" align="center" label="操作" width="80">
-          <template slot-scope="scope">
+          <!--<el-table-column label-class-name="table_head" header-align="center" align="center" label="操作" width="80">-->
+          <!--<template slot-scope="scope">-->
 
-              <el-button size="small"  @click="show(scope.row.id)">查看同步菜品详情</el-button>
-          </template>
-          </el-table-column>
+              <!--<el-button size="small"  @click="show(scope.row.id)">查看同步菜品详情</el-button>-->
+          <!--</template>-->
+          <!--</el-table-column>-->
         </el-table>
 
         <footer>
@@ -134,14 +131,44 @@
         tableData2: [],
         p: {page: 1, size: 20, total: 0},
         storeData:[],
-
+        selectOne:false,
+        storeData_id:''
       }
     },
     watch: {},
     methods: {
       ...mapActions(['setStoreRecordTree','setStoreRecordLevelId']),
       ...mapGetters(['getStoreRecordTree','getStoreRecordLevelId']),
+      getSchemeData(p) {
+        //门店同步记录列表
+        let params = {
+          redirect: "x2a.dishpushlog.index",
+          base_store_id:this.storeData_id,
+          dishname: '',
+          page: p.page,
+          pagesize: p.size
 
+        };
+        oneTwoApi(params).then((res) => {
+          if (res.errcode === 0) {
+            res.data.list.forEach((item)=> {
+              item.created_at = new Date((item.created_at + '000') * 1).format("yyyy-MM-dd hh:mm:ss");
+            });
+            this.tableData = res.data.list;
+            this.p.total = res.data.count;
+
+          }
+        })
+
+      },
+      handleStore() {
+        if(this.selectOne === true) {
+          this.getSchemeData(this.p = {page: 1, size: this.p.size, total: 0})
+        }
+      },
+      canSelect(e){
+        (e === true)? this.selectOne = true: this.selectOne = false
+      },
       getPage(page) {
         this.p.page = page;
         this.getSchemeData(this.p);
@@ -168,7 +195,13 @@
         };
         oneTwoApi(params).then((res) => {
           if (res.errcode === 0) {
+            if (res.data.list.length !== 0) {
+              this.storeData_id = res.data.list[0].base_store_id;
+            }
 
+            this.storeData = res.data.list;
+
+            this.getSchemeData(this.p = {page: 1, size: this.p.size, total: 0})
           }
         })
 
@@ -216,8 +249,6 @@
     updated() {
       let bodyWidth = document.querySelector('.content div').clientWidth;
       this.tableWidth = bodyWidth - this.$refs.tree.clientWidth;
-
-
 
     },
     destroyed(){

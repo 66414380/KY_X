@@ -57,6 +57,8 @@
         </el-table-column>
         <el-table-column header-align="center" align="center" prop="status" width="80" label="状态">
         </el-table-column>
+        <el-table-column header-align="center" align="center" prop="table" width="80" label="台号">
+        </el-table-column>
         <el-table-column header-align="center" align="center" label="操作" width="200">
           <template slot-scope="scope">
 

@@ -32,6 +32,7 @@
 
               <!--<el-button size="small" @click="step()" >同步至外卖平台</el-button>-->
               <el-button size="small" @click="stepTakeOut()" >同步至其他门店及外卖平台</el-button>
+              <el-button size="small" @click="erpUp()" >从erp上新增菜品</el-button>
             </div>
 
 
@@ -310,7 +311,7 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column label-class-name="table_head" header-align="center" align="center" label="餐盒" prop="lunchboxes" width="320">
+          <el-table-column label-class-name="table_head" header-align="center" align="center" label="餐盒" prop="lunchboxes" width="380">
             <template slot-scope="scope">
 
             <div v-if="scope.row.id === clickId && '餐盒' === clickProp">
@@ -348,7 +349,14 @@
             <div v-else>
               <div v-if="scope.row.lunchboxes !== null" >
                 <div v-for="(item,index) in scope.row.lunchboxes">
-                  <span v-if="item.count !== ''">{{item.lunchboxname}} X{{item.count}} ￥{{item.price}} </span>
+                  <span v-if="item.count !== ''">
+                    {{item.lunchboxname}} X{{item.count}} ￥{{item.price}}
+                  <el-button size="small" type="text" @click="link(item.lunchboxid,2,'营运餐盒',scope.row.id)" v-if="item.erpcode ===null">关联菜品</el-button>
+
+                    <span v-if="item.erpcode !==null">{{scope.row.erpcode}}</span>
+                    <el-button size="small" @click="unlinkBox(scope.row.id,item.lunchboxid)" v-if="item.erpcode !==null">解除关联</el-button>
+
+                  </span>
                 </div>
                 <div v-if="scope.row.totalBoxPrice !== 0" style="border-top: 1px solid #BECBD9">餐盒总价：￥{{scope.row.totalBoxPrice}}</div>
               </div>
@@ -452,16 +460,6 @@
             </template>
 
           </el-table-column>
-          <!--<el-table-column label-class-name="table_head" header-align="center" align="center" label="ERP菜品信息" width="140">-->
-            <!--<template slot-scope="scope">-->
-
-              <!--<el-button size="small" type="primary" @click="link(scope.row.id)">关联菜品</el-button>-->
-
-              <!--<div >-->
-                <!--<el-button size="small" @click="unlink(scope.row.id)">解除关联</el-button>-->
-              <!--</div>-->
-            <!--</template>-->
-          <!--</el-table-column>-->
 
           <!--<el-table-column label-class-name="table_head" header-align="center" align="center" label="上下架操作" width="120">-->
             <!--<template slot-scope="scope">-->
@@ -476,20 +474,35 @@
             <!--</template>-->
           <!--</el-table-column>-->
 
-          <!--<el-table-column label-class-name="table_head" header-align="center" align="center" label="更新记录" width="240">-->
-            <!--<template slot-scope="scope">-->
-                <!--<div class="flex_f">-->
-                  <!--<span>黄秀 2017-12-06-11:11</span>-->
-                  <!--<el-button type="text" @click="dialogVisible2 = true">查看历史</el-button>-->
-                <!--</div>-->
-            <!--</template>-->
-          <!--</el-table-column>-->
+          <el-table-column label-class-name="table_head" header-align="center" align="center" label="ERP菜品" width="140">
+            <template slot-scope="scope">
+
+              <el-button size="small" type="primary" @click="link(scope.row.id,1,'营运菜品')" v-if="scope.row.erpcode ===null">关联菜品</el-button>
+
+              <div class="">
+                <span>{{scope.row.erpcode}}</span>
+                <el-button size="small" @click="unlinkDishes(scope.row.id)" v-if="scope.row.erpcode !==null">解除关联</el-button>
+              </div>
+            </template>
+          </el-table-column>
+
+          <el-table-column label-class-name="table_head" header-align="center" align="center" label="更新记录" width="240">
+            <template slot-scope="scope">
+              <div class="flex_f">
+                <div class="flex">
+                  <span class="margin_r_10" v-for="(item,index) in scope.row.dishUpdatelog[0]" >{{item}}</span>
+                </div>
+                <el-button type="text" @click="showHistory(scope.row.dishUpdatelog)">查看历史</el-button>
+              </div>
+            </template>
+          </el-table-column>
 
           <el-table-column label-class-name="table_head" header-align="center" align="center" label="操作" width="160">
           <template slot-scope="scope">
 
               <el-button size="small" type="danger" @click="del(scope.row.id)">删除</el-button>
             <el-button size="small"  @click="gq(scope.row.id)" v-show="scope.row.stocktype === 1">沽清</el-button>
+            <el-button size="small"  @click="zm(scope.row.id)" v-show="scope.row.stocktype === 2">置满</el-button>
           </template>
           </el-table-column>
         </el-table>
@@ -568,8 +581,14 @@
     </el-dialog>
 
 
-    <!--选择菜品-->
-    <xo-dishes ref="dishes"></xo-dishes>
+    <el-dialog title="" :visible.sync="dialogFormVisible2" >
+      <div class="flex_f flex_a width_100">
+        <div class="margin_b_10" v-for="(item,index) in history" >{{item.username}} {{item.time}}</div>
+      </div>
+    </el-dialog>
+
+    <!--选择菜品/餐盒-->
+    <xo-dishes ref="dishes" name="名称" :select="select" :list="erpList" :currentRow="currentRow" :id="id" :x2dishid="x2dishid" :storeData_id ='storeData_id' @submitErp="submitErp"></xo-dishes>
   </div>
 </template>
 
@@ -603,6 +622,7 @@
         radio2:'',
         checkList:[],
         dialogFormVisible1:false,
+        dialogFormVisible2:false,
         dialogVisible2: false,
         tableWidth: 0,
         tableHeight: 0,
@@ -623,19 +643,101 @@
         boxList:[],
         storeName:'',
         storeData1:[],
+
+        select:'',//erp名称
+        erpList:[],
+        id:'',
+        x2dishid:'',
+        currentRow:{check:null},
+        history:[]
       }
     },
     watch: {},
     methods: {
       ...mapActions(['setOperationSchemeTree','setOperationSchemeLevelId']),
       ...mapGetters(['getOperationSchemeTree','getOperationSchemeLevelId']),
-      unlink(id){
+      showHistory(list){
+        this.dialogFormVisible2 = true;
+        this.history = list
+      },
+      erpUp(){
+        let params = {
+          redirect: "x2a.dish.erpcreate",
+          storeid: this.storeData_id,
+        };
+        oneTwoApi(params).then((res) => {
+          if(res.errcode === 0){
+            this.$message("新增菜品成功");
+            this.showResouce(this.p,this.dishesName);
+          }
+        });
+      },
+      unlinkBox(x2dishid,lunchboxid){
+        this.$confirm('此操作将解除关联, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          let params = {
+            redirect: "x2a.dish.linkerpbox",
+            x2dishid: x2dishid,
+            lunchboxid:lunchboxid,
+            erpfoodid:''
+          };
+          oneTwoApi(params).then((res) => {
+            if(res.errcode === 0){
+              this.$message("操作成功");
+              this.showResouce(this.p,this.dishesName);
+            }
+          });
+        }).catch(() => {
+          //
+        });
+      },
+      link(id,int,select,x2dishid = ''){
+        this.select = select;
+        let params = {
+          redirect: "x2a.dish.erpdish",
+          storeid:this.storeData_id,
+          type:int
+        };
+        oneTwoApi(params).then((res) => {
+          if(res.errcode === 0){
+            this.id = id;
+            this.x2dishid = x2dishid;
+            this.erpList = res.data;
+            this.$refs.dishes.openDialog();
+          }
+        });
+
 
       },
-      link(id){
-
-        this.$refs.dishes.openDialog();
+      submitErp(){
+        this.currentRow.check = null;
+        this.getSchemeData(this.p);
       },
+      unlinkDishes(id){
+        this.$confirm('此操作将解除关联, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          let params = {
+            redirect: "x2a.dish.linkerpdish",
+            x2dishid: id,
+            erpfoodid:''
+          };
+          oneTwoApi(params).then((res) => {
+            if(res.errcode === 0){
+              this.$message("操作成功");
+              this.showResouce(this.p,this.dishesName);
+            }
+          });
+        }).catch(() => {
+          //
+        });
+      },
+
       submit(){
         let storeList = [],dishesList = [];
         this.storeData1.forEach((item)=>{
@@ -880,6 +982,28 @@
 
 
       },
+      zm(id){
+        this.$confirm('确认置满吗?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          let params = {
+            redirect: "x2a.dish.updatestock",
+            x2dishid:id,
+            type:2
+          };
+          oneTwoApi(params).then((res) => {
+            if(res.errcode === 0){
+              this.$message("操作成功");
+              this.getSchemeData(this.p)
+            }
+          })
+
+        }).catch(() => {
+          //
+        });
+      },
       gq(id){
         this.$confirm('确认沽清吗?', '提示', {
           confirmButtonText: '确定',
@@ -887,7 +1011,7 @@
           type: 'warning'
         }).then(() => {
           let params = {
-            redirect: "x2a.dish.update-stock",
+            redirect: "x2a.dish.updatestock",
             x2dishid:id,
             type:1
           };

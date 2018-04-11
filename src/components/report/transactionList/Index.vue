@@ -1,10 +1,3 @@
-<style scoped>
-
-  .bodyTop {
-    padding-bottom: 10px;
-  }
-</style>
-
 <template>
   <div class="scroll_of" v-show="getTreeArr['列表']">
     <div class="bodyTop">
@@ -158,8 +151,9 @@
 
         <el-table-column header-align="center" align="center" prop="receive_money" label="实收金额"
                          width="100"></el-table-column>
-
-        <el-table-column header-align="center" align="center" prop="add_time" label="交易时间"
+        <el-table-column header-align="center" align="center" prop="add_time" label="创建时间"
+                         width="200"></el-table-column>
+        <el-table-column header-align="center" align="center" prop="pay_time" label="交易时间"
                          width="200"></el-table-column>
         <el-table-column header-align="center" align="center" prop="pay_status" label="交易状态"
                          width="100"></el-table-column>
@@ -169,8 +163,8 @@
         <el-table-column header-align="center" align="center" label="操作" fixed="right" width="140">
           <template slot-scope="scope">
             <div class="flex">
-              <el-button size="small" @click="orderStatus(scope.row)" >查询</el-button>
-              <div class="margin_l_10" v-if="scope.row.is_refund == 0 && scope.row.pay_status == '支付完成' && scope.row.iway !== '其他'">
+              <el-button size="small" @click="orderStatus(scope.row)">查询</el-button>
+              <div class="margin_l_10" v-if="scope.row.is_refund === 0 && scope.row.pay_status === '支付完成' && scope.row.iway !== '其他'">
                 <el-button size="small" @click="refund(scope.row)">退款</el-button>
               </div>
             </div>
@@ -189,6 +183,7 @@
       title="确认退款?"
       :visible.sync="dialogVisible"
       @close="close"
+      @open="open"
       width="30%">
 
       <el-form label-position="right" label-width="80px" ref="refundForm" :model="refundForm">
@@ -234,12 +229,21 @@
             <!--v-model="refundForm.remark">-->
           <!--</el-input>-->
           <el-radio-group v-model="refundForm.remark">
-            <el-radio label="收错钱">收错钱</el-radio>
-            <el-radio label="退菜">退菜</el-radio>
-            <el-radio label="不想吃了">不想吃了</el-radio>
-            <el-radio label="爱吃不吃">爱吃不吃</el-radio>
-            <el-radio label="其他">其他</el-radio>
+            <el-radio label="我要退菜" class="margin_all">我要退菜</el-radio>
+            <el-radio label="多收钱了" class="margin_all ">多收钱了</el-radio>
+            <el-radio label="忘记帮客人使用优惠了" class="margin_all ">忘记帮客人使用优惠了</el-radio>
+            <el-radio label="账单混乱，买错单了" class="margin_all ">账单混乱，买错单了</el-radio>
+            <el-radio label="菜品估清，忘删除" class="margin_all ">菜品估清，忘删除</el-radio>
+            <el-radio label="其他" class="margin_all ">其他</el-radio>
           </el-radio-group>
+
+          <el-input
+            v-if="refundForm.remark === '其他'"
+            type="textarea"
+            :rows="2"
+            placeholder="请输入其他原因"
+            v-model="refundForm.reason">
+          </el-input>
 
         </el-form-item>
 
@@ -309,6 +313,7 @@
           remark: '',
           user_name: '',
           password: '',
+          reason:''
         },
         refundOrderNo: '',
         actualRefundMoney: '',
@@ -347,6 +352,9 @@
             callback()
           }
         }
+      },
+      open(){
+        this.refundForm.reason = ''
       },
       close(){
         this.$refs['refundForm'].resetFields();
@@ -394,7 +402,7 @@
               //ok
               console.log(this.dateSelected[0] ,this.dateSelected[1])
               let store = this.store();
-              this.orderList(this.dateSelected[0] ,this.dateSelected[1],store,this.iway,this.ichannel,this.account,this.pay_status,this.order_no,this.out_order_no,this.scavengingForm,this.receive_terminal,this.p)
+              this.orderList(this.dateSelected[0] ,this.dateSelected[1],store,this.iway,this.ichannel,this.account,this.pay_status,this.order_no,this.out_order_no,this.scavengingForm,this.receive_terminal,this.p = {page: 1, size: 20, total: 0})
             }
         }
 
@@ -420,9 +428,11 @@
           if(res.data.errcode === 0){
             res.data.data.list.forEach((item)=>{
               item.add_time = new Date((item.add_time + '000') * 1).format("yyyy-MM-dd hh:mm:ss");
+              item.pay_time === 0 ? item.pay_time = '' : item.pay_time = new Date((item.pay_time +'000') * 1).format("yyyy-MM-dd hh:mm:ss");
               if(item.refund_time){
                 item.refund_time = new Date((item.refund_time +'000') * 1).format("yyyy-MM-dd hh:mm:ss")
               }
+
             });
             this.tableData = res.data.data.list;
             this.p.total = res.data.data.count
@@ -455,7 +465,8 @@
                 memo: this.refundForm.remark,
                 operate: JSON.parse(localStorage.getItem('user')),
                 user_name: this.refundForm.user_name,
-                password: this.refundForm.password
+                password: this.refundForm.password,
+                reason:this.refundForm.remark === '其他原因'? this.refundForm.reason : ''
               };
               oneTwoApi(params).then((res) => {
                 this.dialogVisible = false;
@@ -549,3 +560,12 @@
 
   }
 </script>
+<style scoped>
+
+  .bodyTop {
+    padding-bottom: 10px;
+  }
+  .margin_all{
+    margin: 0 15px 15px 0;
+  }
+</style>
