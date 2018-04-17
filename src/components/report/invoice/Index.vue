@@ -8,6 +8,17 @@
         <xo-datePicker @getRadioDate="getRadioDate"></xo-datePicker>
         <div class="flex_ec">
           <div class="margin_r_10">
+            <span>开票状态</span>
+            <el-select v-model="status_id" filterable clearable placeholder="请选择">
+              <el-option
+                v-for="item in statusList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id">
+              </el-option>
+            </el-select>
+          </div>
+          <div class="margin_r_10">
             <span>门店</span>
             <el-select v-model="store_id" filterable clearable placeholder="请选择">
               <el-option
@@ -18,6 +29,7 @@
               </el-option>
             </el-select>
           </div>
+
           <el-button class="margin_l_10" @click="search()">查询</el-button>
           <el-button type="primary" @click="out()">导出</el-button>
         </div>
@@ -103,7 +115,6 @@
                     <div class="flex_2">¥{{invoiceInfo.count_price}}</div>
                   </div>
                   <div style="border-bottom: 1px solid #bfcbd9;width: 100%">
-
                   </div>
 
                   <div class="flex_a pop_cell">
@@ -116,7 +127,21 @@
                   </div>
                   <div class="flex_a pop_cell">
                     <div class="flex_1">开票日期</div>
-                    <div class="flex_2"> {{invoiceInfo.add_time}}</div>
+                    <div class="flex_2">{{invoiceInfo.add_time}}</div>
+                  </div>
+                  <div style="border-bottom: 1px solid #bfcbd9;width: 100%">
+                  </div>
+                  <div class="flex_a pop_cell" v-if="invoiceInfo.red_add_time">
+                    <div class="flex_1">红冲时间</div>
+                    <div class="flex_2 pop_cell_color">{{invoiceInfo.red_add_time}}</div>
+                  </div>
+                  <div class="flex_a pop_cell" v-if="invoiceInfo.red_invoice_code">
+                    <div class="flex_1">红冲发票代码</div>
+                    <div class="flex_2 pop_cell_color">{{invoiceInfo.red_invoice_code}}</div>
+                  </div>
+                  <div class="flex_a pop_cell" v-if="invoiceInfo.red_invoice_number">
+                    <div class="flex_1">红冲发票号码</div>
+                    <div class="flex_2">{{invoiceInfo.red_invoice_number}}</div>
                   </div>
 
                 </div>
@@ -161,7 +186,9 @@
         dateSelected:[],
         total_price:'',
         total_num:'',
-        invoiceInfo:{}
+        invoiceInfo:{},
+        statusList:[{name: "正常", id: 0}, {name: "红冲", id: 1}],
+        status_id:''
       }
     },
     computed: {
@@ -257,6 +284,7 @@
           create_time: create_time,
           end_time: end_time,
           export: myExport,
+          status:this.status_id,
           page: p.page,
           pagesize: p.size
         };

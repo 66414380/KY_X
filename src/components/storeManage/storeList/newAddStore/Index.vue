@@ -110,7 +110,7 @@
         <el-table :data="form.storeData" border :height="tableHeight" style="width: 100%;">
         <el-table-column label-class-name="table_head" header-align="center" align="center" label="门店名称" width="200">
           <template slot-scope="scope">
-            <el-form-item label="" :prop="'storeData.' + scope.$index + '.storename'" :rules="{required: true, message: '请输入门店名称', trigger: 'blur'}">
+            <el-form-item label="" :prop="'storeData.' + scope.$index + '.storename'" :rules="{validator: checkName, required: true, trigger: 'blur'}">
               <el-input v-model="scope.row.storename" placeholder="请输入门店名称" class="m_t_22">
               </el-input>
             </el-form-item>
@@ -160,34 +160,32 @@
           </template>
         </el-table-column>
 
-        <el-table-column label-class-name="table_head" header-align="center" align="center" label="门店地址" width="600">
+        <el-table-column label-class-name="table_head" header-align="center" align="center" label="门店地址" width="700">
           <template slot-scope="scope">
             <div class="flex_a">
-              <el-form-item label="" :prop="'storeData.' + scope.$index + '.provinceid'" :rules="{type:'number',required: true, message: '请选择省', trigger: 'change'}">
+              <el-form-item style="width: 120px" label="" :prop="'storeData.' + scope.$index + '.provinceid'" :rules="{type:'number',required: true, message: '请选择省', trigger: 'change'}">
                 <el-select @change="myChange(scope.row)" v-model="scope.row.provinceid" clearable filterable @visible-change="canSelectProvider" placeholder="请选择省" class="m_t_22">
                   <el-option v-for="item in provinceList" :key="item.id" :label="item.address" :value="item.id">
                   </el-option>
                 </el-select>
               </el-form-item>
-              <div class="margin_l_10">
+              <div class="margin_l_10" style="width: 120px">
                 <el-form-item label="" :prop="'storeData.' + scope.$index + '.cityid'" :rules="{type:'number',required: true, message: '请选择市', trigger: 'change'}">
                   <el-select @change="myChange(scope.row)" v-model="scope.row.cityid" clearable filterable @visible-change="canSelectCity" placeholder="请选择市" class="m_t_22">
-                    <el-option v-for="item in scope.row.cityList" :key="item.id" :label="item.address"
-                               :value="item.id">
+                    <el-option v-for="item in scope.row.cityList" :key="item.id" :label="item.address" :value="item.id">
                     </el-option>
                   </el-select>
                 </el-form-item>
               </div>
-              <div class="margin_l_10">
+              <div class="margin_l_10" style="width: 120px">
                   <el-select v-model="scope.row.areaid" @change="myChange(scope.row)" clearable filterable placeholder="请选择区">
-                    <el-option v-for="item in scope.row.areaList" :key="item.id" :label="item.address"
-                               :value="item.id">
+                    <el-option v-for="item in scope.row.areaList" :key="item.id" :label="item.address" :value="item.id">
                     </el-option>
                   </el-select>
               </div>
-              <div class="margin_l_10">
+              <div class="margin_l_10 flex_1">
                 <el-form-item label="" :prop="'storeData.' + scope.$index + '.address'" :rules="{required: true, message: '请输入详细地址', trigger: 'blur'}">
-                  <el-input v-model="scope.row.address" placeholder="请输入详细地址" class="m_t_22">
+                  <el-input v-model="scope.row.address" placeholder="请输入详细地址" type="textarea" :rows="1" class="m_t_22">
                   </el-input>
                 </el-form-item>
               </div>
@@ -196,8 +194,8 @@
         </el-table-column>
         <el-table-column label-class-name="table_head" header-align="center" align="center" label="门店电话" width="200">
           <template slot-scope="scope">
-            <el-form-item label="" :prop="'storeData.' + scope.$index + '.tel'" :rules="{required: true, message: '请输入门店电话', trigger: 'blur'}">
-              <el-input v-model="scope.row.tel" placeholder="请输入门店电话" class="m_t_22">
+            <el-form-item label="" :prop="'storeData.' + scope.$index + '.tel'" :rules="{validator: checkTel,required: true, trigger: 'blur'}">
+              <el-input v-model="scope.row.tel" placeholder="请输入门店电话" class="m_t_22" :maxlength="30">
               </el-input>
             </el-form-item>
           </template>
@@ -257,6 +255,29 @@
     },
     watch: {},
     methods: {
+      checkName(rule, value, callback){
+        if (value === '') {
+          callback(new Error('请输入门店名称'));
+        }else if(value.length > 50) {
+          callback(new Error('不能超过50个字符'));
+        }else {
+          callback()
+        }
+      },
+      checkTel(rule, value, callback){
+        let re = /^([0-9]|[-])+$/g;
+        if (value === '') {
+          callback(new Error('请输入门店电话'));
+        }else {
+          if(re.test(value)){
+            callback()
+          }else {
+            callback(new Error('请输入正确电话号码'));
+          }
+        }
+      },
+
+
       addRow(row, index) {
         this.imgList = {
           business_src: (this.form.storeData[index].business_src)?this.form.storeData[index].business_src:'',

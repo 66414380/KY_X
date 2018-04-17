@@ -229,12 +229,27 @@
             <!--v-model="refundForm.remark">-->
           <!--</el-input>-->
           <el-radio-group v-model="refundForm.remark">
-            <el-radio label="我要退菜" class="margin_all">我要退菜</el-radio>
-            <el-radio label="多收钱了" class="margin_all ">多收钱了</el-radio>
-            <el-radio label="忘记帮客人使用优惠了" class="margin_all ">忘记帮客人使用优惠了</el-radio>
-            <el-radio label="账单混乱，买错单了" class="margin_all ">账单混乱，买错单了</el-radio>
-            <el-radio label="菜品估清，忘删除" class="margin_all ">菜品估清，忘删除</el-radio>
-            <el-radio label="其他" class="margin_all ">其他</el-radio>
+            <div class="flex_a f_f">
+              <div class="margin_r_10 margin_b_10">
+                <el-radio label="我要退菜">我要退菜</el-radio>
+              </div>
+              <div class="margin_r_10 margin_b_10">
+                <el-radio label="多收钱了">多收钱了</el-radio>
+              </div>
+              <div class="margin_r_10 margin_b_10">
+                <el-radio label="忘记帮客人使用优惠了">忘记帮客人使用优惠了</el-radio>
+              </div>
+              <div class="margin_r_10 margin_b_10">
+                <el-radio label="账单混乱，买错单了">账单混乱，买错单了</el-radio>
+              </div>
+              <div class="margin_r_10 margin_b_10">
+                <el-radio label="菜品估清，忘删除">菜品估清，忘删除</el-radio>
+              </div>
+              <div class="margin_r_10 margin_b_10">
+                <el-radio label="其他">其他</el-radio>
+              </div>
+            </div>
+
           </el-radio-group>
 
           <el-input
@@ -466,7 +481,7 @@
                 operate: JSON.parse(localStorage.getItem('user')),
                 user_name: this.refundForm.user_name,
                 password: this.refundForm.password,
-                reason:this.refundForm.remark === '其他原因'? this.refundForm.reason : ''
+                reason:this.refundForm.remark === '其他'? this.refundForm.reason : ''
               };
               oneTwoApi(params).then((res) => {
                 this.dialogVisible = false;
@@ -561,11 +576,7 @@
   }
 </script>
 <style scoped>
-
   .bodyTop {
     padding-bottom: 10px;
-  }
-  .margin_all{
-    margin: 0 15px 15px 0;
   }
 </style>

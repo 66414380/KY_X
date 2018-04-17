@@ -409,7 +409,7 @@
         //获取门店列表
         let params = {
           redirect: "x2.store.index",
-          levelId: levelId,
+          levelid: levelId,
           storeName: storeName,
           page: p.page,
           pagesize: p.size,

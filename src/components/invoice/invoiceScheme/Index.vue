@@ -128,8 +128,8 @@
         </el-form-item>
       </el-form>
 
-      <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
-        <el-tab-pane label="电子发票" name="first">
+      <el-tabs v-model="activeName" type="card" @tab-click="handleClick" >
+        <el-tab-pane label="电子发票" name="first" :disabled="showName === '查看'">
           <el-form ref="clientForm_first" :model="clientForm_first" label-width="180px">
             <!--<el-form-item label-width="50px" label="">-->
               <!--<el-switch-->
@@ -172,7 +172,7 @@
             </div>
 
         </el-tab-pane>
-        <el-tab-pane label="纸质发票" name="second">
+        <el-tab-pane label="纸质发票" name="second" :disabled="showName === '查看'">
           <el-form :model="clientForm_second" label-width="180px">
             <el-form-item label-width="50px" label="">
 
@@ -350,7 +350,7 @@
   import {oneTwoApi} from '@/api/api.js'
   import {getArea} from '../../utility/communApi'
   import {mapActions, mapGetters} from 'vuex';
-  import xoForm from './Form'
+
   import Hub from '../../utility/commun'
   export default {
     computed: {
@@ -359,7 +359,7 @@
       ]),
     },
     components: {
-      xoForm
+
     },
     data() {
       return {

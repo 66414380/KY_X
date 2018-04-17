@@ -25,7 +25,7 @@
             <el-button size="small" @click="edit()" v-show="getTreeArr['修改外卖菜品']">批量编辑</el-button>
             <el-button size="small" @click="del()" v-show="getTreeArr['删除外卖菜品']">批量删除</el-button>
             <!--<el-button size="small" @click="issued()">批量下发</el-button>-->
-            <el-button size="small" @click="erpUp()" >从erp上新增菜品</el-button>
+            <el-button size="small" @click="erpUp()" >从收银系统上新增菜品</el-button>
 
           </div>
 
@@ -146,7 +146,7 @@
             <!--</template>-->
 
           <!--</el-table-column>-->
-          <el-table-column label-class-name="table_head" header-align="center" align="center" label="ERP菜品" width="140">
+          <el-table-column label-class-name="table_head" header-align="center" align="center" label="收银系统菜品" width="140">
             <template slot-scope="scope">
 
               <el-button size="small" type="primary" @click="link(scope.row.x0_productid)" v-if="scope.row.erpcode ===null">关联菜品</el-button>

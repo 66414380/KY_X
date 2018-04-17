@@ -30,9 +30,9 @@
             <div class="margin_l_10 flex_a">
               <el-button size="small" @click="reLoadData()" >重置</el-button>
 
-              <!--<el-button size="small" @click="step()" >同步至外卖平台</el-button>-->
+              <el-button size="small" @click="step()" >同步至外卖平台</el-button>
               <el-button size="small" @click="stepTakeOut()" >同步至其他门店及外卖平台</el-button>
-              <el-button size="small" @click="erpUp()" >从erp上新增菜品</el-button>
+              <el-button size="small" @click="erpUp()" >从收银系统上新增菜品</el-button>
             </div>
 
 
@@ -40,13 +40,16 @@
 
           <div class="flex_a">
             <div class="margin_r_10">
-              <el-input size="small" v-model="dishname" placeholder="请输入菜品名称"></el-input>
+              <el-input size="small" v-model="searchName" placeholder="请输入菜品或品类名称"></el-input>
             </div>
             <el-button size="small" @click="search()">搜索</el-button>
           </div>
         </div>
+        <div>
+          双击菜品信息可编辑并自动同步到外卖平台
+        </div>
         <el-form ref="formRules" :model="form" class="myForm">
-        <el-table :data="form.tableData" border :height="tableHeight - 40" style="width: 100%;" @select-all="handleSelectionChange" ref="multipleTable" @cell-dblclick="clickOne">
+        <el-table :data="form.tableData" border :height="tableHeight - 60" style="width: 100%;" @select-all="handleSelectionChange" ref="multipleTable" @cell-dblclick="clickOne">
           <el-table-column
             header-align="center" align="center"
             type="selection"
@@ -67,7 +70,6 @@
               }"></el-input>
             </el-form-item>
               <div class="flex" v-else>
-
                 {{scope.row.sequence}}
               </div>
             </template>
@@ -78,11 +80,11 @@
                            width="140">
 
             <template slot-scope="scope" >
-            <el-form-item v-if="scope.row.id === clickId && '名称' === clickProp " label="" >
-              <el-input v-model="scope.row.dishname" icon="edit" :on-icon-click="()=>{
+              <el-form-item v-if="scope.row.id === clickId && '名称' === clickProp " label="" >
+                <el-input v-model="scope.row.dishname" icon="edit" :on-icon-click="()=>{
                 return handleIconClick(scope.row)
               }"></el-input>
-            </el-form-item>
+              </el-form-item>
             <div class="flex" v-else>
               {{scope.row.dishname}}
             </div>
@@ -165,9 +167,7 @@
                            width="140">
             <template slot-scope="scope">
 
-
               <el-upload
-
                 :action="$updateUrl"
                 name='filename'
                 :show-file-list="false"
@@ -219,7 +219,6 @@
                 return handleIconClick(scope.row)
               }"></el-input>
               </el-form-item>
-
 
               <div class="flex" v-else>
                 {{scope.row.description}}
@@ -316,13 +315,13 @@
 
             <div v-if="scope.row.id === clickId && '餐盒' === clickProp">
               <div v-for="(item,index) in scope.row.lunchboxes" class="flex_a m_16">
-                <el-form-item label="" :prop="'tableData.' + scope.$index  + '.lunchboxes.' + index + '.lunchboxname'" :rules="{required: true, message: '请选择餐盒配置', trigger: 'blur'}">
-                  <el-select v-model="item.lunchboxname" placeholder="请选择" style="width:120px">
+                <el-form-item label="" :prop="'tableData.' + scope.$index  + '.lunchboxes.' + index + '.lunchboxid'" :rules="{type:'number',required: true, message: '请选择餐盒配置', trigger: 'blur'}">
+                  <el-select v-model="item.lunchboxid" placeholder="请选择" style="width:120px">
                     <el-option
                       v-for="item1 in boxList"
                       :key="item1.id"
                       :label="item1.lunchboxname"
-                      :value="item1.lunchboxname">
+                      :value="item1.id">
                     </el-option>
                   </el-select>
                 </el-form-item>
@@ -348,12 +347,12 @@
 
             <div v-else>
               <div v-if="scope.row.lunchboxes !== null" >
-                <div v-for="(item,index) in scope.row.lunchboxes">
-                  <span v-if="item.count !== ''">
+                <div v-for="(item,index) in scope.row.lunchboxes" class="margin_b_10">
+                  <span v-if="item.count !== ''" >
                     {{item.lunchboxname}} X{{item.count}} ￥{{item.price}}
-                  <el-button size="small" type="text" @click="link(item.lunchboxid,2,'营运餐盒',scope.row.id)" v-if="item.erpcode ===null">关联菜品</el-button>
+                  <el-button size="small" type="primary" @click="link(item.lunchboxid,2,'营运餐盒',scope.row.id)" v-if="item.erpcode ===null">关联餐盒</el-button>
 
-                    <span v-if="item.erpcode !==null">{{scope.row.erpcode}}</span>
+                    <span v-if="item.erpcode !==null">{{item.erpcode}}</span>
                     <el-button size="small" @click="unlinkBox(scope.row.id,item.lunchboxid)" v-if="item.erpcode !==null">解除关联</el-button>
 
                   </span>
@@ -474,7 +473,7 @@
             <!--</template>-->
           <!--</el-table-column>-->
 
-          <el-table-column label-class-name="table_head" header-align="center" align="center" label="ERP菜品" width="140">
+          <el-table-column label-class-name="table_head" header-align="center" align="center" label="收银系统菜品" width="140">
             <template slot-scope="scope">
 
               <el-button size="small" type="primary" @click="link(scope.row.id,1,'营运菜品')" v-if="scope.row.erpcode ===null">关联菜品</el-button>
@@ -516,8 +515,8 @@
     </div>
     <el-dialog title="是否将菜品更新变化同步至外卖平台？" :visible.sync="dialogVisible2">
       <el-checkbox-group v-model="checkList">
-        <el-checkbox label="1">美团</el-checkbox>
-        <el-checkbox label="2">饿了么</el-checkbox>
+        <el-checkbox label="mt">美团</el-checkbox>
+        <el-checkbox label="el">饿了么</el-checkbox>
         <!--<el-checkbox label="3">百度</el-checkbox>-->
       </el-checkbox-group>
       <div class="flex_a margin_t_10">
@@ -550,7 +549,7 @@
     <el-dialog title="选择门店" :visible.sync="dialogFormVisible1" >
       <div class="flex_ce">
         <div class="flex_a">
-          <el-input size="small" placeholder="门店标签名称" class="margin_r_10" v-model="storeName"></el-input>
+          <el-input size="small" placeholder="请输入门店名称" class="margin_r_10" v-model="storeName"></el-input>
           <el-button size="small" @click="searchStore()">搜索</el-button>
         </div>
       </div>
@@ -584,6 +583,9 @@
     <el-dialog title="" :visible.sync="dialogFormVisible2" >
       <div class="flex_f flex_a width_100">
         <div class="margin_b_10" v-for="(item,index) in history" >{{item.username}} {{item.time}}</div>
+      </div>
+      <div class="flex_f flex_a width_100" v-if="history.length === 0">
+        暂无数据
       </div>
     </el-dialog>
 
@@ -634,7 +636,7 @@
         baseDishes: {},
         storeData:[],
         storeData_id:'',
-        dishname:'',
+        searchName:'',
         selectOne:false,
         clickId:'',
         clickProp:'',
@@ -644,7 +646,7 @@
         storeName:'',
         storeData1:[],
 
-        select:'',//erp名称
+        select:'',//收银系统名称
         erpList:[],
         id:'',
         x2dishid:'',
@@ -667,7 +669,7 @@
         };
         oneTwoApi(params).then((res) => {
           if(res.errcode === 0){
-            this.$message("新增菜品成功");
+            this.$message(`更新成功：${res.data}个菜品！`);
             this.showResouce(this.p,this.dishesName);
           }
         });
@@ -824,7 +826,23 @@
           this.$message.warning('请选择日期时间');
           return
         }
-        console.log(this.$data)
+
+        let params = {
+          redirect: "x2a.dish.online",
+          storeid:this.storeData_id,
+          source:this.checkList.join(','),
+          timetype: this.radio2 === 1?new Date(this.time * 1).format("yyyy-MM-dd hh:mm:ss"): 0,
+          type:2,
+
+        };
+
+        oneTwoApi(params).then((res) => {
+          if (res.errcode === 0) {
+            this.clickId = "";
+            this.$message('操作成功');
+          }
+        })
+
       },
       out(){
         this.time = '';
@@ -842,7 +860,7 @@
           return
         }else {
           if(!re.test(row.sequence)){
-            this.$message.warning('排序格式必须数字');
+            this.$message.warning('排序格式必须整数');
             return
           }
         }
@@ -883,6 +901,7 @@
             unit:row.unit,
             mincount:row.mincount
           };
+          console.log(params)
           oneTwoApi(params).then((res) => {
             if (res.errcode === 0) {
               this.clickId = "";
@@ -892,17 +911,16 @@
         }
       },
       handleIconClickValidate(row,formName){
-        console.log(row)
-
         if(this.clickProp === '餐盒'){
-          row.totalBoxPrice = 0;
-          row.lunchboxes.forEach((item1)=>{
-            if(item1.lunchboxid !== ''){
-            item1.totalprice =  item1.count * item1.price;
-            row.totalBoxPrice += item1.totalprice
-            }
-          });
-          row.totalBoxPrice = row.totalBoxPrice.toFixed(2);
+          // row.totalBoxPrice = 0;
+          // row.lunchboxes.forEach((item1)=>{
+          //   if(item1.lunchboxid !== ''){
+          //   item1.totalprice =  item1.count * item1.price;
+          //   row.totalBoxPrice += item1.totalprice
+          //   }
+          // });
+          // row.totalBoxPrice = row.totalBoxPrice.toFixed(2);
+          // console.log(row)
         }
 
         this.$refs[formName].validate((valid) => {
@@ -919,12 +937,8 @@
           }
         });
 
-
       },
       clickOne(row, column, cell, event){
-        console.log(row)
-        console.log(column)
-
         this.clickId = row.id;
         this.clickProp = column.label
       },
@@ -995,7 +1009,7 @@
           };
           oneTwoApi(params).then((res) => {
             if(res.errcode === 0){
-              this.$message("操作成功");
+              this.$message(res.data);
               this.getSchemeData(this.p)
             }
           })
@@ -1017,7 +1031,7 @@
           };
           oneTwoApi(params).then((res) => {
             if(res.errcode === 0){
-              this.$message("操作成功");
+              this.$message(res.data);
               this.getSchemeData(this.p)
             }
           })
@@ -1060,7 +1074,7 @@
         let params = {
           redirect: "x2a.dish.index",
           base_store_id:this.storeData_id,
-          dishname: this.dishname,
+          dishname: this.searchName,
           page: p.page,
           pagesize: p.size
 

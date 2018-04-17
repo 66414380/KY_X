@@ -111,7 +111,7 @@
         <el-form-item label="名称:" prop="nickname" :rules="{required: true, message: '请输入名称', trigger: 'blur'}">
           <el-input v-model="formUserEdit.nickname" placeholder="请输入内容" ></el-input>
         </el-form-item>
-        <el-form-item label="手机号:" prop="phone" :rules="{validator: checkPhone,required: true, trigger: 'blur'}">
+        <el-form-item label="手机号:" prop="phone" :rules="{validator: checkMyPhone,required: true, trigger: 'blur'}">
           <el-input v-model="formUserEdit.phone" :maxlength="11"  placeholder="请输入手机号"></el-input>
         </el-form-item>
 
@@ -206,7 +206,7 @@
 <script>
 
   import {getScrollHeight} from '../../utility/getScrollHeight'
-  import {getLevel} from '../../utility/communApi'
+  import {getLevel,checkPhone} from '../../utility/communApi'
   import getApi1 from '../PermissionManagement/permissionManagement.service'
   import getApi2 from '../PermissionManagement/user/user.service'
   import {mapActions, mapGetters} from 'vuex';
@@ -262,6 +262,10 @@
     watch: {},
     methods: {
       ...mapActions(['setTreeArr']),
+
+      checkMyPhone(rule, value, callback){
+        checkPhone(rule, value, callback)
+      },
       open(){
         getApi2.getRoleList().then((res)=>{
           if(res.data.errcode === 0){
@@ -374,18 +378,7 @@
 
         this.dialogVisible = true
       },
-      checkPhone(rule, value, callback){
-        let re = /^1[3|4|5|7|8]\d{9}$/;
-        if (value === '') {
-          callback(new Error('请输入手机'));
-        }else {
-          if(re.test(value)){
-            callback()
-          }else {
-            callback(new Error('请输入正确手机号码'));
-          }
-        }
-      },
+
       del(row) {
         this.$confirm('此操作将删除该条数据, 是否继续?', '提示', {
           confirmButtonText: '确定',

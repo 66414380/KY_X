@@ -120,4 +120,18 @@ let recur = (data,bool,id,that) => {
   })
 };
 
-export {getLeft,getLevel,getArea,get,getWayInfo,getChannelInfo,getList,getArr,getStoreListAll,axios,recur}
+
+let checkPhone = (rule, value, callback) => {
+  let re = /^1[3|4|5|7|8]\d{9}$/;
+  if (value === '') {
+    callback(new Error('请输入手机'));
+  }else {
+    if(re.test(value)){
+      callback()
+    }else {
+      callback(new Error('请输入正确手机号码'));
+    }
+  }
+};
+
+export {getLeft,getLevel,getArea,get,getWayInfo,getChannelInfo,getList,getArr,getStoreListAll,axios,recur,checkPhone}

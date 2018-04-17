@@ -54,8 +54,8 @@
         <el-table-column header-align="center" align="center" prop="wx_money" label="微信支付" width="100"></el-table-column>
 
         <el-table-column header-align="center" align="center" prop="wx_num" label="微信支付笔数" width="140"></el-table-column>
-        <!--<el-table-column header-align="center" align="center" prop="qq" label="QQ钱包" width="100"></el-table-column>-->
-        <!--<el-table-column header-align="center" align="center" prop="qqCount" label="QQ钱包笔数" width="140"></el-table-column>-->
+        <el-table-column header-align="center" align="center" prop="other_num" label="其他统计笔数" width="140"></el-table-column>
+        <el-table-column header-align="center" align="center" prop="other_money" label="其他统计金额" width="140"></el-table-column>
         <el-table-column header-align="center" align="center" prop="refund_money" label="退款金额" width="100"></el-table-column>
         <el-table-column header-align="center" align="center" prop="refund_num" label="退款笔数" width="100"></el-table-column>
         <el-table-column header-align="center" align="center" prop="receive_money" label="实收金额（总）" width="140"></el-table-column>

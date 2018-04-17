@@ -147,7 +147,7 @@
         <el-form-item label="名称:" prop="nickname" :rules="{required: true, message: '请输入用户名称', trigger: 'blur'}">
           <el-input v-model="formUser.nickname" placeholder="请输入用户名称"></el-input>
         </el-form-item>
-        <el-form-item label="手机号:" prop="phone" :rules="{validator: checkPhone,required: true, trigger: 'blur'}">
+        <el-form-item label="手机号:" prop="phone" :rules="{validator: checkMyPhone,required: true, trigger: 'blur'}">
           <el-input v-model="formUser.phone" :maxlength="11"  placeholder="请输入手机号"></el-input>
         </el-form-item>
         <div v-for="(domain, index) in formUser.billHuman" class="flex_r">
@@ -281,7 +281,7 @@
   import {getScrollHeight} from '../../utility/getScrollHeight'
 
   import getApi from './permissionManagement.service'
-  import {getLevel,recur} from '../../utility/communApi'
+  import {getLevel,recur,checkPhone} from '../../utility/communApi'
   import Hub from '../../utility/commun'
   import { mapActions,mapGetters } from 'vuex';
 
@@ -334,7 +334,7 @@
           billHuman: [
             {value: '', value1: ''}
           ],
-          status: ''
+          status: true
         },
         groupName: '',
         fileList: [],
@@ -346,6 +346,10 @@
     methods: {
       ...mapActions(['setPermissionLevelId','setPermissionTree']),
       ...mapGetters(['getPermissionLevelId','getPermissionTree']),
+      checkMyPhone(rule, value, callback){
+        checkPhone(rule, value, callback)
+      },
+
       search(){
         if(this.roleGroupName === ''){
           //this.showRoleList(this.p = {page: 1, size: 20, total: 0})
@@ -385,19 +389,6 @@
           });
         }
       },
-
-      checkPhone(rule, value, callback){
-          let re = /^1[3|4|5|7|8]\d{9}$/;
-          if (value === '') {
-            callback(new Error('请输入手机'));
-          }else {
-            if(re.test(value)){
-              callback()
-            }else {
-              callback(new Error('请输入正确手机号码'));
-            }
-          }
-      },
       submitFrom2(formRules){
         this.$refs[formRules].validate((valid) => {
           if (valid) {
@@ -415,11 +406,6 @@
         });
       },
       open2(){
-        getApi.getGroupList({page: 1, size: 1000, total: 0},this.getPermissionLevelId()).then((res)=>{
-          this.selectGroupList = res.data.data.list
-        })
-      },
-      dialogClose2() {
         this.formUser = {
           nickname: '',
           phone: '',
@@ -427,10 +413,15 @@
           billHuman: [
             {value: '', value1: ''}
           ],
-          status: ''
+          status: true
         };
+        getApi.getGroupList({page: 1, size: 1000, total: 0},this.getPermissionLevelId()).then((res)=>{
+          this.selectGroupList = res.data.data.list
+        })
+      },
+      dialogClose2() {
         this.selectGroupList =[];
-          this.$refs['formRules2'].resetFields();
+        this.$refs['formRules2'].resetFields();
       },
       submitFrom(formRules) {
         this.$refs[formRules].validate((valid) => {

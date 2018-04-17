@@ -99,11 +99,12 @@
             </template>
 
           </el-table-column>
-          <el-table-column label-class-name="table_head" header-align="center" align="center" label="操作" width="240">
+          <el-table-column label-class-name="table_head" header-align="center" align="center" label="操作" width="340">
             <template slot-scope="scope">
               <el-button size="small" type="primary" @click.stop="getOneList(scope.row.id)">查看</el-button>
               <el-button size="small" @click.stop="edit(scope.row.id)">编辑</el-button>
               <el-button size="small" type="danger" @click.stop="del(scope.row.id)" v-show="getTreeArr['删除']">删除</el-button>
+              <el-button size="small" @click.stop="invoiceEdit(scope.row.invoiceId,scope.row.id)">发票方案编辑</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -219,6 +220,155 @@
         <el-button type="primary" @click="add()">确认</el-button>
       </div>
     </el-dialog>
+
+    <!--发票方案编辑-->
+    <el-dialog title="发票方案编辑" :visible.sync="dialogVisible3" @open="open1" @close="close1">
+
+
+        <el-form ref="clientForm" :model="clientForm" label-width="180px">
+          <el-form-item label="方案名称:" prop="name" :rules="{required: true, message: '请输入方案名称', trigger: 'blur'}">
+            <el-input v-model="clientForm.name" style="width: 200px;" placeholder="请输入方案名称"></el-input>
+          </el-form-item>
+
+          <div v-for="(domain, index) in clientForm.third_code" class="flex_r">
+            <el-form-item :label="index === 0?'第三方编码':''" :key="domain.key">
+              <div>
+                <el-row>
+                  <el-col>
+                    <div style="width:150px">
+                      <el-input v-model="domain.code1" placeholder="请输入第三方名称"></el-input>
+                    </div>
+                  </el-col>
+                </el-row>
+              </div>
+            </el-form-item>
+            <div class="m-rank">
+              <div class="m-rank-child"></div>
+            </div>
+            <el-form-item label-width="0" :key="domain.key">
+              <div>
+                <el-row>
+                  <el-col>
+                    <div style="width:150px">
+                      <el-input v-model="domain.code2" placeholder="请输入第三方编码"></el-input>
+                    </div>
+                  </el-col>
+                </el-row>
+              </div>
+            </el-form-item>
+            <div class="flex_sc">
+              <div class="m-storeCode margin_l_10" @click="addDomain1">
+                <i class="fa fa-plus-circle" aria-hidden="true"></i>
+              </div>
+              <div v-if="(clientForm.third_code.length>1) && (index !== 0)" class="m-storeCode margin_l_10"
+                   @click.prevent="removeDomain1(index)">
+                <i class="fa fa-minus-circle" aria-hidden="true"></i>
+              </div>
+            </div>
+          </div>
+
+          <el-form-item  label="状态">
+            <el-switch
+              v-model="clientForm.status"
+              on-color="#13ce66"
+              off-color="#ff4949" >
+            </el-switch>
+          </el-form-item>
+        </el-form>
+
+        <el-tabs v-model="activeName" type="card" @tab-click="handleClick" >
+          <el-tab-pane label="电子发票" name="first">
+            <el-form ref="clientForm_first" :model="clientForm_first" label-width="180px">
+
+              <el-form-item label-width="50px" label="">
+                <div>授权标识(百望电子提供针对不同税号企业的授权应用标识)</div>
+                <el-input v-model="clientForm_first.token"></el-input>
+              </el-form-item>
+            </el-form>
+
+
+            <div>
+
+              <xo-form :clientFormData="clientForm_first3" showName="修改" :purchaserList="clientForm_first3.purchasers" ref="xoClientFormEdit" myRef="xoClientFormEdit" :showIncrement="showIncrement"></xo-form>
+
+              <div class="flex margin_t_10" >
+
+                <!--<el-button type="primary" @click="submitFrom('clientForm','xoClientFormEdit',0)">保存并跳转页面设计</el-button>-->
+                <el-button type="primary" @click="submitFrom('clientForm','xoClientFormEdit',2)">保存</el-button>
+                <el-button @click="dialogVisible3 = false">取消</el-button>
+              </div>
+            </div>
+
+          </el-tab-pane>
+          <el-tab-pane label="纸质发票" name="second">
+            <el-form :model="clientForm_second" label-width="180px">
+              <el-form-item label-width="50px" label="">
+
+                <div class="flex_a">
+                  <el-switch
+                    v-model="clientForm_second.auto_log"
+                    on-color="#13ce66"
+                    off-color="#ff4949">
+                  </el-switch>
+
+                  <div class="margin_l_10 margin_r_10 t_a">
+                    自动记录开票方信息，再次开票免输入:
+                  </div>
+                  <el-popover
+                    placement="right"
+                    width="200"
+                    trigger="hover"
+                    content="备注：客人开过一次发票后，系统将自动记录该开票信息，客人再次开票时，可免输入开票信息">
+                    <i class="fa fa-info-circle" aria-hidden="true" slot="reference" style="font-size: 15px;"></i>
+                  </el-popover>
+                </div>
+
+                <div class="flex_a">
+                  <el-switch
+                    v-model="clientForm_second.code_lacation"
+                    on-color="#13ce66"
+                    off-color="#ff4949">
+                  </el-switch>
+
+                  <div class="margin_l_10 margin_r_10 t_a">
+                    二维码打印在预结单小票:
+                  </div>
+                  <el-popover
+                    placement="right"
+                    width="200"
+                    trigger="hover"
+                    content="备注：发票二维码与支付二维码均在预结单（指顾客付款前供顾客核实的消费清单）小票上打印（二码合一）顾客第一次扫码完成支付，第二次扫进入自助开电子发票页面">
+                    <i class="fa fa-info-circle" aria-hidden="true" slot="reference" style="font-size: 15px;"></i>
+                  </el-popover>
+                </div>
+              </el-form-item>
+
+
+              <el-form-item label-width="50px" label="">
+                <h3 class="margin_b_10">购买方信息 <span style="color: #8c939d;font-size: 14px">(红色按钮为必填项，灰色按钮选填、可自行决定)</span></h3>
+
+                <div class="flex_r f_f margin_b_10">
+                  <xo-button v-for="(item,index) in clientForm_second.purchasers" :key="item.id" :id="item.id"
+                             showName="修改" :name="item.name" marginRight="10px" marginBottom="10px" backgroundColor="#ffffff"
+                             :isBool="item.select"
+                             @click="buyInfo"></xo-button>
+                </div>
+
+
+
+              </el-form-item>
+            </el-form>
+            <div class="flex">
+              <el-button type="primary" @click="submitFrom('clientForm','',2)">保存</el-button>
+              <el-button @click="dialogVisible3 = false">取消</el-button>
+            </div>
+          </el-tab-pane>
+        </el-tabs>
+
+
+
+    </el-dialog>
+
   </div>
 </template>
 
@@ -229,7 +379,7 @@
   import {getLeft,recur} from '../../../utility/communApi'
   import { mapActions,mapGetters } from 'vuex';
   import Hub from '../../../utility/commun'
-
+  import {oneTwoApi} from '@/api/api.js';
   export default {
     computed: {
       ...mapGetters([
@@ -244,6 +394,7 @@
         dialogVisible: false,
         dialogVisible1: false,
         dialogVisible2: false,
+        dialogVisible3: false,
         tableHeight: 0,
         tableWidth: 0,
         navList: [{name: "门店管理", url: ''}, {name: "门店列表", url: ''}],
@@ -275,13 +426,236 @@
         p: {page: 1, size: 20, total: 0},
         baseStore: {},//点击新增时的门店
         totalSelect:0,//点击新增时的门店的选择总数
-        checkAll:false
+        checkAll:false,
+        activeName: 'first',
+        clientForm: {
+          name: '',
+          third_code: [
+            {code1: '', code2: ''}
+          ],
+          status: true,
+          type:1
+        },
+        clientForm_first: {
+        token:'',
+        },
+        //修改
+        clientForm_first3:{
+          auto_log: true,
+          code_lacation:false,
+          purchasers: [],
+          code_number:'',
+          sale_name:'',
+          address:'',
+          tel:'',
+          account:'',
+          drawer:'',
+          tax_rate:'',
+          service_name:'',
+          payee:'',
+          reviewer:'',
+          card_package_allow:false,
+          alipay_allow:false,
+          other_pay_allow:false,
+          merchant_abbreviation:"",
+          logo_url:""
+        },
+        clientForm_second:{
+          auto_log: true,
+          code_lacation:false,
+          purchasers: []
+        },
+        showIncrement:{check:false},
+        storeId:''
       }
     },
     watch: {},
     methods: {
       ...mapActions(['setX1StoreLevelId','setX1storeTree']),
       ...mapGetters(['getX1StoreLevelId','getX1storeTree']),
+     async submitFrom(formRules,formRules2,Int){
+        let a, b;
+        await this.$refs[formRules].validate((valid) => {
+          if (valid) {
+            a = true
+          } else {
+            console.log('error submit!!');
+            a = false
+          }
+        });
+
+        if(formRules2 === 'xoClientFormEdit'){
+          await  this.$refs.xoClientFormEdit.$refs["xoClientFormEdit"].validate((valid) => {
+            if (valid) {
+              b = true
+            } else {
+              console.log('error submit!!');
+              b = false
+            }
+          });
+        }
+       if(formRules2 === ''){
+         b = true
+       }
+
+       if (a === true && b === true) {
+         let list = [],status,auto_log,code_lacation,card_package_allow,alipay_allow,other_pay_allow;
+
+         if(this.clientForm.type === 1){
+           this.clientForm_first3.purchasers.forEach((item) => {
+             if (item.selectF === true) {
+               list.push(item.id)
+             }
+           });
+           (this.clientForm.status === true)? status = 1: status = 0;
+           (this.clientForm_first3.auto_log === true)? auto_log = 1: auto_log = 0;
+           (this.clientForm_first3.code_lacation === true)? code_lacation = 1: code_lacation = 0;
+           (this.clientForm_first3.card_package_allow === true)? card_package_allow = 1: card_package_allow = 0;
+           (this.clientForm_first3.alipay_allow === true)? alipay_allow = 1: alipay_allow = 0;
+           (this.clientForm_first3.other_pay_allow === true)? other_pay_allow = 1: other_pay_allow = 0;
+
+         }else {
+           this.clientForm_second.purchasers.forEach((item) => {
+             if (item.select === true) {
+               list.push(item.id)
+             }
+           });
+           (this.clientForm_second.auto_log === true)? auto_log = 1: auto_log = 0;
+           (this.clientForm_second.code_lacation === true)? code_lacation = 1: code_lacation = 0;
+         }
+
+         // 单门店方案配置
+         let params = {
+           redirect: "x1.invoice.setStoreInvoiceScheme",
+           id: this.storeId,
+           name: this.clientForm.name,
+           type:this.clientForm.type,
+           third_code: window.JSON.stringify(this.clientForm.third_code),
+           status: status,
+           token:this.clientForm_first.token,
+           auto_log: auto_log,
+           code_lacation:code_lacation,
+           purchasers: list.join(','),
+           code_number:this.clientForm_first3.code_number,
+           sale_name:this.clientForm_first3.sale_name,
+           address:this.clientForm_first3.address,
+           tel:this.clientForm_first3.tel,
+           account:this.clientForm_first3.account,
+           drawer:this.clientForm_first3.drawer,
+           tax_rate:this.clientForm_first3.tax_rate,
+           service_name:this.clientForm_first3.service_name,
+           payee:this.clientForm_first3.payee,
+           reviewer:this.clientForm_first3.reviewer,
+           card_package_allow:card_package_allow,
+           alipay_allow:alipay_allow,
+           other_pay_allow:other_pay_allow,
+           merchant_abbreviation:this.clientForm_first3.merchant_abbreviation,
+           logo_url:this.clientForm_first3.logo_url,
+         };
+         oneTwoApi(params).then((res) => {
+           if(res.errcode === 0){
+               this.dialogVisible3 = false;
+             this.showResouce(this.p, this.getX1StoreLevelId(),this.searchName);
+           }
+         })
+       }
+
+      },
+      removeDomain1(index) {
+        this.clientForm.third_code.splice(index, 1)
+      },
+      addDomain1() {
+        this.clientForm.third_code.push({code1: '', code2: ''});
+      },
+      buyInfo(id, bool) {
+          this.clientForm_second.purchasers.forEach((item) => {
+            if (item.id === id) {
+              item.select = bool
+            }
+          })
+      },
+      handleClick(tab, event) {
+        if (tab.name === 'first') {
+          this.clientForm.type = 1
+        }else {
+          this.clientForm.type = 2
+        }
+      },
+      close1(){
+        this.showIncrement = {check:false};
+        this.$refs['clientForm'].resetFields();
+        this.$refs['clientForm_first'].resetFields();
+        this.storeId = '';
+        this.$refs.xoClientFormEdit.$refs['xoClientFormEdit'].resetFields();
+      },
+      open1() {
+
+      },
+      invoiceEdit(invoiceId,id){
+        this.dialogVisible3 = true;
+        this.storeId = id;
+        // 发票方案详情
+        let params = {
+          redirect: "x1.invoice.getInvoiceInfo",
+          id: invoiceId,
+        };
+        oneTwoApi(params).then((res) => {
+          if(res.errcode === 0){
+            (res.data.status === 1) ? res.data.status = true: res.data.status = false;
+
+            (res.data.auto_log === 1) ? res.data.auto_log = true: res.data.auto_log = false;
+            (res.data.code_lacation === 1) ? res.data.code_lacation = true: res.data.code_lacation = false;
+            (res.data.card_package_allow === 1) ? res.data.card_package_allow = true: res.data.card_package_allow = false;
+            (res.data.other_pay_allow === 1) ? res.data.other_pay_allow = true: res.data.other_pay_allow = false;
+            (res.data.alipay_allow === 1) ? res.data.alipay_allow = true: res.data.alipay_allow = false;
+            res.data.purchasers.forEach((item) => {
+              if (item.select === 1) {
+                item.selectF = true;
+                item.select = true
+              } else {
+                item.selectF = false;
+                item.select = false
+              }
+            });
+            this.clientForm.id = res.data.id;
+            this.clientForm.name = res.data.name;
+            this.clientForm.third_code = res.data.third_code;
+            this.clientForm.status = res.data.status;
+            if(res.data.type === 1){
+              this.activeName = 'first';
+              this.clientForm.type = 1;
+              this.clientForm_first3.auto_log = res.data.auto_log;
+              this.clientForm_first3.code_lacation = res.data.code_lacation;
+              this.clientForm_first3.card_package_allow = res.data.card_package_allow;
+              this.clientForm_first3.other_pay_allow = res.data.other_pay_allow;
+              this.clientForm_first3.alipay_allow = res.data.alipay_allow;
+            }else {
+              this.activeName = 'second';
+              this.clientForm.type = 2;
+              this.clientForm_second.auto_log = res.data.auto_log;
+              this.clientForm_second.code_lacation = res.data.code_lacation;
+            }
+            this.clientForm_first.token = res.data.token;
+            this.clientForm_first3.id = res.data.id;
+            this.clientForm_first3.code_number = res.data.sale.code_number?res.data.sale.code_number:'';
+            this.clientForm_first3.sale_name = res.data.sale.name?res.data.sale.name:'';
+            this.clientForm_first3.address = res.data.sale.address?res.data.sale.address:'';
+            this.clientForm_first3.tel = res.data.sale.tel?res.data.sale.tel:'';
+            this.clientForm_first3.account = res.data.sale.account?res.data.sale.account:'';
+            this.clientForm_first3.drawer = res.data.sale.drawer?res.data.sale.drawer:'';
+            this.clientForm_first3.tax_rate = res.data.sale.tax_rate?res.data.sale.tax_rate + '':'';
+            this.clientForm_first3.service_name = res.data.sale.service_name?res.data.sale.service_name:'';
+            this.clientForm_first3.payee = res.data.sale.payee?res.data.sale.payee:'';
+            this.clientForm_first3.reviewer = res.data.sale.reviewer?res.data.sale.reviewer:'';
+
+            this.clientForm_first3.purchasers = res.data.purchasers;
+            this.clientForm_second.purchasers = res.data.purchasers;
+
+            this.clientForm_first3.merchant_abbreviation = res.data.merchant_abbreviation;
+            this.clientForm_first3.logo_url = res.data.logo_url
+          }
+        })
+      },
       changeOne(){
         let i = 0;
         for(let map in this.baseStore){

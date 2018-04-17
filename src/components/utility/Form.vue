@@ -13,7 +13,7 @@
     <el-form-item label="销售方电话" prop="tel" :rules="{required: true, message: '必填项', trigger: 'blur'}">
       <el-input v-model="clientFormData.tel" placeholder="必填" :disabled="showName === '查看'"></el-input>
     </el-form-item>
-    <el-form-item label="销售方银行账号" prop="account" :rules="{required: true, message: '必填项', trigger: 'blur'}">
+    <el-form-item label="销售方银行及账号" prop="account" :rules="{required: true, message: '必填项', trigger: 'blur'}">
       <el-input v-model="clientFormData.account" placeholder="必填" :disabled="showName === '查看'"></el-input>
     </el-form-item>
     <el-form-item label="开票人" prop="drawer" :rules="{required: true, message: '必填项', trigger: 'blur'}">
