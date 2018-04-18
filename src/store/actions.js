@@ -152,4 +152,11 @@ export default {
   setStoreRecordLevelId({commit},obj){
     commit(types.STORERECORDLEVELID,obj);
   },
+
+  setAccountListTree({commit},obj){
+    commit(types.ACCOUNTLISTTREE,obj);
+  },
+  setAccountListLevelId({commit},obj){
+    commit(types.ACCOUNTLISTLEVELID,obj);
+  },
 }

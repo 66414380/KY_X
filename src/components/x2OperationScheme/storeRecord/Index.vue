@@ -189,7 +189,7 @@
         //获取门店列表
         let params = {
           redirect: "x2.store.index",
-          levelId: this.getStoreRecordLevelId(),
+          levelid: this.getStoreRecordLevelId(),
           storeName: '',
           noPage:1
         };

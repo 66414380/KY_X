@@ -169,6 +169,7 @@
                 paymentChannel: this.ruleForm.Payment,      // 支付通道
                 paymentMethod: paymentMethod,               // 支付方式
                 merchants: this.ruleForm.Merchants,         // 商户号
+                level_id:this.$route.params.id
               };
 
               oneTwoApi(params).then((res) => {

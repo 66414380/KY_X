@@ -30,7 +30,7 @@
             <div class="margin_l_10 flex_a">
               <el-button size="small" @click="reLoadData()" >重置</el-button>
 
-              <el-button size="small" @click="step()" >同步至外卖平台</el-button>
+              <!--<el-button size="small" @click="step()" >同步至外卖平台</el-button>-->
               <el-button size="small" @click="stepTakeOut()" >同步至其他门店及外卖平台</el-button>
               <el-button size="small" @click="erpUp()" >从收银系统上新增菜品</el-button>
             </div>
@@ -80,12 +80,12 @@
                            width="140">
 
             <template slot-scope="scope" >
-              <el-form-item v-if="scope.row.id === clickId && '名称' === clickProp " label="" >
-                <el-input v-model="scope.row.dishname" icon="edit" :on-icon-click="()=>{
-                return handleIconClick(scope.row)
-              }"></el-input>
-              </el-form-item>
-            <div class="flex" v-else>
+              <!--<el-form-item v-if="scope.row.id === clickId && '名称' === clickProp " label="" >-->
+                <!--<el-input v-model="scope.row.dishname" icon="edit" :on-icon-click="()=>{-->
+                <!--return handleIconClick(scope.row)-->
+              <!--}"></el-input>-->
+              <!--</el-form-item>-->
+            <div class="flex">
               {{scope.row.dishname}}
             </div>
             </template>
@@ -226,44 +226,10 @@
             </template>
           </el-table-column>
           <el-table-column label-class-name="table_head" header-align="center" align="center"  label="菜品规格" prop="skus"
-                           width="320">
+                           width="140">
             <template slot-scope="scope">
 
-              <div v-if="scope.row.id === clickId && '菜品规格' === clickProp">
-
-                <div v-for="(item,index) in scope.row.skus" class="flex_a m_16" >
-                  <el-form-item label="" :prop="'tableData.' + scope.$index  + '.skus.' + index + '.skuname'" :rules="{required: true, message: '请选择菜品规格', trigger: 'blur'}">
-                    <el-select v-model="item.skuname" placeholder="请选择" style="width:120px">
-                      <el-option
-                        v-for="item1 in skuList"
-                        :key="item1.id"
-                        :label="item1.skuname"
-                        :value="item1.skuname">
-                      </el-option>
-                    </el-select>
-                  </el-form-item>
-
-                  <div class="margin_l_10" style="width:120px">
-                    <el-form-item label="" :prop="'tableData.' + scope.$index  + '.skus.' + index + '.price'" :rules="{required: true, validator: checkNumber, trigger: 'blur'}">
-                      <el-input v-model="item.price" placeholder="请输入价格" ></el-input>
-                    </el-form-item>
-                  </div>
-
-                  <div class="m-storeCode margin_l_10" @click="addDomain2(scope.row.skus)">
-                    <i class="fa fa-plus-circle" aria-hidden="true"></i>
-                  </div>
-
-                  <div v-if="index !== 0" class="m-storeCode margin_l_10"
-                       @click.prevent="removeDomain2(scope.row.skus, index)">
-                    <i class="fa fa-minus-circle" aria-hidden="true"></i>
-                  </div>
-                </div>
-
-                <el-button size="small" @click="handleIconClickValidate(scope.row,'formRules')" >保存</el-button>
-              </div>
-
-
-              <div v-for="(item,index) in scope.row.skus" v-else>
+            <div v-for="(item,index) in scope.row.skus">
                 <span v-if="item.price !== ''">{{item.skuname}} ￥{{item.price}}</span>
               </div>
 
@@ -364,69 +330,108 @@
             </template>
           </el-table-column>
           <el-table-column label-class-name="table_head" header-align="center" align="center"  label="平台信息"
-                           width="340">
+                           width="540">
 
             <template slot-scope="scope">
 
 
-<div class="flex_f flex_a" v-if="scope.row.id === clickId && '平台信息' === clickProp">
-  <div class="flex_sa" >
-    <div v-if="scope.row.mt_skus !== null">
-      <div class="margin_b_10">
-        {{scope.row.mt_skus.name}}
-      </div>
-      <div class="margin_b_10">
-        <el-form-item label="" :prop="'tableData.' + scope.$index  + '.mt_skus.dishname'" :rules="{required: true, message: '请输入菜品名称', trigger: 'blur'}">
+              <div class="flex_f flex_a" v-if="scope.row.id === clickId && '平台信息' === clickProp">
+                <div class="flex_sa" >
+                  <div v-if="scope.row.mt_skus !== null">
+                    <div class="margin_b_10">
+                      {{scope.row.mt_skus.name}}
+                    </div>
+                    <div class="margin_b_10">
+                      <el-form-item label="" :prop="'tableData.' + scope.$index  + '.mt_skus.dishname'" :rules="{required: true, message: '请输入菜品名称', trigger: 'blur'}">
 
-        <el-input size="small" class="w_80" v-model="scope.row.mt_skus.dishname" placeholder="菜品名称">
-        </el-input>
-        </el-form-item>
-      </div>
-      <div class="margin_b_10" v-for="(item,index) in scope.row.mt_skus.skus">
+                      <el-input size="small" class="w_80" v-model="scope.row.mt_skus.dishname" placeholder="菜品名称">
+                      </el-input>
+                      </el-form-item>
+                    </div>
+                    <!--<div class="margin_b_10" v-for="(item,index) in scope.row.mt_skus.skus">-->
 
-        <div class="flex">
-          {{item.skuname}}
-          <el-form-item label="" :prop="'tableData.' + scope.$index  + '.mt_skus.skus.' + index + '.price'" :rules="{required: true, validator: checkNumber, trigger: 'blur'}">
-          <el-input size="small" class="w_50" v-model="item.price" placeholder="价格">
-          </el-input>
-          </el-form-item>
-        </div>
-      </div>
-    </div>
+                      <!--<div class="flex">-->
+                        <!--{{item.skuname}}-->
+                        <!--<el-form-item label="" :prop="'tableData.' + scope.$index  + '.mt_skus.skus.' + index + '.price'" :rules="{required: true, validator: checkNumber, trigger: 'blur'}">-->
+                        <!--<el-input size="small" class="w_50" v-model="item.price" placeholder="价格">-->
+                        <!--</el-input>-->
+                        <!--</el-form-item>-->
+                      <!--</div>-->
+                    <!--</div>-->
+                      <div v-for="(item,index) in scope.row.mt_skus.skus" class="flex_a m_16">
+                        <el-form-item label="" :prop="'tableData.' + scope.$index  + '.mt_skus.skus.' + index + '.skuid'" :rules="{type:'number',required: true, message: '请选择菜品规格', trigger: 'blur'}">
+                          <el-select size="small" v-model="item.skuid" placeholder="请选择" style="width:80px">
+                            <el-option
+                            v-for="item1 in skuList"
+                            :key="item1.id"
+                            :label="item1.skuname"
+                            :value="item1.id">
+                            </el-option>
+                          </el-select>
+                        </el-form-item>
 
+                        <div class="margin_l_10" style="width:80px">
+                          <el-form-item label="" :prop="'tableData.' + scope.$index  + '.mt_skus.skus.' + index + '.price'" :rules="{required: true, validator: checkNumber, trigger: 'blur'}">
+                            <el-input size="small" v-model="item.price" placeholder="请输入价格" ></el-input>
+                          </el-form-item>
+                        </div>
 
-    <div v-if="scope.row.el_skus !== null">
-      <div class="margin_b_10">
-        {{scope.row.el_skus.name}}
-      </div>
-      <div class="margin_b_10">
-        <el-form-item label="" :prop="'tableData.' + scope.$index  + '.el_skus.dishname'" :rules="{required: true, message: '请输入菜品名称', trigger: 'blur'}">
+                        <div class="m-storeCode margin_l_10" @click="addDomain2(scope.row.mt_skus.skus)">
+                          <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                        </div>
 
-        <el-input size="small" class="w_80" v-model="scope.row.el_skus.dishname" placeholder="菜品名称">
-        </el-input>
-        </el-form-item>
-      </div>
-      <div class="margin_b_10" v-for="(item,index) in scope.row.el_skus.skus">
-        <div class="flex">
-          {{item.skuname}}
-          <el-form-item label="" :prop="'tableData.' + scope.$index  + '.el_skus.skus.' + index + '.price'" :rules="{required: true, validator: checkNumber, trigger: 'blur'}">
-          <el-input size="small" class="w_50" v-model="item.price" placeholder="价格">
-          </el-input>
-          </el-form-item>
-        </div>
+                        <div v-if="index !== 0" class="m-storeCode margin_l_10" @click.prevent="removeDomain2(scope.row.mt_skus.skus, index)">
+                          <i class="fa fa-minus-circle" aria-hidden="true"></i>
+                        </div>
+                      </div>
 
-
-      </div>
-    </div>
-
-
-
-  </div>
-  <el-button class="w_30" size="small" @click="handleIconClickValidate(scope.row,'formRules')" >保存</el-button>
-</div>
+                  </div>
 
 
+                  <div v-if="scope.row.el_skus !== null" class="margin_l_10">
+                    <div class="margin_b_10">
+                      {{scope.row.el_skus.name}}
+                    </div>
+                    <div class="margin_b_10">
+                      <el-form-item label="" :prop="'tableData.' + scope.$index  + '.el_skus.dishname'" :rules="{required: true, message: '请输入菜品名称', trigger: 'blur'}">
 
+                      <el-input size="small" class="w_80" v-model="scope.row.el_skus.dishname" placeholder="菜品名称">
+                      </el-input>
+                      </el-form-item>
+                    </div>
+
+                    <div v-for="(item,index) in scope.row.el_skus.skus" class="flex_a m_16">
+                      <el-form-item label="" :prop="'tableData.' + scope.$index  + '.el_skus.skus.' + index + '.skuid'" :rules="{type:'number',required: true, message: '请选择菜品规格', trigger: 'blur'}">
+                        <el-select size="small" v-model="item.skuid" placeholder="请选择" style="width:80px">
+                          <el-option
+                            v-for="item1 in skuList"
+                            :key="item1.id"
+                            :label="item1.skuname"
+                            :value="item1.id">
+                          </el-option>
+                        </el-select>
+                      </el-form-item>
+
+                      <div class="margin_l_10" style="width:80px">
+                        <el-form-item label="" :prop="'tableData.' + scope.$index  + '.el_skus.skus.' + index + '.price'" :rules="{required: true, validator: checkNumber, trigger: 'blur'}">
+                          <el-input size="small" v-model="item.price" placeholder="请输入价格" ></el-input>
+                        </el-form-item>
+                      </div>
+
+                      <div class="m-storeCode margin_l_10" @click="addDomain2(scope.row.el_skus.skus)">
+                        <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                      </div>
+
+                      <div v-if="index !== 0" class="m-storeCode margin_l_10" @click.prevent="removeDomain2(scope.row.el_skus.skus, index)">
+                        <i class="fa fa-minus-circle" aria-hidden="true"></i>
+                      </div>
+                    </div>
+
+                  </div>
+
+                </div>
+                <el-button class="w_30" size="small" @click="handleIconClickValidate(scope.row,'formRules')" >保存</el-button>
+              </div>
 
               <div class="flex_sa" v-else>
                 <div v-if="scope.row.mt_skus !== null">
@@ -437,7 +442,7 @@
                     {{scope.row.mt_skus.dishname}}
                   </div>
                   <div class="margin_b_10" v-for="(item,index) in scope.row.mt_skus.skus">
-                    {{item.skuname}} ￥{{item.price}}
+                    <span class="margin_r_10" v-if="item.skuname">{{item.skuname}}</span> <span v-if="item.price">￥{{item.price}}</span>
                   </div>
                 </div>
 
@@ -450,7 +455,7 @@
                     {{scope.row.el_skus.dishname}}
                   </div>
                   <div class="margin_b_10" v-for="(item,index) in scope.row.el_skus.skus">
-                    {{item.skuname}} ￥{{item.price}}
+                    <span class="margin_r_10" v-if="item.skuname">{{item.skuname}}</span> <span v-if="item.price">￥{{item.price}}</span>
                   </div>
                 </div>
               </div>
@@ -901,7 +906,7 @@
             unit:row.unit,
             mincount:row.mincount
           };
-          console.log(params)
+
           oneTwoApi(params).then((res) => {
             if (res.errcode === 0) {
               this.clickId = "";
@@ -911,16 +916,20 @@
         }
       },
       handleIconClickValidate(row,formName){
-        if(this.clickProp === '餐盒'){
-          // row.totalBoxPrice = 0;
-          // row.lunchboxes.forEach((item1)=>{
-          //   if(item1.lunchboxid !== ''){
-          //   item1.totalprice =  item1.count * item1.price;
-          //   row.totalBoxPrice += item1.totalprice
-          //   }
-          // });
-          // row.totalBoxPrice = row.totalBoxPrice.toFixed(2);
-          // console.log(row)
+        if(this.clickProp === '平台信息'){
+          row.mt_skus.skus.forEach((item)=>{
+          let list = this.skuList.filter((item1)=>{
+              return item.skuid === item1.id
+            });
+            item.skuname = list[0].skuname
+
+          });
+          row.el_skus.skus.forEach((item)=>{
+            let list = this.skuList.filter((item1)=>{
+              return item.skuid === item1.id
+            });
+            item.skuname = list[0].skuname
+          });
         }
 
         this.$refs[formName].validate((valid) => {
@@ -1097,9 +1106,12 @@
                 }
               }
 
+              if(item.mt_skus.skus.length === 0 ||item.mt_skus.skus === null ){
+                item.mt_skus.skus = [{skuid: '', price: '',skuname:''}]
+              }
 
-              if(item.skus === null){
-                item.skus = [{skuid: '', price: ''}]
+              if(item.el_skus.skus.length === 0 ||item.el_skus.skus === null ){
+                item.el_skus.skus = [{skuid: '', price: '',skuname:''}]
               }
 
               if(item.property === null){

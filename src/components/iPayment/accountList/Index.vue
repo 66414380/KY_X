@@ -1,15 +1,23 @@
 <template>
-  <div class="rightContent">
-    <div class="contentMsg">
-      <xo-nav-path></xo-nav-path>
+  <div class="scroll_of" v-show="getTreeArr['账户列表']">
+    <div class="bodyTop">
+      <div class="margin_b_10">
+        <xo-nav-path :navList="navList"></xo-nav-path>
+      </div>
     </div>
-    <el-card style="height: calc(100% - 38px)" v-show="getTreeArr['账户列表']">
-      <div class="contentMsg">
-        <div id="detailMsg">
-          <el-form :inline="true" :model="ruleForm" class="demo-form-inline" :label-position="'top'">
 
-            <el-form-item label="支付方式">
-              <el-select v-model="ruleForm.payMethod" placeholder="全部" clearable filterable>
+    <div class="flex_r">
+      <div ref="tree" style="min-width: 200px;overflow: auto" :style="{height:tableHeight + 'px'}">
+
+        <xo-pub-tree  :data='getAccountListTree()' :count=0 style="width: max-content;"></xo-pub-tree>
+      </div>
+
+      <div class="padding_l_10" :style="{width:tableWidth -10 + 'px'}">
+        <div class=" flex_es margin_b_10">
+          <div class="flex_a">
+            <div class="margin_r_10">
+              <div>支付方式</div>
+              <el-select size="small" v-model="ruleForm.payMethod" placeholder="全部" clearable filterable>
                 <el-option
                   v-for="item in ruleForm.payOptions"
                   :key="item.id"
@@ -17,10 +25,10 @@
                   :value="item.id">
                 </el-option>
               </el-select>
-            </el-form-item>
-
-            <el-form-item label="支付通道">
-              <el-select v-model="ruleForm.Payment" placeholder="全部" clearable filterable>
+            </div>
+            <div class="margin_r_10">
+              <div>支付通道</div>
+              <el-select size="small" v-model="ruleForm.Payment" placeholder="全部" clearable filterable>
                 <el-option
                   v-for="item in ruleForm.paymentOptions"
                   :key="item.id"
@@ -28,127 +36,127 @@
                   :value="item.id">
                 </el-option>
               </el-select>
-            </el-form-item>
+            </div>
+            <div class="margin_r_10">
+              <div>账号名称</div>
+              <el-input size="small" v-model="ruleForm.userName" placeholder=""></el-input>
+            </div>
 
-            <el-form-item label="账号名称">
-              <el-input v-model="ruleForm.userName" placeholder=""></el-input>
-            </el-form-item>
-
-            <el-form-item style="vertical-align: bottom">
-              <el-button @click="search">搜索</el-button>
-            </el-form-item>
-
-            <el-form-item style="vertical-align: bottom">
-              <router-link to="/iPayment/accountList/account">
-                <el-button type="primary" icon="edit" v-show="getTreeArr['新增、保存账户']">新增账号</el-button>
-              </router-link>
-            </el-form-item>
-
-          </el-form>
-
-          <el-table
-            :data="tableData"
-            :height="height"
-            v-loading="loading"
-            border
-            style="width: 100%">
+          </div>
 
 
-            <el-table-column label-class-name="table_head" header-align="center" align="center"
-              type="index"
-              label="序号"
-              width="70">
-            </el-table-column>
-
-            <el-table-column label-class-name="table_head" header-align="center" align="center"
-              label="账户编码"
-            >
-              <template slot-scope="scope">
-                <span>{{ scope.row.acountCode }}</span>
-              </template>
-            </el-table-column>
-
-            <el-table-column label-class-name="table_head" header-align="center" align="center"
-              label="账户名称"
-              width="180"
-            >
-              <template slot-scope="scope">
-                <el-row>
-                  <el-col :span="24">
-                    <!--<el-input v-model="scope.row.accountName" placeholder=""></el-input>-->
-                    <div>{{scope.row.accountName}}</div>
-                  </el-col>
-                </el-row>
-              </template>
-            </el-table-column>
-
-            <el-table-column label-class-name="table_head" header-align="center" align="center"
-              label="支付方式">
-              <template slot-scope="scope">
-                <div v-for="item in scope.row.paymentName">{{ item }}</div>
-              </template>
-            </el-table-column>
-
-
-            <el-table-column label-class-name="table_head" header-align="center" align="center"
-              label="支付通道">
-              <template slot-scope="scope">
-                <div>{{ scope.row.paymentChannel }}</div>
-              </template>
-            </el-table-column>
-            <el-table-column label-class-name="table_head" header-align="center" align="center"
-              label="状态">
-              <template slot-scope="scope">
-                <span>{{ scope.row.status }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column label-class-name="table_head" header-align="center" align="center"
-              label="查看" width="70">
-              <template slot-scope="scope">
-                <el-popover trigger="click" placement="top" width="200">
-                  <p v-if="checkoutData.acountCode">账号编号: {{ checkoutData.acountCode }}</p>
-                  <div v-if="checkoutData.thirdCode" >第三方编码:
-                    <span v-for="item in checkoutData.thirdCode">{{item.code1}} - {{item.code2}}</span>
-                  </div>
-                  <p v-if="checkoutData.accountName">账号名称: {{ checkoutData.accountName }}</p>
-                  <div v-if="checkoutData.paymentName" >支付方式:
-                    <span v-for="item in checkoutData.paymentName">{{item}}&nbsp;</span>
-                  </div>
-                  <p v-if="checkoutData.paymentChannel">支付通道: {{ checkoutData.paymentChannel }}</p>
-                  <p v-if="checkoutData.token">商户号: {{ checkoutData.token }}</p>
-                  <div slot="reference" class="name-wrapper">
-                    <el-tag @click.native="handleCheck(scope.row.acountCode)">查看</el-tag>
-                  </div>
-                </el-popover>
-              </template>
-            </el-table-column>
-            <el-table-column label-class-name="table_head" header-align="center" align="center" label="删除" width="80">
-              <template slot-scope="scope">
-                <el-button
-                  size="small"
-                  type="danger"
-                  @click="handleDelete(scope.$index, scope.row.acountCode)" v-show="getTreeArr['删除']">删除
-                </el-button>
-              </template>
-            </el-table-column>
-          </el-table>
+          <div class="flex_ec">
+            <el-button size="small" @click="search">搜索</el-button>
+            <el-button class="margin_l_10" size="small" type="primary" icon="edit" v-show="getTreeArr['新增、保存账户']" @click="toAdd()">新增账号</el-button>
+          </div>
         </div>
+
+        <el-table :data="tableData" :height="tableHeight -83" v-loading="loading" border style="width: 100%">
+
+
+          <el-table-column label-class-name="table_head" header-align="center" align="center"
+                           type="index"
+                           label="序号"
+                           width="70">
+          </el-table-column>
+
+          <el-table-column label-class-name="table_head" header-align="center" align="center"
+                           label="账户编码"
+          >
+            <template slot-scope="scope">
+              <span>{{ scope.row.acountCode }}</span>
+            </template>
+          </el-table-column>
+
+          <el-table-column label-class-name="table_head" header-align="center" align="center"
+                           label="账户名称"
+                           width="180"
+          >
+            <template slot-scope="scope">
+              <el-row>
+                <el-col :span="24">
+                  <!--<el-input v-model="scope.row.accountName" placeholder=""></el-input>-->
+                  <div>{{scope.row.accountName}}</div>
+                </el-col>
+              </el-row>
+            </template>
+          </el-table-column>
+
+          <el-table-column label-class-name="table_head" header-align="center" align="center"
+                           label="支付方式">
+            <template slot-scope="scope">
+              <div v-for="item in scope.row.paymentName">{{ item }}</div>
+            </template>
+          </el-table-column>
+
+
+          <el-table-column label-class-name="table_head" header-align="center" align="center"
+                           label="支付通道">
+            <template slot-scope="scope">
+              <div>{{ scope.row.paymentChannel }}</div>
+            </template>
+          </el-table-column>
+          <el-table-column label-class-name="table_head" header-align="center" align="center"
+                           label="状态">
+            <template slot-scope="scope">
+              <span>{{ scope.row.status }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label-class-name="table_head" header-align="center" align="center"
+                           label="查看" width="70">
+            <template slot-scope="scope">
+              <el-popover trigger="click" placement="top" width="200">
+                <p v-if="checkoutData.acountCode">账号编号: {{ checkoutData.acountCode }}</p>
+                <div v-if="checkoutData.thirdCode" >第三方编码:
+                  <span v-for="item in checkoutData.thirdCode">{{item.code1}} - {{item.code2}}</span>
+                </div>
+                <p v-if="checkoutData.accountName">账号名称: {{ checkoutData.accountName }}</p>
+                <div v-if="checkoutData.paymentName" >支付方式:
+                  <span v-for="item in checkoutData.paymentName">{{item}}&nbsp;</span>
+                </div>
+                <p v-if="checkoutData.paymentChannel">支付通道: {{ checkoutData.paymentChannel }}</p>
+                <p v-if="checkoutData.token">商户号: {{ checkoutData.token }}</p>
+                <div slot="reference" class="name-wrapper">
+                  <el-tag @click.native="handleCheck(scope.row.acountCode)">查看</el-tag>
+                </div>
+              </el-popover>
+            </template>
+          </el-table-column>
+          <el-table-column label-class-name="table_head" header-align="center" align="center" label="删除" width="80">
+            <template slot-scope="scope">
+              <el-button
+                size="small"
+                type="danger"
+                @click="handleDelete(scope.$index, scope.row.acountCode)" v-show="getTreeArr['删除']">删除
+              </el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+
+        <footer>
+          <xo-pagination :pageData=p @page="getPage" @pageSize="getPageSize"></xo-pagination>
+        </footer>
+
+
       </div>
-      <footer>
-        <xo-pagination :pageData=p @page="getPage" @pageSize="getPageSize"></xo-pagination>
-      </footer>
-    </el-card>
+
+    </div>
+
+
   </div>
 </template>
 <script>
-  import xoDetailMsg from './DetailMsg.vue'
-  import xoNavPath from './NavPath.vue'
   import {mapGetters, mapActions} from 'vuex'
   import {oneTwoApi, payMethods, payMent} from '@/api/api.js'
   import Hub from '../../utility/commun'
+  import {getLevel,recur} from '../../utility/communApi'
+  import {getScrollHeight} from '../../utility/getScrollHeight'
   export default{
     data(){
       return {
+        tableWidth:0,
+        tableHeight:0,
+        navList:[{name:"账户管理",url:''}],
         p: {page:1, size:10, total:0},
         ruleForm: {
           payMethod: '', // 支付方式
@@ -164,11 +172,20 @@
       }
     },
     components: {
-      xoDetailMsg,
-      xoNavPath
+
+    },
+    computed:{
+      ...mapGetters([
+        'getTreeArr','getBodyHeight'
+      ]),
     },
     methods: {
-      ...mapActions(['setTreeArr']),
+
+      ...mapActions(['setAccountListTree','setAccountListLevelId']),
+      ...mapGetters(['getAccountListTree','getAccountListLevelId']),
+      toAdd(){
+        this.$router.push({path: `/iPayment/accountList/account/${this.getAccountListLevelId()}`})
+      },
       getPage(value){
         console.log(1);
         this.p.page = value;
@@ -250,6 +267,7 @@
           paymentMethod: this.ruleForm.payMethod,
           paymentChannel: this.ruleForm.Payment,
           accountName: this.ruleForm.userName,
+          level_id:this.getAccountListLevelId(),
           page: this.p.page,
           pagesize: this.p.size
         };
@@ -264,7 +282,20 @@
         }).catch((err) => {
           console.log(err);
         });
-      }
+      },
+      showLevel() {
+        getLevel().then((res) => {
+          if (res.data.errcode === 0) {
+            this.setAccountListTree({list:res.data.data});
+            if (this.getAccountListLevelId() === '') {
+              this.setAccountListLevelId({levelId: res.data.data[0].id});
+            }
+            this.api();
+            recur(res.data.data, true, this.getAccountListLevelId(), this);
+          }
+        })
+
+      },
     },
     deleteApi(value){
       var params = {
@@ -280,18 +311,25 @@
         console.log(err);
       })
     },
-    computed: {
-      ...mapGetters([
-        'getTopHeight',
-        'getLoadingStatus',
-        'getTreeArr'
-      ]),
+    created(){
+      if(this.getAccountListTree().length === 0){
+        this.showLevel()
+      }else {
+        this.api();
+
+        recur(this.getAccountListTree(), false, this.getAccountListLevelId(), this);
+      }
     },
     mounted(){
-      // 高度调整
-      var topH = document.querySelector('.el-form--label-top').clientHeight;
-      var pageH = document.querySelector('.el-pagination').clientHeight;
-      this.height = window.innerHeight - this.getTopHeight - topH - pageH - 145;
+      Hub.$on('showAdd', (e) => {
+        this.ruleForm.payMethod = '';
+        this.ruleForm.Payment = '';
+        this.ruleForm.userName = '';
+
+        this.setAccountListLevelId({levelId: e.levelid});
+        this.api();
+        recur(this.getAccountListTree(), false, this.getAccountListLevelId(), this);
+      });
 
       var params = {};
 
@@ -325,26 +363,27 @@
         console.log(err);
       });
 
-      this.api();
       Hub.$emit('mountedOk','mountedOk');
 
+      this.$nextTick(()=>{
+        getScrollHeight(this.getBodyHeight).then((h) => {
+          this.tableHeight = h;
+        })
+      })
+
+    },
+    updated(){
+      let bodyWidth = document.querySelector('.content div').clientWidth;
+      let clientWidth = this.$refs.tree? this.$refs.tree.clientWidth : 0;
+      this.tableWidth = bodyWidth - clientWidth;
     },
     destroyed(){
-
+      Hub.$off("showAdd");
     }
   }
 </script>
 
 <style scoped lang="less">
-  .rightContent{
-    height: 100%;
-  }
 
-  .content {
-    padding: 25px;
-  }
 
-  .contentMsg {
-    padding: 0 0 25px 0;
-  }
 </style>

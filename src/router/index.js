@@ -31,7 +31,7 @@ import TransactionCount from '../components/report/transactionCount/Index.vue'
 import SettlementRecord from '../components/report/settlementRecord/Index.vue'
 import BillQuery from '../components/report/billQuery/Index.vue'
 import Invoice from '../components/report/invoice/Index.vue'
-
+import importRecord from '../components/report/importRecord/Index.vue'
 /************************** x2统计报表 ***************************/
 import orderList from '../components/report/orderList/Index.vue'
 import orderCount from '../components/report/orderCount/Index.vue'
@@ -132,7 +132,7 @@ export default new Router({
           component: IPayment,
         },
         {
-          path: '/iPayment/accountList/account',
+          path: '/iPayment/accountList/account/:id',
           meta: { auth: true },
           name: '支付管理/账户列表/新增账户',
           component: Account
@@ -241,6 +241,13 @@ export default new Router({
           meta: { auth: true },
           name: '统计报表/发票',
           component: Invoice,
+        },
+        {
+          // 导入结算记录
+          path: '/report/importRecord',
+          meta: { auth: true },
+          name: '导入结算记录',
+          component: importRecord,
         },
 
         /************************** x2统计报表 ***************************/

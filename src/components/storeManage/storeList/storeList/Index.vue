@@ -500,14 +500,13 @@
 
        if (a === true && b === true) {
          let list = [],status,auto_log,code_lacation,card_package_allow,alipay_allow,other_pay_allow;
-
+         (this.clientForm.status === true)? status = 1: status = 0;
          if(this.clientForm.type === 1){
            this.clientForm_first3.purchasers.forEach((item) => {
              if (item.selectF === true) {
                list.push(item.id)
              }
            });
-           (this.clientForm.status === true)? status = 1: status = 0;
            (this.clientForm_first3.auto_log === true)? auto_log = 1: auto_log = 0;
            (this.clientForm_first3.code_lacation === true)? code_lacation = 1: code_lacation = 0;
            (this.clientForm_first3.card_package_allow === true)? card_package_allow = 1: card_package_allow = 0;

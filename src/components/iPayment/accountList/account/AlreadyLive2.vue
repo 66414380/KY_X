@@ -190,6 +190,7 @@
                 paymentMethod: paymentMethod,               // 支付方式
                 merchants: this.ruleForm.Merchants,         // 商户号/ID
                 storeId:this.ruleForm.storeId,
+                level_id:this.$route.params.id
               };
 
               oneTwoApi(params).then((res) => {

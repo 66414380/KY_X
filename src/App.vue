@@ -51,6 +51,8 @@ export default {
               }
             });
           }
+        }else if(data.data.errcode == 203){
+          //不处理
         }else if (data.data.errcode != 0){
           this.$alert(data.data.errmsg, '提示', {
             confirmButtonText: '确定',

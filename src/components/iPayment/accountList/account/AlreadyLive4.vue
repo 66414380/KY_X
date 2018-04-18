@@ -190,6 +190,7 @@
                 merchants: this.ruleForm.Merchants,         // 商户号
                 appid:this.ruleForm.appid,
                 key:this.ruleForm.key,
+                level_id:this.$route.params.id
               };
 
               oneTwoApi(params).then((res) => {

@@ -256,6 +256,7 @@
             :on-change="handleChange"
             :on-success="handleAvatarSuccessXls"
             :before-upload="beforeAvatarUploadXls"
+            :on-remove="handleRemove"
             :file-list="fileList"
             :multiple="false"
           >
@@ -499,6 +500,9 @@
       },
       handleChange(file, fileList) {
         this.fileList = fileList.slice(-1);
+      },
+      handleRemove(file, fileList) {
+        this.fileurl = ''
       },
       beforeAvatarUploadXls(file) {
         const isLt5M = file.size / 1024 / 1024 < 5;

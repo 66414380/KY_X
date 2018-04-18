@@ -55,7 +55,9 @@ const state = {
   dishesRecordLevelId:'',//菜品同步记录levelId
 
   storeRecordTree:[],//门店同步记录树
-  storeRecordLevelId:''//门店同步记录levelId
+  storeRecordLevelId:'',//门店同步记录levelId
+  accountListTree:[],//账户管理树
+  accountListLevelId:''//账户管理levelId
 };
 
 const mutations = {
@@ -212,6 +214,13 @@ const mutations = {
   },
   [types.STORERECORDLEVELID](state, obj){
     state.storeRecordLevelId = obj.levelId
+  },
+
+  [types.ACCOUNTLISTTREE](state,obj){
+    state.accountListTree = obj.list;
+  },
+  [types.ACCOUNTLISTLEVELID](state, obj){
+    state.accountListLevelId = obj.levelId
   },
 };
 

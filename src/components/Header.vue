@@ -60,7 +60,9 @@
         'setX1StoreLevelId','setPublicTree','setPublicLevelId','setDishesLibraryTree','setDishesLibraryLevelId',
         'setSalesRankingTree','setSalesRankingLevelId','setSettlementRecordTree','setSettlementRecordLevelId',
       'setDishesSpecTree','setDishesSpecLevelId','setBoxSettingTree','setBoxSettingLevelId','setDishesCategoryTree',
-        'setDishesCategoryLevelId','setStoreDishesManageTree','setStoreDishesManageLevelId'
+        'setDishesCategoryLevelId','setStoreDishesManageTree','setStoreDishesManageLevelId','setDishesGroupTree','setDishesGroupLevelId',
+        'setStoreLabelTree','setStoreLabelLevelId','setOperationSchemeTree','setOperationSchemeLevelId','setDishesRecordTree','setDishesRecordLevelId',
+        'setStoreRecordTree','setStoreRecordLevelId'
       ]),
       loginOut: function () {
         this.$http.get(`?controller=user&action=logout&token=${this.$localStorage.get("token")}`).then((res) => {
@@ -114,6 +116,21 @@
 
             this.setStoreDishesManageTree({list: []});
             this.setStoreDishesManageLevelId({levelId: ''});
+
+            this.setDishesGroupTree({list: []});
+            this.setDishesGroupLevelId({levelId: ''});
+
+            this.setStoreLabelTree({list: []});
+            this.setStoreLabelLevelId({levelId: ''});
+
+            this.setOperationSchemeTree({list: []});
+            this.setOperationSchemeLevelId({levelId: ''});
+
+            this.setDishesRecordTree({list: []});
+            this.setDishesRecordLevelId({levelId: ''});
+
+            this.setStoreRecordTree({list: []});
+            this.setStoreRecordLevelId({levelId: ''});
             this.$router.push("/login")
           } else {
             this.$message(res.data.errmsg)
