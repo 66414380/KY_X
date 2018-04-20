@@ -103,7 +103,14 @@ import businessList from '@/components/businessInformation/businessList/Index.vu
 
 /**********************活动设置********************************/
 import activityData from '@/components/activitySetting/activityData/Index.vue'
+import activitySetting from '@/components/activitySetting/activitySetting/Index.vue'
 
+import activeDown from '@/components/activitySetting/activitySetting/activeDown/Index.vue'
+
+
+/************************** 跳转管理 ***************************/
+
+import templateMessageJump from '@/components/jumpManagement/templateMessageJump/Index.vue'
 
 Vue.use(Router);
 
@@ -597,7 +604,30 @@ export default new Router({
           name: '活动数据',
           component: activityData
         },
+        //活动设置/活动设置
+        {
+          path: '/activitySetting/activitySetting',
+          meta: { auth: false },
+          name: '活动设置',
+          component: activitySetting
+        },
 
+        //活动设置/活动下发
+        {
+          path: '/activitySetting/activeDown',
+          meta: { auth: false },
+          name: '活动下发',
+          component: activeDown
+        },
+
+        /************************** 跳转管理 ***************************/
+        //跳转管理/模板消息跳转
+        {
+          path: '/jumpManagement/templateMessageJump',
+          meta: { auth: false },
+          name: '模板消息跳转',
+          component: templateMessageJump
+        },
 
       ]
     },

@@ -161,11 +161,17 @@ export default{
   getStoreRecordLevelId(state){
     return state.storeRecordLevelId;
   },
-
   getAccountListTree(state){
     return state.accountListTree;
   },
   getAccountListLevelId(state){
     return state.accountListLevelId;
+  },
+
+  getActivitySettingTree(state){
+    return state.activitySettingTree;
+  },
+  getActivitySettingLevelId(state){
+    return state.activitySettingLevelId;
   },
 }

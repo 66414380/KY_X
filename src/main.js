@@ -84,17 +84,6 @@ router.beforeEach(({ meta, path }, from, next) => {
   next()
 });
 
-// 路由切换加载提示
-/*router.beforeEach(function (to, from, next) {
-  store.commit('UPDATELOADINGSTATUS', {isLoading: true})
-  setTimeout(function () {
-    next()
-  }, 1000);
-});
-router.afterEach(function (to) {
-  store.commit('UPDATELOADINGSTATUS', {isLoading: false})
-});*/
-
 new Vue({
   el: '#app',
   router,

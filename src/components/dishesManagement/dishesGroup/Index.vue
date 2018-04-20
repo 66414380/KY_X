@@ -130,7 +130,8 @@
 
     <!--选择门店-->
     <el-dialog title="选择门店" :visible.sync="dialogFormVisible1" @open="open">
-      <div class="flex_ce">
+      <div class="flex_sb">
+        <span>提示：点击门店标签名称可查看该门店标签里的门店及外卖平台</span>
         <div class="flex_a">
           <el-input size="small" placeholder="请输入门店标签名称" class="margin_r_10" v-model="storeName"></el-input>
           <el-button size="small" @click="searchStore()">搜索</el-button>

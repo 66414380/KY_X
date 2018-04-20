@@ -47,7 +47,6 @@
     <el-table
       :data="tableData"
       :height="height"
-      v-loading="loading"
       border
       style="width: 100%">
       <el-table-column
@@ -215,7 +214,6 @@
           address: '上海市普陀区金沙江路 1516 弄'
         }],
         height: 0,
-        loading: true
       }
     },
     methods: {
@@ -252,7 +250,7 @@
 
         // 账户列表初始化 -> 获取表格数据
         oneTwoApi(param).then((res) => {
-          this.loading = false;
+
           if (res.errcode == 0){
             this.tableData = res.data.list;
             console.log(res);
@@ -276,7 +274,7 @@
 
         // 账户列表初始化 -> 获取表格数据
         oneTwoApi(param).then((res) => {
-          this.loading = false;
+
           if (res.errcode == 0){
             this.tableData = res.data.list;
             console.log(res);
@@ -289,7 +287,6 @@
     computed: {
       ...mapGetters([
         'getTopHeight',
-        'getLoadingStatus'
       ]),
     },
     mounted(){

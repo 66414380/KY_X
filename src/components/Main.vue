@@ -8,7 +8,7 @@
       <el-col :span="20" id="getContentHeight" style="overflow-y: scroll" :style="{height:getBodyHeight +'px'}">
         <div class="content">
           <!--路由视图-->
-          <router-view v-loading="getLoadingStatus"></router-view>
+          <router-view></router-view>
         </div>
         <!--<div :style="{height:ListHeight + 'px'}">
 
@@ -36,8 +36,7 @@
     },
     computed: {
       ...mapGetters([
-        'getTopHeight',
-        'getLoadingStatus','getBodyHeight'
+        'getTopHeight','getBodyHeight'
       ]),
       getMsg() {
         return this.msg;

@@ -36,7 +36,6 @@
         <el-table
           :data="tableData"
           :height="height"
-          v-loading.body="loading"
           border
           style="width: 100%">
           <el-table-column label-class-name="table_head" header-align="center" align="center"
@@ -242,7 +241,6 @@
     data() {
       return {
         p: {page: 1, size: 10, total: 0},
-        loading: true,
         form: {
           options: [],
           status: ''
@@ -307,7 +305,6 @@
             this.tableData = res.data.list;
           }
 
-          this.loading = false;
         }).catch((err) => {
           console.log(err);
         });
@@ -322,7 +319,6 @@
         // 账户列表初始化 -> 获取表格数据
         oneTwoApi(param).then((res) => {
           console.log(res);
-          this.loading = false;
           if (res.errcode == 0) {
             this.checkData = res.data;
           }
@@ -334,7 +330,6 @@
     computed: {
       ...mapGetters([
         'getTopHeight',
-        'getLoadingStatus',
         'getTreeArr'
       ]),
     },

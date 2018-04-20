@@ -786,7 +786,7 @@
         let list = [];
         let params = {
           redirect: "x2.store.index",
-          levelId: this.getOperationSchemeLevelId(),
+          levelid: this.getOperationSchemeLevelId(),
           storeName: storeName,
           noPage:1
         };
@@ -1131,7 +1131,7 @@
         //获取门店列表
         let params = {
           redirect: "x2.store.index",
-          levelId: this.getOperationSchemeLevelId(),
+          levelid: this.getOperationSchemeLevelId(),
           storeName: '',
           noPage:1
         };

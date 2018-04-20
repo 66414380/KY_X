@@ -39,6 +39,21 @@
          //    ]
          //  },
 
+
+          {
+             name: '活动设置',
+             children: [
+               {
+                 name: '活动设置',
+                 route: '/activitySetting/activitySetting'
+               },
+               {
+                 name: '模板消息跳转',
+                 route: '/jumpManagement/templateMessageJump'
+               },
+             ]
+           },
+
           // {
           //   name: '菜品管理',
           //   children: [

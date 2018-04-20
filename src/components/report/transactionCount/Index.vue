@@ -14,7 +14,7 @@
 
       <xo-datePicker @getRadioDate="getRadioDate"></xo-datePicker>
         <div class="flex_es padding_t_10">
-          <div class="flex_a">
+          <div class="flex_es">
             <div class=" margin_r_10">
               <div>门店</div>
               <el-select v-model="store_id" clearable filterable placeholder="请选择" @change="selectStore" size="small">
@@ -26,8 +26,10 @@
                 </el-option>
               </el-select>
             </div>
-
+            <el-button @click="showData(0)" type="primary" size="small">显示全部支付数据</el-button>
+            <el-button @click="showData(1)" size="small">仅显示在线支付数据</el-button>
           </div>
+
 
           <div class="flex_ec">
             <el-button @click="search()" size="small">查询</el-button>
@@ -101,6 +103,11 @@
 
     methods: {
       ...mapActions(['setTreeArr']),
+      showData(int){
+        let store = this.store();
+        this.orderCount(this.dateSelected[0] ,this.dateSelected[1],store,this.store_name,this.p,'',int)
+      },
+
       selectStore(id){
         if(id === ''){
           this.store_name = ''
@@ -191,7 +198,7 @@
       getRadioDate(d){
         this.dateSelected = d
       },
-      orderCount(start_time,end_time,store_id,store_name,p,export1 = ''){
+      orderCount(start_time,end_time,store_id,store_name,p,export1 = '',type =''){
 
         let params = {
           redirect: "x1.order.orderCount",
@@ -202,6 +209,7 @@
           pageCount: p.size,
           pageNumber: p.page,
           export: export1,
+          type:type
         };
         oneTwoApi(params).then((res) => {
           if(res.errcode === 0){

@@ -351,7 +351,6 @@
     computed: {
       ...mapGetters([
         'getTopHeight',
-        'getLoadingStatus'
       ]),
     },
     methods: {

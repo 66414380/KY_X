@@ -1,7 +1,5 @@
 <template>
-  <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px" class="demo-ruleForm"
-           v-loading="loading"
-  >
+  <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px" class="demo-ruleForm">
     <!-- 账户编码 -->
     <el-form-item label="">
       <el-button type="primary" @click="auth()"> 口碑商家账号授权 </el-button>
@@ -110,7 +108,7 @@
             code2: ''
           }]
         },
-        loading: false,       // 加载状态
+
         rules: {
           accountName: [  // 账号名称
             {required: true, message: '请输入账号名称', trigger: 'change'}
@@ -171,7 +169,6 @@
       submitForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            this.loading = true;
 
             // 拼接支付方式格式
               var paymentMethod = "";
@@ -195,7 +192,6 @@
 
               oneTwoApi(params).then((res) => {
                 if (res.errcode == 0){
-                  this.loading = false;
                   this.$message({
                     showClose: true,
                     message: "提交成功",

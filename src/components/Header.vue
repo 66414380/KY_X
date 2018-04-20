@@ -30,6 +30,8 @@
       <img src="../assets/home/zhihuicanyin-log.png" alt="" style="width: 95px;height: 23px;margin-left: 10px;">
     </div>
     <div>
+      <i class="el-icon-loading" v-show="getLoadingStatus"></i>
+
       <span class="login">帮助</span>
       <el-dropdown @command="loginOut">
         <span class="login el-dropdown-link pointer">
@@ -44,9 +46,14 @@
 </template>
 
 <script>
-  import {mapActions} from 'vuex'
+  import {mapActions,mapGetters} from 'vuex'
 
   export default {
+    computed: {
+      ...mapGetters([
+        'getLoadingStatus'
+      ]),
+    },
     data() {
       return {
         height: 0,
@@ -62,7 +69,7 @@
       'setDishesSpecTree','setDishesSpecLevelId','setBoxSettingTree','setBoxSettingLevelId','setDishesCategoryTree',
         'setDishesCategoryLevelId','setStoreDishesManageTree','setStoreDishesManageLevelId','setDishesGroupTree','setDishesGroupLevelId',
         'setStoreLabelTree','setStoreLabelLevelId','setOperationSchemeTree','setOperationSchemeLevelId','setDishesRecordTree','setDishesRecordLevelId',
-        'setStoreRecordTree','setStoreRecordLevelId'
+        'setStoreRecordTree','setStoreRecordLevelId','setAccountListTree','setAccountListLevelId'
       ]),
       loginOut: function () {
         this.$http.get(`?controller=user&action=logout&token=${this.$localStorage.get("token")}`).then((res) => {
@@ -131,6 +138,9 @@
 
             this.setStoreRecordTree({list: []});
             this.setStoreRecordLevelId({levelId: ''});
+
+            this.setAccountListTree({list: []});
+            this.setAccountListLevelId({levelId: ''});
             this.$router.push("/login")
           } else {
             this.$message(res.data.errmsg)
@@ -153,7 +163,6 @@
       // this.$store.dispatch('topHeight',this.height);
 
     },
-    computed: {}
   }
 
 </script>

@@ -11,7 +11,7 @@
 
   import Axios from 'axios'
   import { Loading, Message,MessageBox } from 'element-ui'
-
+  import {mapActions} from 'vuex';
 export default {
   name: 'app',
   data(){
@@ -20,15 +20,20 @@ export default {
     }
   },
 
+  methods:{
+    ...mapActions(['setLoadingStatus']),
+  },
+
   mounted(){
 
-    var loadinginstace;
+    //var loadinginstace;
     Axios.interceptors.request.use(config => {
       //console.log('拦截开始');
-      loadinginstace = Loading.service({ fullscreen: true })
+      //loadinginstace = Loading.service({ fullscreen: true });
+      this.setLoadingStatus({isLoading: true});
       return config
     }, error => {
-      loadinginstace.close()
+      //loadinginstace.close()
       Message.error({
         message: '加载超时'
       })
@@ -37,7 +42,8 @@ export default {
 
 
     Axios.interceptors.response.use(data => {// 响应成功关闭loading
-      loadinginstace.close()
+      this.setLoadingStatus({isLoading: false});
+      //loadinginstace.close()
       if (data.data.errcode){
         // token失效,重新登录
         if (data.data.errcode == 210){
@@ -67,7 +73,7 @@ export default {
       }
       return data
     }, error => {
-      loadinginstace.close()
+      //loadinginstace.close()
       Message.error({
         message: '加载失败'
       })

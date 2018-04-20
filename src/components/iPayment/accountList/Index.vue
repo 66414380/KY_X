@@ -51,7 +51,7 @@
           </div>
         </div>
 
-        <el-table :data="tableData" :height="tableHeight -83" v-loading="loading" border style="width: 100%">
+        <el-table :data="tableData" :height="tableHeight -83" border style="width: 100%">
 
 
           <el-table-column label-class-name="table_head" header-align="center" align="center"
@@ -167,7 +167,6 @@
         },
         tableData: [],
         height: 0,
-        loading: true,
         checkoutData: {}
       }
     },
@@ -260,7 +259,6 @@
         console.log('save');
       },
       api(){
-        this.loading = true;
 
         var param = {
           redirect: 'x1.accountmanage.accountList',
@@ -274,7 +272,6 @@
 
         // 账户列表初始化 -> 获取表格数据
         oneTwoApi(param).then((res) => {
-          this.loading = false;
           if (res.errcode == 0){
             this.tableData = res.data.list;
             this.p.total = res.data.count;

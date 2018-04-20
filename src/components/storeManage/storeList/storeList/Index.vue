@@ -282,7 +282,7 @@
 
               <el-form-item label-width="50px" label="">
                 <div>授权标识(百望电子提供针对不同税号企业的授权应用标识)</div>
-                <el-input v-model="clientForm_first.token"></el-input>
+                <el-input v-model="clientForm_first.token1"></el-input>
               </el-form-item>
             </el-form>
 
@@ -437,7 +437,7 @@
           type:1
         },
         clientForm_first: {
-        token:'',
+        token1:'',
         },
         //修改
         clientForm_first3:{
@@ -531,7 +531,7 @@
            type:this.clientForm.type,
            third_code: window.JSON.stringify(this.clientForm.third_code),
            status: status,
-           token:this.clientForm_first.token,
+           token1:this.clientForm_first.token1,
            auto_log: auto_log,
            code_lacation:code_lacation,
            purchasers: list.join(','),
@@ -634,7 +634,7 @@
               this.clientForm_second.auto_log = res.data.auto_log;
               this.clientForm_second.code_lacation = res.data.code_lacation;
             }
-            this.clientForm_first.token = res.data.token;
+            this.clientForm_first.token1 = res.data.token1;
             this.clientForm_first3.id = res.data.id;
             this.clientForm_first3.code_number = res.data.sale.code_number?res.data.sale.code_number:'';
             this.clientForm_first3.sale_name = res.data.sale.name?res.data.sale.name:'';

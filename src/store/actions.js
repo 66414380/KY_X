@@ -10,6 +10,9 @@ export default {
   setBodyHeight({commit}, height){
     commit(types.BODYHEIGHT,height);
   },
+  setLoadingStatus({commit}, isLoading){
+    commit(types.UPDATELOADINGSTATUS,isLoading);
+  },
   NavPathChange({commit},path){
     commit(types.NAVPATHCHANGE,path);
   },
@@ -152,11 +155,17 @@ export default {
   setStoreRecordLevelId({commit},obj){
     commit(types.STORERECORDLEVELID,obj);
   },
-
   setAccountListTree({commit},obj){
     commit(types.ACCOUNTLISTTREE,obj);
   },
   setAccountListLevelId({commit},obj){
     commit(types.ACCOUNTLISTLEVELID,obj);
+  },
+
+  setActivitySettingTree({commit},obj){
+    commit(types.ACTIVITYSETTINGTREE,obj);
+  },
+  setActivitySettingLevelId({commit},obj){
+    commit(types.ACTIVITYSETTINGLEVELID,obj);
   },
 }

@@ -62,8 +62,7 @@
     },
     computed: {
       ...mapGetters([
-        'getTopHeight',
-        'getLoadingStatus'
+        'getTopHeight'
       ]),
     },
     mounted(){
