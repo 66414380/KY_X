@@ -174,4 +174,11 @@ export default{
   getActivitySettingLevelId(state){
     return state.activitySettingLevelId;
   },
+
+  getActivityDownRecordTree(state){
+    return state.activityDownRecordTree;
+  },
+  getActivityDownRecordLevelId(state){
+    return state.activityDownRecordLevelId;
+  },
 }

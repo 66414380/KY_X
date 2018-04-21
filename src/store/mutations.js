@@ -59,6 +59,8 @@ const state = {
   accountListLevelId:'',//账户管理levelId
   activitySettingTree:[],//活动设置树
   activitySettingLevelId:'',//活动设置levelId
+  activityDownRecordTree:[],//活动下发记录树
+  activityDownRecordLevelId:'',//活动下发记录levelId
 };
 
 const mutations = {
@@ -228,6 +230,14 @@ const mutations = {
   },
   [types.ACTIVITYSETTINGLEVELID](state, obj){
     state.activitySettingLevelId = obj.levelId
+  },
+
+
+  [types.ACTIVITYDOWNRECORDTREE](state,obj){
+    state.activityDownRecordTree = obj.list;
+  },
+  [types.ACTIVITYDOWNRECORDLEVELID](state, obj){
+    state.activityDownRecordLevelId = obj.levelId
   },
 };
 

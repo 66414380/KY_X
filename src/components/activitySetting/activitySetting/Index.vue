@@ -193,6 +193,53 @@
           </div>
         </el-form-item>
 
+        <el-form-item label="专属访问信息:" >
+          <div class="flex_r">
+            <div>
+              <div class="flex_a">
+              <span style="width: 120px">首页网址</span> <el-input v-model="formEdit.url" placeholder="" size="small"></el-input>
+              </div>
+              <div class="flex_a">
+                <span style="width: 120px">appID</span> <el-input v-model="formEdit.appId" placeholder="" size="small"></el-input>
+              </div>
+              <div class="flex_a">
+                <span style="width: 120px">小程序路径</span> <el-input v-model="formEdit.path" placeholder="" size="small"></el-input>
+              </div>
+            </div>
+
+            <div class="margin_l_10 flex_sc">
+              <span class="margin_r_10" style="width: 110px;text-align: right">小程序码</span>
+              <el-upload
+                class="avatar-uploader margin_r_10"
+                :action="$updateUrl"
+                name='filename'
+                :show-file-list="false"
+                :on-success="handleAvatarSuccess1"
+                :before-upload="beforeAvatarUpload">
+                <img v-if="formEdit1.imgurl_1" :src="formEdit1.imgurl_appId" class="small_image">
+                <div v-else class="small_image flex"><i class="el-icon-plus"></i></div>
+              </el-upload>
+
+              <div class="flex_f flex_sb" style="height: 100px">
+                  <div class="flex_a">
+                    <el-input v-model="formEdit.url" placeholder="" size="small"></el-input>
+                    <el-button size="small" class="margin_l_10" style="color: #34D066;border-color: #34D066;" >确定</el-button>
+                  </div>
+                <a class="width_100" :href="formEdit.businessImg" :download="formEdit.businessImg">
+                  <el-button size="small" class="width_100" style="color: #20a0ff;border-color: #20a0ff;" >下载</el-button>
+
+                </a>
+
+
+              </div>
+
+            </div>
+
+
+          </div>
+
+        </el-form-item>
+
         <el-form-item label="模板消息设置:" >
 
           <div class="margin_b_10">
@@ -259,7 +306,7 @@
         </div>
 
         <div class="flex_a margin_b_10">
-          <span class="form1_width margin_r_10" >活动卡券编码:</span>
+          <span class="form1_width margin_r_10" >活动卡面编码:</span>
           <el-input class="input_width" v-model="formEdit1.codeName1" placeholder="请输入编码"></el-input>
         </div>
 
@@ -274,15 +321,11 @@
           <div>
             <el-checkbox-group v-model="formEdit1.checkList">
               <div class="margin_b_10">
-                <el-checkbox label="0">每XX小时限领一次</el-checkbox>
+                <el-checkbox label="0">{{radioName}}</el-checkbox><span>每<input type="text" class="form_input">小时限领一次</span>
               </div>
              <div class="margin_b_10">
-               <el-checkbox label="1">每人限领X次</el-checkbox>
+               <el-checkbox label="1">{{radioName}}</el-checkbox><span>每人限领<input type="text" class="form_input">次</span>
              </div>
-             <div class="margin_b_10">
-               <el-checkbox label="2">每次限领X张</el-checkbox>
-             </div>
-
 
             </el-checkbox-group>
           </div>
@@ -690,6 +733,10 @@
           morecodes: [
             {code1: '', code2: ''}
           ],
+          url:'',
+          appId:'',
+          path:'',
+          imgurl_appId:'',
           status: true,
           startTime:'',
           endTime:'',
@@ -993,13 +1040,11 @@
 
 <style scoped>
   .form_input{
-    width: 20px;
+    width: 22px;
     height: 20px;
-    border-bottom: 1px solid #B2BFD0;
-    border-top:none;
-    border-left:none;
-    border-right:none;
-    outline:none;
+    border: 1px solid #B2BFD0;
+    border-radius: 5px;
+    outline: none;
   }
   .form_width{
     width: 120px;
@@ -1050,5 +1095,6 @@
     height: 40px;
     background-color: #E9EFF5;
   }
+
 
 </style>

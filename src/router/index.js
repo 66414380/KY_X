@@ -105,6 +105,7 @@ import businessList from '@/components/businessInformation/businessList/Index.vu
 import activityData from '@/components/activitySetting/activityData/Index.vue'
 import activitySetting from '@/components/activitySetting/activitySetting/Index.vue'
 
+import activityDownRecord from '@/components/activitySetting/activitySetting/downRecord/Index.vue'
 import activeDown from '@/components/activitySetting/activitySetting/activeDown/Index.vue'
 
 
@@ -619,7 +620,13 @@ export default new Router({
           name: '活动下发',
           component: activeDown
         },
-
+        //活动设置/下发记录
+        {
+          path: '/activitySetting/activitySetting/downRecord',
+          meta: { auth: false },
+          name: '活动设置/下发记录',
+          component: activityDownRecord
+        },
         /************************** 跳转管理 ***************************/
         //跳转管理/模板消息跳转
         {

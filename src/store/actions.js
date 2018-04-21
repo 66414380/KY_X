@@ -168,4 +168,11 @@ export default {
   setActivitySettingLevelId({commit},obj){
     commit(types.ACTIVITYSETTINGLEVELID,obj);
   },
+
+  setActivityDownRecordTree({commit},obj){
+    commit(types.ACTIVITYDOWNRECORDTREE,obj);
+  },
+  setActivityDownRecordLevelId({commit},obj){
+    commit(types.ACTIVITYDOWNRECORDLEVELID,obj);
+  },
 }
