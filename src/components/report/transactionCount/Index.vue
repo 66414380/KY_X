@@ -26,8 +26,8 @@
                 </el-option>
               </el-select>
             </div>
-            <el-button @click="showData(0)" type="primary" size="small">显示全部支付数据</el-button>
-            <el-button @click="showData(1)" size="small">仅显示在线支付数据</el-button>
+            <el-button @click="showData(0)" :type="showDataStyle === 0 ?'primary':''" size="small">显示全部支付数据</el-button>
+            <el-button @click="showData(1)" :type="showDataStyle === 1 ?'primary':''" size="small">仅显示在线支付数据</el-button>
           </div>
 
 
@@ -86,6 +86,7 @@
     },
     data() {
       return {
+        showDataStyle:0,
         width:0,
         tableHeight:0,
         navList:[{name:"统计报表",url:''},{name:"交易统计",url:''}],
@@ -104,6 +105,7 @@
     methods: {
       ...mapActions(['setTreeArr']),
       showData(int){
+        this.showDataStyle = int;
         let store = this.store();
         this.orderCount(this.dateSelected[0] ,this.dateSelected[1],store,this.store_name,this.p,'',int)
       },
@@ -142,6 +144,7 @@
 
       },
       search() {
+        this.showDataStyle = 0;
         if (this.dateSelected[0] === '' && this.dateSelected[1] ==='') {
           this.$message({
             message: '请选择时间',
