@@ -124,7 +124,7 @@
         <div class="pop_cell">
           <el-radio v-model="subjectAddList.subject_type" :label="2"><span class="pop_box">单选题</span></el-radio>
 
-          <span class="pop_box"> 设置<input type="number" min="2" class="form_input" v-model.number="subjectAddList.single_election">选一</span>
+          <span class="pop_box"> 设置<input type="number" min="2" max="9" class="form_input" v-model.number="subjectAddList.single_election" @change="changNumber(subjectAddList)">选一</span>
         </div>
       </div>
 
@@ -132,7 +132,8 @@
         <div class="pop_cell">
           <el-radio v-model="subjectAddList.subject_type" :label="3"><span class="pop_box">多选题</span></el-radio>
 
-          <span class="pop_box"> 设置<input type="number" min="1" class="form_input" v-model.number="subjectAddList.multi_selection.selectAll">选<input type="number" min="1" class="form_input" v-model.number="subjectAddList.multi_selection.select"></span>
+          <span class="pop_box"> 设置<input type="number" min="2" max="9" class="form_input" v-model.number="subjectAddList.multi_selection" @change="changNumberMult(subjectAddList)">
+            选<input type="number" min="1" max="8" class="form_input" v-model.number="subjectAddList.select_num" @change="changNumberMult1(subjectAddList)"></span>
         </div>
       </div>
       <div class="flex">
@@ -563,8 +564,6 @@
 
           <div v-if="buttonInt === 3">
 
-            <!--二选一-->
-
             <div v-for="(item,index) in formEdit1.subject">
 
               <div class="flex_r" v-if="index === subjectIndex">
@@ -573,7 +572,7 @@
                   <div class="big_image ">
                     <img class="width_100 height_100" v-if="item.subject_background_url" :src="item.subject_background_url">
                     <!--问题-->
-                    <img class="imgurl_issue"  v-if="item.subject_problem" :src="item.subject_problem">
+                    <img :class="[item.subject_type === 1?'imgurl_issue1':'imgurl_issue']"  v-if="item.subject_problem" :src="item.subject_problem">
                     <!--按钮-->
                     <img class="imgurl_3_2_2s1" v-if="item.subject_button" :src="item.subject_button">
 
@@ -986,7 +985,7 @@
           subject_background_url:'',//背景图
           select_num:'',//选中数量
           option:[],//__图片数量（单选，多选)__
-          multi_selection:{selectAll:'',select:''},//__多选 selectAll题目数，select选择数__
+          multi_selection:'',//__多选 题目数__
           subject_rule:{max:'',min:''}
         },
 
@@ -1000,6 +999,24 @@
     methods: {
       ...mapActions(['setActivitySettingTree', 'setActivitySettingLevelId']),
       ...mapGetters(['getActivitySettingTree', 'getActivitySettingLevelId']),
+      changNumber(item){
+        if(item.single_election > 9){
+          this.$message.warning('输入超出范围');
+          item.single_election = ''
+        }
+      },
+      changNumberMult(item){
+        if(item.multi_selection > 9){
+          this.$message.warning('输入超出范围');
+          item.multi_selection = ''
+        }
+      },
+      changNumberMult1(item){
+        if(item.select_num > 8){
+          this.$message.warning('输入超出范围');
+          item.select_num = ''
+        }
+      },
       changeNumberMax(item){
         if(item.subject_rule.max > 33){
           this.$message.warning('输入超出范围');
@@ -1055,7 +1072,7 @@
           select_num:'',
           subject_background_url:'',
           option:[],
-          multi_selection:{selectAll:'',select:''},
+          multi_selection:'',
           subject_rule:{max:'',min:''}
         }
       },
@@ -1073,11 +1090,11 @@
           return
         }
 
-        if(this.subjectAddList.subject_type === 3 && (this.subjectAddList.multi_selection.selectAll === '' || this.subjectAddList.multi_selection.select === '')){
+        if(this.subjectAddList.subject_type === 3 && (this.subjectAddList.multi_selection === '' || this.subjectAddList.select_num === '')){
           this.$message.warning('请填写数量');
           return
         }
-        if(this.subjectAddList.subject_type === 3 && (this.subjectAddList.multi_selection.selectAll <= this.subjectAddList.multi_selection.select )){
+        if(this.subjectAddList.subject_type === 3 && (this.subjectAddList.multi_selection <= this.subjectAddList.select_num )){
           this.$message.warning('填写总选择数不能小于选择数');
           return
         }
@@ -1087,7 +1104,7 @@
           num = this.subjectAddList.single_election
         }
         if(this.subjectAddList.subject_type === 3){
-          num = this.subjectAddList.multi_selection.selectAll
+          num = this.subjectAddList.multi_selection
         }
 
         for(let i=0;i<num;i++){
@@ -1103,8 +1120,8 @@
             subject_button:'',
             subject_background_url:'',
             option:optionList,
-            multi_selection:{selectAll:this.subjectAddList.multi_selection.selectAll,select:this.subjectAddList.multi_selection.select},
-            select_num:this.subjectAddList.multi_selection.select,
+            multi_selection:this.subjectAddList.multi_selection,
+            select_num:this.subjectAddList.select_num,
             subject_rule:{max:'',min:''}
           });
         } else {
@@ -1115,16 +1132,16 @@
             subject_button:this.subjectAddList.subject_button,
             subject_background_url:this.subjectAddList.subject_background_url,
             option:optionList,
-            multi_selection:{selectAll:this.subjectAddList.multi_selection.selectAll,select:this.subjectAddList.multi_selection.select},
-            select_num:this.subjectAddList.multi_selection.select,
-            subject_rule:{max:'',min:''}
+            multi_selection:this.subjectAddList.multi_selection,
+            select_num:this.subjectAddList.select_num,
+            subject_rule:{max:this.subjectAddList.subject_rule.max,min:this.subjectAddList.subject_rule.min}
           })
         }
         this.visiblePop = false;
         this.subjectAddList = {
           subject_type:'',
           single_election:'',
-          multi_selection:{selectAll:'',select:''}
+          multi_selection:''
         }
 
       },
@@ -1340,7 +1357,6 @@
       handleAvatarSuccess_background(res, file,item){
         item.subject_background_url = file.response.data.file_url;
       },
-
       handleAvatarSuccess_subject_problem(res, file,item){
         item.subject_problem = file.response.data.file_url;
       },
@@ -1598,6 +1614,13 @@
     top: 20%;
     left: 8%;
   }
+  .imgurl_issue1{
+    width: 77%;
+    height: 13%;
+    position: absolute;
+    top: 19%;
+    left: 12%;
+  }
   .imgurl_3_2_2s1{
     width: 40%;
     height: 9%;
@@ -1613,7 +1636,6 @@
     left: 13%;
     width: 74%;
     height: 44%;
-    background-color: red;
   }
   .reg{
     width: 420px;height: 250px;border: 1px dashed #d9d9d9;border-radius: 5px;padding: 10px;
