@@ -32,7 +32,7 @@
 
               <!--<el-button size="small" @click="step()" >同步至外卖平台</el-button>-->
               <el-button size="small" @click="stepTakeOut()" >同步至其他门店及外卖平台</el-button>
-              <el-button size="small" @click="erpUp()" >从收银系统上新增菜品</el-button>
+              <!--<el-button size="small" @click="erpUp()" >从收银系统上新增菜品</el-button>-->
             </div>
 
 

@@ -81,7 +81,7 @@
       <el-table-column header-align="center" align="center" prop="pay_money" label="支付金额" ></el-table-column>
       <el-table-column header-align="center" align="center" prop="shop_money" label="实收金额"></el-table-column>
 
-      <el-table-column header-align="center" align="center" prop="income" label="预计收入" ></el-table-column>
+      <!--<el-table-column header-align="center" align="center" prop="income" label="预计收入" ></el-table-column>-->
       <el-table-column header-align="center" align="center" prop="plat_part" label="平台补贴" ></el-table-column>
       <el-table-column header-align="center" align="center" prop="shop_part" label="商家补贴" ></el-table-column>
       <el-table-column header-align="center" align="center" prop="activity_fee" label="活动补贴" ></el-table-column>
@@ -101,7 +101,7 @@
       <el-table-column header-align="center" align="center" prop="pay_money" label="支付金额" ></el-table-column>
       <el-table-column header-align="center" align="center" prop="shop_money" label="实收金额"></el-table-column>
 
-      <el-table-column header-align="center" align="center" prop="income" label="预计收入" ></el-table-column>
+      <!--<el-table-column header-align="center" align="center" prop="income" label="预计收入" ></el-table-column>-->
       <el-table-column header-align="center" align="center" prop="product_money" label="菜品金额"></el-table-column>
       <el-table-column header-align="center" align="center" prop="plat_part" label="平台补贴" ></el-table-column>
       <el-table-column header-align="center" align="center" prop="shop_part" label="商家补贴" ></el-table-column>

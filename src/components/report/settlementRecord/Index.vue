@@ -78,7 +78,13 @@
             <el-table-column header-align="center" align="center" prop="num" label="交易笔数" width="100"></el-table-column>
             <el-table-column header-align="center" align="center" prop="refund_money" label="退款金额（元）" width="140"></el-table-column>
             <el-table-column header-align="center" align="center" prop="refund_num" label="退款笔数" width="100"></el-table-column>
-            <el-table-column header-align="center" align="center" prop="jine" label="支付净额（差额）元" width="180"></el-table-column>
+            <el-table-column header-align="center" align="center" label="支付净额（差额）元" width="180">
+              <template slot-scope="scope">
+                <div>
+                  {{scope.row.jine}} ({{scope.row.chae}})
+                </div>
+              </template>
+            </el-table-column>
             <el-table-column header-align="center" align="center" prop="charge" label="手续费金额（元）" width="180"></el-table-column>
             <el-table-column header-align="center" align="center" prop="huazhang" label="划账金额（元）" width="140"></el-table-column>
             <el-table-column header-align="center" align="center" prop="amountTime" label="划账金额到账时间" width="180"></el-table-column>
@@ -145,7 +151,22 @@
         this.showResouce(this.p = {page: 1, size: 20, total: 0},this.userId,this.start_stamp,this.end_stamp);
       },
       out(){
+        let param = {
+          redirect: 'x1.withdraw.withdrawList',
+          level_id:this.getSettlementRecordLevelId(),
+          account_id:this.userId,
+          start_date:this.start_stamp,
+          end_date:this.end_stamp,
+          page: this.p.page,
+          pagesize: this.p.size,
+          export:1
+        };
 
+        oneTwoApi(param).then((res) => {
+          if (res.errcode === 0){
+            window.location.href = res.data
+          }
+        })
       },
       getPage(page) {
         this.p.page = page;
