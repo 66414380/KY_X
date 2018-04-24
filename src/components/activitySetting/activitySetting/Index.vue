@@ -392,10 +392,12 @@
             </div>
             <div>
                 <div class="margin_b_10">
-                  <span>每<input type="text" v-model="formEdit.limit_house_num" class="form_input">小时限领一次</span>
+                  <span v-if="!show">每<input type="text" v-model="formEdit.limit_house_num" class="form_input">小时限领一次</span>
+                  <span v-else>每<span  class="form_input b_c">{{formEdit.limit_house_num}}</span>小时限领一次</span>
                 </div>
                 <div class="margin_b_10">
-                  <span>每人限领<input type="text" v-model="formEdit.limit_num" class="form_input">次</span>
+                  <span v-if="!show">每人限领<input type="text" v-model="formEdit.limit_num" class="form_input">次</span>
+                  <span v-else>每人限领<span class="form_input b_c">{{formEdit.limit_num}}</span>次</span>
                 </div>
             </div>
           </div>
@@ -741,8 +743,14 @@
                   <div v-if="item.subject_type === 1" class="reg flex_ec margin_t_10">
                     <div class="reg_box">
                       <div class="margin_b_10" style="text-align: center;font-size: 18px">规则说明</div>
-                      <div class="margin_b_10"><span>1.最多输入<input type="number" class="form_input" v-model.number="item.subject_rule.max" @change="changeNumberMax(item)" />(33)个字</span></div>
-                      <div class="margin_b_10"><span>2.最小输入<input type="number" class="form_input" v-model.number="item.subject_rule.min" @change="changeNumberMin(item)"/>(0-33)个字</span></div>
+                      <div class="margin_b_10">
+                        <span v-if="!show">1.最多输入<input type="number" class="form_input" v-model.number="item.subject_rule.max" @change="changeNumberMax(item)" />(33)个字</span>
+                        <span v-else>1.最多输入<span class="form_input b_c" >{{item.subject_rule.max}}</span>(33)个字</span>
+                      </div>
+                      <div class="margin_b_10">
+                        <span v-if="!show">2.最小输入<input type="number" class="form_input" v-model.number="item.subject_rule.min" @change="changeNumberMin(item)"/>(0-33)个字</span>
+                        <span v-else>2.最小输入<span  class="form_input b_c" >{{item.subject_rule.min}}</span>(0-33)个字</span>
+                      </div>
                       <div class="margin_b_10">3.不可全部为标点</div>
                       <div class="margin_b_10">4.不可全部为表情</div>
                     </div>
@@ -1106,15 +1114,12 @@
             cancelButtonText: '取消',
             type: 'warning'
           }).then(() => {
-            // getApi.del(list.join(",")).then((res)=>{
-            //
-            //   this.$message({
-            //     type: 'info',
-            //     message: '删除成功'
-            //   });
-            //   this.showResouce(this.p, this.getX1StoreLevelId());
-            // })
-
+            getApi.delActivity(list.join(",")).then((res) => {
+              if (res.data.errcode === 0) {
+                this.showResouce(this.p);
+                this.$message('操作成功');
+              }
+            });
 
           }).catch(() => {
             //
@@ -1413,19 +1418,13 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          let params = {
-            redirect: "x2a.sgroup.delete",
-            levelid: this.getActivitySettingLevelId(),
-            id: id,
-
-          };
-          oneTwoApi(params).then((res) => {
-            if (res.errcode === 0) {
-              this.showResouce(this.p, this.sgroupname);
-              this.$message("操作成功");
+          getApi.delActivity(id).then((res) => {
+            if (res.data.errcode === 0) {
+              this.showResouce(this.p);
+              this.$message('操作成功');
 
             }
-          })
+          });
 
         }).catch(() => {
           //
@@ -1788,6 +1787,9 @@
       width: 200px;height: 200px;border: 1px dashed #d9d9d9;border-radius: 5px;padding: 10px;
     }
   }
-
+  .b_c{
+    background-color: #eef1f6;
+    color: #bbb;
+  }
 
 </style>

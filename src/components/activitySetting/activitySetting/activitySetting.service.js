@@ -1,19 +1,5 @@
 import {axios,get} from '../../utility/communApi'
 
-
-
-//删除组织架构
-let delLevel = (id) => {
-  return new Promise((resolve, reject) => {
-    let formData = new FormData();
-    formData.append("id", id);
-
-    axios.post(`index.php?controller=level&action=delete&token=${get('token')}`,formData).then((res)=>{
-      resolve(res)
-    })
-  })
-};
-
 //活动方案列表
 let getActivityList = (p,levelid,storename) => {
   return new Promise((resolve, reject) => {
@@ -119,9 +105,20 @@ let updateActivity = (formEdit) => {
   })
 };
 
+//删除活动方案
+let delActivity = (id) => {
+  return new Promise((resolve, reject) => {
+    let formData = new FormData();
+    formData.append("id", id);
 
 
-export default {delLevel,getActivityList,addActivity,getInfo,updateActivity}
+    axios.post(`index.php?controller=activity&action=delActivity&token=${get('token')}`,formData).then((res)=>{
+      resolve(res)
+    })
+  })
+};
+
+export default {getActivityList,addActivity,getInfo,updateActivity,delActivity}
 
 
 
