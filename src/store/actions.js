@@ -175,4 +175,12 @@ export default {
   setActivityDownRecordLevelId({commit},obj){
     commit(types.ACTIVITYDOWNRECORDLEVELID,obj);
   },
+
+  setPostPaymentJumpTree({commit},obj){
+    commit(types.POSTPAYMENTJUMPTREE,obj);
+  },
+  setPostPaymentJumpLevelId({commit},obj){
+    commit(types.POSTPAYMENTJUMPLEVELID,obj);
+  },
+
 }

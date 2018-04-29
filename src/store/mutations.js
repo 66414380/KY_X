@@ -61,6 +61,9 @@ const state = {
   activitySettingLevelId:'',//活动设置levelId
   activityDownRecordTree:[],//活动下发记录树
   activityDownRecordLevelId:'',//活动下发记录levelId
+
+  postPaymentJumpTree:[],//支付后跳转树
+  postPaymentJumpLevelId:'',//支付后跳转levelId
 };
 
 const mutations = {
@@ -238,6 +241,13 @@ const mutations = {
   },
   [types.ACTIVITYDOWNRECORDLEVELID](state, obj){
     state.activityDownRecordLevelId = obj.levelId
+  },
+
+  [types.POSTPAYMENTJUMPTREE](state,obj){
+    state.postPaymentJumpTree = obj.list;
+  },
+  [types.POSTPAYMENTJUMPLEVELID](state, obj){
+    state.postPaymentJumpLevelId = obj.levelId
   },
 };
 

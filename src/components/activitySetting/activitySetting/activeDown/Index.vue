@@ -174,6 +174,7 @@
   import {mapGetters, mapActions} from 'vuex'
   import {oneTwoApi} from '@/api/api.js'
   import {getLeft} from '../../../utility/communApi'
+  import getApi from './activeDown.service'
   export default {
     data() {
       return {
@@ -182,9 +183,7 @@
           name:'',
           data: [], // 已选门店key
           data2: [],
-          options: [],
           value: '',
-          storeInfo: '',
           rules: '1',
           runTime: '1',
           runTimeValue: '',
@@ -194,8 +193,7 @@
           checked: false
         },
         height: 0,
-        payOptions: [],       // 支付方式选项
-        paymentOptions: [],   // 支付通道选项
+
         allStore: [],
         selectStore: [],
         storeName: '',
@@ -227,7 +225,12 @@
       submitForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            this.submitSave();
+            getApi.jumpUseAdd(this.form, this.selectStore.join(',')).then((res) => {
+              if (res.data.errcode === 0) {
+                this.$message("提交成功");
+                this.$router.go(-1);
+              }
+            })
           } else {
             console.log('error submit!!');
             return false;
@@ -254,59 +257,7 @@
           }
         })
       },
-      submitSave() {
 
-        // 选中门店id
-        var selectStore = "";
-        for (var value in this.selectStore) {
-          selectStore += this.selectStore[value] + ',';
-        }
-        selectStore = selectStore.substring(0, selectStore.length - 1);
-
-
-
-
-
-        var params = {
-          redirect: 'x1.accountmanage.saveAccountUse',
-          // account: account,
-          // reserveAcc: reserveAcc,
-          shop: 2,                  // 下发门店
-          selectStore: selectStore,              // 选中门店id
-          rules: this.form.rules,
-          runTime: this.form.runTime,
-        };
-
-        if (this.form.runTime == '2'){
-          params.runTimeValue = this.form.runTimeValue;
-          params.delayTime = this.form.delayTime;
-        }
-
-        if (this.form.checked){
-          params.isStop = 1;
-        }else {
-          params.isStop = 0;
-        }
-
-        console.log(params);
-
-        oneTwoApi(params).then((res) => {
-          console.log(res);
-          if (res.errcode == 0) {
-            this.$message({
-              showClose: true,
-              message: "提交成功",
-              type: "success",
-            });
-
-            var _this = this;
-            setTimeout(function () {
-              _this.$router.push('/iPayment/issuedRecord');
-            }, 400);
-          }
-        }).catch((error) => {
-        })
-      }
     },
     created(){
       getLeft('x1').then((res) => {
@@ -320,10 +271,6 @@
       var totalH = window.innerHeight - this.getTopHeight;
       var topH = document.querySelector('.contentMsg').clientHeight;
       this.height = totalH - topH - 50;
-
-
-
-
 
     }
   }

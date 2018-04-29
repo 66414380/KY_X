@@ -28,17 +28,17 @@
               <div>{{scope.$index + 1}}</div>
             </template>
           </el-table-column>
-          <el-table-column label-class-name="table_head" header-align="center" align="center" label="活动方案" min-width="100">
+          <el-table-column label-class-name="table_head" header-align="center" align="center" label="方案名称" prop="jumpName" min-width="100">
           </el-table-column>
-          <el-table-column label-class-name="table_head" header-align="center" align="center" label="下发时间" min-width="100">
+          <el-table-column label-class-name="table_head" header-align="center" align="center" label="操作员" prop="operator" min-width="100">
           </el-table-column>
-          <el-table-column label-class-name="table_head" header-align="center" align="center" label="操作员" min-width="100">
+          <el-table-column label-class-name="table_head" header-align="center" align="center" label="下发时间" prop="addTime" min-width="100">
           </el-table-column>
-          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="状态" min-width="100" label="查看门店">
+          <el-table-column label-class-name="table_head" header-align="center" align="center" label="状态" prop="statusFormate" min-width="100">
           </el-table-column>
-          <el-table-column label-class-name="table_head" header-align="center" align="center" label="操作" width="80">
+          <el-table-column label-class-name="table_head" header-align="center" align="center" label="操作" prop="operator" width="80">
             <template slot-scope="scope">
-              <el-button size="small" type="text" style="color:blue;" @click="optionShow('查看',scope.row.id)">查看</el-button>
+              <el-button size="small" type="text" style="color:blue;" @click="optionShow(scope.row.id)">查看</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -104,7 +104,7 @@
   import {mapActions, mapGetters} from 'vuex';
   import {oneTwoApi} from '@/api/api.js';
   import getApi1 from '../../infrastructure/DishesLibrary/dishesLibrary.service'
-
+  import getApi from './downRecord.service'
   export default {
     components: {},
     computed: {
@@ -115,17 +115,13 @@
     data() {
       return {
         dialogFormVisible: false,
-        showName: '',
         tableWidth: 0,
         tableHeight: 0,
         navList: [{name: "活动方案", url: ''},{name: "下发记录", url: ''}],
-
-        sgroupname: '',
-
         tableData: [],
         p: {page: 1, size: 20, total: 0},
         schemeData:[],
-        storeDataShow: [],
+
         storeData:[]
       }
     },
@@ -137,30 +133,24 @@
 
       getPage(page) {
         this.p.page = page;
-        this.showResouce(this.p, this.sgroupname);
+        this.showResouce(this.p);
       },
       getPageSize(size) {
         this.p.size = size;
-        this.showResouce(this.p, this.sgroupname);
+        this.showResouce(this.p);
       },
 
 
       search() {
-        this.showResouce(this.p = {page: 1, size: 20, total: 0}, this.sgroupname);
+        this.showResouce(this.p = {page: 1, size: 20, total: 0});
       },
 
-      optionShow(name, id) {
+      optionShow(id) {
         this.dialogFormVisible = true;
-        // let params = {
-        //   redirect: "x2a.sgroup.view",
-        //   levelid: this.getActivityDownRecordLevelId(),
-        //   id: id,
-        // };
-        // oneTwoApi(params).then((res) => {
-        //   if (res.errcode === 0) {
-        //     this.storeDataShow = res.data[0].stores
-        //   }
-        // })
+        getApi.jumpUseInfo(id).then((res) => {
+
+
+        })
       },
       activeDown() {
         this.$router.push('/activitySetting/activeDown')
@@ -175,32 +165,25 @@
             if (this.getActivityDownRecordLevelId() === '') {
               this.setActivityDownRecordLevelId({levelId: res.data.data[0].id});
             }
-            this.showResouce(this.p, this.sgroupname);
+            this.showResouce(this.p);
             recur(res.data.data, true, this.getActivityDownRecordLevelId(), this)
           }
         });
       },
 
-      showResouce(p, sgroupname = '') {
-        let params = {
-          redirect: "x2a.sgroup.index",
-          levelid: this.getActivityDownRecordLevelId(),
-          sgroupname: sgroupname,
-          page: p.page,
-          pagesize: p.size,
-          // noPage:''
-        };
-        oneTwoApi(params).then((res) => {
-          if (res.errcode === 0) {
-            this.tableData = res.data.list;
-            this.p.total = res.data.count;
+      showResouce(p) {
+
+        getApi.jumpUseList(p,this.getActivityDownRecordLevelId()).then((res) => {
+          res.data.data.list.forEach((item)=>{
+            item.select = false
+          });
+          if (res.data.errcode === 0) {
+            this.tableData = res.data.data.list;
+            this.p.total = res.data.data.count;
           }
         })
+
       },
-
-
-
-
 
     },
     created() {

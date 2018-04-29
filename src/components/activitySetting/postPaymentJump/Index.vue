@@ -27,7 +27,7 @@
     </div>
     <div class="flex_r">
       <div ref="tree" style="min-width: 200px;overflow-y: auto" :style="{height:tableHeight + 'px'}">
-        <xo-pub-tree :data='getActivitySettingTree()' :count=0 style="width: max-content;"></xo-pub-tree>
+        <xo-pub-tree :data='getPostPaymentJumpTree()' :count=0 style="width: max-content;"></xo-pub-tree>
       </div>
 
 
@@ -71,9 +71,9 @@
         <footer>
           <xo-pagination :pageData=p @page="getPage" @pageSize="getPageSize"></xo-pagination>
         </footer>
-        </div>
-
       </div>
+
+    </div>
 
 
     <!--新增/编辑-->
@@ -83,123 +83,123 @@
       <el-form ref="formRules" :model="formEdit" label-width="140px">
 
 
-          <el-form-item label="方案名称:" prop="name" :rules="{required: true, message: '请输入方案名称', trigger: 'blur'}">
-            <el-input class="input_width" :disabled="show" v-model="formEdit.name" placeholder="请输入方案名称"></el-input>
-          </el-form-item>
+        <el-form-item label="方案名称:" prop="name" :rules="{required: true, message: '请输入方案名称', trigger: 'blur'}">
+          <el-input class="input_width" :disabled="show" v-model="formEdit.name" placeholder="请输入方案名称"></el-input>
+        </el-form-item>
 
-          <el-form-item label="方案编码:" v-if="showName !== '新增方案'">
-            <el-input v-model="formEdit.id" placeholder="" disabled></el-input>
-          </el-form-item>
+        <el-form-item label="方案编码:" v-if="showName !== '新增方案'">
+          <el-input v-model="formEdit.id" placeholder="" disabled></el-input>
+        </el-form-item>
 
-          <div v-for="(domain, index) in formEdit.third_code" class="flex_r">
-            <el-form-item :label="index === 0?'第三方编码':''" :key="domain.key">
-              <div>
-                <el-row>
-                  <el-col>
-                    <div style="width:150px">
-                      <el-input v-model="domain.code1" :disabled="show" placeholder="请输入第三方名称"></el-input>
-                    </div>
-                  </el-col>
-                </el-row>
-              </div>
-            </el-form-item>
+        <div v-for="(domain, index) in formEdit.third_code" class="flex_r">
+          <el-form-item :label="index === 0?'第三方编码':''" :key="domain.key">
+            <div>
+              <el-row>
+                <el-col>
+                  <div style="width:150px">
+                    <el-input v-model="domain.code1" :disabled="show" placeholder="请输入第三方名称"></el-input>
+                  </div>
+                </el-col>
+              </el-row>
+            </div>
+          </el-form-item>
+          <div class="m-rank">
+            <div class="m-rank-child"></div>
+          </div>
+          <el-form-item label-width="0" :key="domain.key">
+            <div>
+              <el-row>
+                <el-col>
+                  <div style="width:150px">
+                    <el-input v-model="domain.code2" :disabled="show" placeholder="请输入第三方编码"></el-input>
+                  </div>
+                </el-col>
+              </el-row>
+            </div>
+          </el-form-item>
+          <div class="flex_sc">
+            <div class="m-storeCode margin_l_10" @click="addDomain">
+              <i class="fa fa-plus-circle" aria-hidden="true"></i>
+            </div>
+            <div v-if="(formEdit.third_code.length>1) && (index !== 0)" class="m-storeCode margin_l_10"
+                 @click.prevent="removeDomain(index)">
+              <i class="fa fa-minus-circle" aria-hidden="true"></i>
+            </div>
+          </div>
+        </div>
+
+        <el-form-item label="状态:" >
+          <el-switch
+            :disabled="show"
+            v-model="formEdit.status"
+            on-color="#13ce66"
+            off-color="#ff4949">
+          </el-switch>
+        </el-form-item>
+
+        <el-form-item label="方案起止时间:" >
+          <div class="flex_r">
+            <el-date-picker
+              style="width:150px"
+              :disabled="show"
+              v-model="formEdit.start_time"
+              type="datetime"
+              placeholder="选择开始时间">
+            </el-date-picker>
             <div class="m-rank">
               <div class="m-rank-child"></div>
             </div>
-            <el-form-item label-width="0" :key="domain.key">
-              <div>
-                <el-row>
-                  <el-col>
-                    <div style="width:150px">
-                      <el-input v-model="domain.code2" :disabled="show" placeholder="请输入第三方编码"></el-input>
-                    </div>
-                  </el-col>
-                </el-row>
-              </div>
-            </el-form-item>
-            <div class="flex_sc">
-              <div class="m-storeCode margin_l_10" @click="addDomain">
-                <i class="fa fa-plus-circle" aria-hidden="true"></i>
-              </div>
-              <div v-if="(formEdit.third_code.length>1) && (index !== 0)" class="m-storeCode margin_l_10"
-                   @click.prevent="removeDomain(index)">
-                <i class="fa fa-minus-circle" aria-hidden="true"></i>
-              </div>
-            </div>
+            <el-date-picker
+              style="width:150px"
+              :disabled="show"
+              v-model="formEdit.end_time"
+              type="datetime"
+              placeholder="选择结束时间">
+            </el-date-picker>
           </div>
 
-          <el-form-item label="状态:" >
-            <el-switch
-              :disabled="show"
-              v-model="formEdit.status"
-              on-color="#13ce66"
-              off-color="#ff4949">
-            </el-switch>
-          </el-form-item>
-
-          <el-form-item label="方案起止时间:" >
-            <div class="flex_r">
-              <el-date-picker
-                style="width:150px"
-                :disabled="show"
-                v-model="formEdit.start_time"
-                type="datetime"
-                placeholder="选择开始时间">
-              </el-date-picker>
-              <div class="m-rank">
-                <div class="m-rank-child"></div>
-              </div>
-              <el-date-picker
-                style="width:150px"
-                :disabled="show"
-                v-model="formEdit.end_time"
-                type="datetime"
-                placeholder="选择结束时间">
-              </el-date-picker>
-            </div>
-
-          </el-form-item>
+        </el-form-item>
 
 
-          <!--<el-form-item label="方案过期提醒设置:" >-->
+        <!--<el-form-item label="方案过期提醒设置:" >-->
 
-            <!--<div class="flex_r">-->
-              <!--<div>-->
-                <!--<span>提醒</span>-->
-                <!--<el-switch-->
-                  <!--v-model="formEdit.status1"-->
-                  <!--on-text=""-->
-                  <!--off-text=""-->
-                  <!--on-color="#13ce66"-->
-                  <!--off-color="#ff4949">-->
-                <!--</el-switch>-->
-              <!--</div>-->
+        <!--<div class="flex_r">-->
+        <!--<div>-->
+        <!--<span>提醒</span>-->
+        <!--<el-switch-->
+        <!--v-model="formEdit.status1"-->
+        <!--on-text=""-->
+        <!--off-text=""-->
+        <!--on-color="#13ce66"-->
+        <!--off-color="#ff4949">-->
+        <!--</el-switch>-->
+        <!--</div>-->
 
-              <!--<div v-if="formEdit.status1 === true">-->
-                <!--<div class="margin_l_10 ">-->
-                  <!--<span>过期前</span>-->
-                  <!--<input type="text" class="form_input">-->
-                  <!--<span>小时提醒（发送模板消息）</span>-->
-                <!--</div>-->
+        <!--<div v-if="formEdit.status1 === true">-->
+        <!--<div class="margin_l_10 ">-->
+        <!--<span>过期前</span>-->
+        <!--<input type="text" class="form_input">-->
+        <!--<span>小时提醒（发送模板消息）</span>-->
+        <!--</div>-->
 
-                <!--<div class="margin_l_10 ">-->
-                  <!--<el-radio v-model="formEdit.radio" :label="0">{{radioName}}</el-radio><span>提醒一次</span>-->
-                <!--</div>-->
-                <!--<div class="margin_l_10 ">-->
-                  <!--<el-radio v-model="formEdit.radio" :label="1">{{radioName}}</el-radio><span>提醒2次/间隔</span><input type="text" class="form_input"><span>小时</span>-->
-                <!--</div>-->
-                <!--<div class="margin_l_10 ">-->
-                  <!--<el-radio v-model="formEdit.radio" :label="2">{{radioName}}</el-radio><span>提醒3次/间隔</span><input type="text" class="form_input"><span>小时</span>-->
-                <!--</div>-->
-              <!--</div>-->
+        <!--<div class="margin_l_10 ">-->
+        <!--<el-radio v-model="formEdit.radio" :label="0">{{radioName}}</el-radio><span>提醒一次</span>-->
+        <!--</div>-->
+        <!--<div class="margin_l_10 ">-->
+        <!--<el-radio v-model="formEdit.radio" :label="1">{{radioName}}</el-radio><span>提醒2次/间隔</span><input type="text" class="form_input"><span>小时</span>-->
+        <!--</div>-->
+        <!--<div class="margin_l_10 ">-->
+        <!--<el-radio v-model="formEdit.radio" :label="2">{{radioName}}</el-radio><span>提醒3次/间隔</span><input type="text" class="form_input"><span>小时</span>-->
+        <!--</div>-->
+        <!--</div>-->
 
-            <!--</div>-->
-          <!--</el-form-item>-->
+        <!--</div>-->
+        <!--</el-form-item>-->
 
         <el-form-item label="跳转设置:" >
           <el-radio-group v-model="formEdit.type">
             <div class="margin_b_10">
-                <el-radio :disabled="show" :label="1" slot="reference"><span v-popover:popover>发自己餐厅的券</span></el-radio>
+              <el-radio :disabled="show" :label="1" ><span @click="showTableDataActivity">发自己餐厅的券</span></el-radio>
             </div>
             <div class="margin_b_10">
               <el-radio :disabled="show" :label="0">授权款易托管（默认）</el-radio>
@@ -220,7 +220,7 @@
 
     <!--选择方案-->
     <el-dialog title="选择方案" :visible.sync="dialogVisible2" >
-      <el-table :data="tableDataActivity" border  style="width: 100%;" >
+      <el-table :data="tableDataActivity" border  style="width: 100%;">
         <el-table-column label-class-name="table_head" header-align="center" align="center" label="序号" width="80">
           <template slot-scope="scope">
             <div>{{scope.$index + 1}}</div>
@@ -317,7 +317,7 @@
         formEdit:{
           name:'',
           third_code:[{code1:'',code2:''}],
-          status:'',
+          status:true,
           type:0,
           start_time:'',
           end_time:'',
@@ -331,13 +331,15 @@
     },
     watch: {},
     methods: {
-      ...mapActions(['setActivitySettingTree', 'setActivitySettingLevelId']),
-      ...mapGetters(['getActivitySettingTree', 'getActivitySettingLevelId']),
+      ...mapActions(['setPostPaymentJumpTree', 'setPostPaymentJumpLevelId']),
+      ...mapGetters(['getPostPaymentJumpTree', 'getPostPaymentJumpLevelId']),
       selectActivity(){
         if(this.radio === ''){
           this.$message.warning('请选择方案');
           return
         }
+        this.formEdit.activity_id = this.radio;
+
         this.dialogVisible2 = false
 
       },
@@ -399,11 +401,7 @@
             //
           });
         }
-
-
       },
-
-
 
       handleChecked(data) {
         let list = this.tableData.filter((item) => {
@@ -442,33 +440,29 @@
       },
 
       close(){
-
         this.show = false;
         this.radio = '';
         this.formEdit = {
           name:'',
-            third_code:[{code1:'',code2:''}],
-            status:'',
-            type:0,
-            start_time:'',
-            end_time:'',
-            activity_id:''
+          third_code:[{code1:'',code2:''}],
+          status:true,
+          type:0,
+          start_time:'',
+          end_time:'',
+          activity_id:''
         }
-
       },
-
-
       openDialog() {
         this.dialogFormVisible = true;
       },
 
       submitFrom() {
 
-        this.$refs['formRules1'].validate((valid) => {
+        this.$refs['formRules'].validate((valid) => {
           if (valid) {
 
             if(this.showName === '新增方案'){
-              getApi.addActivity(this.getActivitySettingLevelId(), this.formEdit,this.formEdit1).then((res) => {
+              getApi.jumpAdd(this.getPostPaymentJumpLevelId(), this.formEdit).then((res) => {
                 if (res.data.errcode === 0) {
                   this.showResouce(this.p);
                   this.$message('操作成功');
@@ -476,7 +470,7 @@
                 }
               })
             }else {
-              getApi.updateActivity(this.formEdit,this.formEdit1).then((res) => {
+              getApi.jumpEdit(this.formEdit).then((res) => {
                 if (res.data.errcode === 0) {
                   this.showResouce(this.p);
                   this.$message('操作成功');
@@ -516,11 +510,10 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          getApi.delActivity(id).then((res) => {
+          getApi.jumpDel(id).then((res) => {
             if (res.data.errcode === 0) {
               this.showResouce(this.p);
               this.$message('操作成功');
-
             }
           });
 
@@ -535,14 +528,13 @@
       optionShow(name, id) {
         this.showName = name;
         this.dialogFormVisible = true;
-        getApi.getInfo(id).then((res) => {
+        getApi.jumpInfo(id).then((res) => {
           if (res.data.errcode === 0) {
             res.data.data.status === 1 ? res.data.data.status = true:res.data.data.status = false;
             res.data.data.start_time === ''? res.data.data.start_time = '': res.data.data.start_time  = (res.data.data.start_time + '000') * 1;
             res.data.data.end_time === ''? res.data.data.end_time  = '': res.data.data.end_time  = (res.data.data.end_time + '000') * 1;
             this.formEdit = res.data.data;
-            this.formEdit1.card_id = res.data.data.card_id;
-            this.formEdit1.material_id = res.data.data.material_id
+
           }
 
         });
@@ -553,25 +545,23 @@
       },
       activeDown() {
         this.$router.push('/activitySetting/activeDown')
-
       },
 
       showLevel() {
         getApi1.getLevel('', 1).then((res) => {
           if (res.data.errcode === 0) {
-
-            this.setActivitySettingTree({list: res.data.data});
-            if (this.getActivitySettingLevelId() === '') {
-              this.setActivitySettingLevelId({levelId: res.data.data[0].id});
+            this.setPostPaymentJumpTree({list: res.data.data});
+            if (this.getPostPaymentJumpLevelId() === '') {
+              this.setPostPaymentJumpLevelId({levelId: res.data.data[0].id});
             }
             this.showResouce(this.p, this.jumpName);
-            recur(res.data.data, true, this.getActivitySettingLevelId(), this)
+            recur(res.data.data, true, this.getPostPaymentJumpLevelId(), this)
           }
         });
       },
 
       showResouce(p,jumpName = ''){
-        getApi.getJumpList(p,this.getActivitySettingLevelId(), jumpName).then((res) => {
+        getApi.getJumpList(p,this.getPostPaymentJumpLevelId(), jumpName).then((res) => {
           res.data.data.list.forEach((item)=>{
             item.select = false
           });
@@ -583,7 +573,7 @@
       },
 
       showResouce1(p,activityName = ''){
-        getApi2.getActivityList(p,this.getActivitySettingLevelId(), activityName).then((res) => {
+        getApi2.getActivityList(p,this.getPostPaymentJumpLevelId(), activityName).then((res) => {
 
           if (res.data.errcode === 0) {
             this.tableDataActivity = res.data.data.list;
@@ -600,22 +590,21 @@
         this.formEdit.third_code.push({code1: '', code2: ''});
       },
 
-
     },
     created() {
-      if (this.getActivitySettingTree().length === 0) {
+      if (this.getPostPaymentJumpTree().length === 0) {
         this.showLevel()
       } else {
         this.showResouce(this.p);
-        recur(this.getActivitySettingTree(), false, this.getActivitySettingLevelId(), this)
+        recur(this.getPostPaymentJumpTree(), false, this.getPostPaymentJumpLevelId(), this)
       }
 
     },
 
     mounted() {
       Hub.$on('showAdd', (e) => {
-        this.setActivitySettingLevelId({levelId: e.levelid});
-        recur(this.getActivitySettingTree(), false, this.getActivitySettingLevelId(), this);
+        this.setPostPaymentJumpLevelId({levelId: e.levelid});
+        recur(this.getPostPaymentJumpTree(), false, this.getPostPaymentJumpLevelId(), this);
 
         this.showResouce(this.p = {page: 1, size: this.p.size, total: 0});
       });
@@ -631,12 +620,9 @@
     updated() {
       let bodyWidth = document.querySelector('.content div').clientWidth;
       this.tableWidth = bodyWidth - this.$refs.tree.clientWidth;
-
-
     },
     destroyed() {
       Hub.$off("showAdd");
-
     }
   }
 </script>
@@ -667,9 +653,9 @@
     height: 35px;
   }
 
-.m_t_20{
-  margin-top: 20px;
-}
+  .m_t_20{
+    margin-top: 20px;
+  }
 
 
   .b_c{

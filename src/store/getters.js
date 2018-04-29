@@ -181,4 +181,11 @@ export default{
   getActivityDownRecordLevelId(state){
     return state.activityDownRecordLevelId;
   },
+
+  getPostPaymentJumpTree(state){
+    return state.postPaymentJumpTree;
+  },
+  getPostPaymentJumpLevelId(state){
+    return state.postPaymentJumpLevelId;
+  },
 }
