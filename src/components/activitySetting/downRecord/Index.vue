@@ -98,12 +98,12 @@
 <script>
 
 
-  import {recur} from '../../../utility/communApi'
-  import Hub from '../../../utility/commun'
-  import {getScrollHeight} from '../../../utility/getScrollHeight'
+  import {recur} from '../../utility/communApi'
+  import Hub from '../../utility/commun'
+  import {getScrollHeight} from '../../utility/getScrollHeight'
   import {mapActions, mapGetters} from 'vuex';
   import {oneTwoApi} from '@/api/api.js';
-  import getApi1 from '../../../infrastructure/DishesLibrary/dishesLibrary.service'
+  import getApi1 from '../../infrastructure/DishesLibrary/dishesLibrary.service'
 
   export default {
     components: {},

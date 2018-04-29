@@ -105,7 +105,8 @@ import businessList from '@/components/businessInformation/businessList/Index.vu
 import activityData from '@/components/activitySetting/activityData/Index.vue'
 import activitySetting from '@/components/activitySetting/activitySetting/Index.vue'
 
-import activityDownRecord from '@/components/activitySetting/activitySetting/downRecord/Index.vue'
+import postPaymentJump from '@/components/activitySetting/postPaymentJump/Index.vue'
+import activityDownRecord from '@/components/activitySetting/downRecord/Index.vue'
 import activeDown from '@/components/activitySetting/activitySetting/activeDown/Index.vue'
 
 
@@ -605,12 +606,21 @@ export default new Router({
           name: '活动数据',
           component: activityData
         },
+
         //活动设置/活动设置
         {
           path: '/activitySetting/activitySetting',
           meta: { auth: false },
           name: '活动设置',
           component: activitySetting
+        },
+
+        //支付后跳转
+        {
+          path: '/activitySetting/postPaymentJump',
+          meta: { auth: false },
+          name: '支付后跳转',
+          component: postPaymentJump
         },
 
         //活动设置/活动下发
@@ -622,7 +632,7 @@ export default new Router({
         },
         //活动设置/下发记录
         {
-          path: '/activitySetting/activitySetting/downRecord',
+          path: '/activitySetting/downRecord',
           meta: { auth: false },
           name: '活动设置/下发记录',
           component: activityDownRecord

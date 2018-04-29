@@ -125,9 +125,9 @@
 
         <el-table-column label-class-name="table_head" header-align="center" align="center" label="菜品规格" width="360">
           <template slot-scope="scope">
-            <div v-for="(item,index) in scope.row.skus" class="flex_a m_b">
+            <div v-for="(item,index) in scope.row.skus" class="flex_a">
 
-              <el-form-item label="" :prop="'dishesList.' + scope.$index  + '.skus.' + index + '.skuid'" :rules="{type:'number',required: true, message: '请选择菜品规格', trigger: 'blur'}" class="m_t_22">
+              <el-form-item label="" class="m_t_22">
                 <el-select v-model="item.skuid" placeholder="请选择" style="width:120px">
                   <el-option
                     v-for="item1 in skuList"
@@ -139,7 +139,7 @@
               </el-form-item>
 
               <div class="margin_l_10" style="width:120px">
-                <el-form-item label="" :prop="'dishesList.' + scope.$index  + '.skus.' + index + '.price'" :rules="{required: true, validator: checkNumber, trigger: 'blur'}">
+                <el-form-item label="">
                   <el-input v-model="item.price" placeholder="请输入价格" class="m_t_22"></el-input>
                 </el-form-item>
               </div>
@@ -382,7 +382,7 @@
                 item1.radio = ''
               });
               if(item.skus.length === 0){
-                item.skus.push({skuid: '', price: ''})
+                item.skus.push({skuid: '', price: ''},{skuid: '', price: ''})
               }
               if(item.lunchboxes.length === 0){
                 item.lunchboxes.push({lunchboxid: '', count: ''})

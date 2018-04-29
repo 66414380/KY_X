@@ -25,14 +25,22 @@
         </el-table-column>
         <el-table-column header-align="center" align="center" prop="add_time" label="领取时间" >
         </el-table-column>
-        <el-table-column header-align="center" align="center" prop="sendtime" label="所选选项" >
+        <el-table-column header-align="center" align="center" label="填空题答案" >
           <template slot-scope="scope">
-            <div v-if="scope.row.anser1 === 2">女</div>
-            <div v-if="scope.row.anser1 === 1">男</div>
+            <div v-for="(item,index) in scope.row.anser1">
+              <span class="flex_a" style="width: 120px;margin: 0 auto"> {{index + 1 }}. {{item}}</span>
+            </div>
+
           </template>
         </el-table-column>
 
-        <el-table-column header-align="center" align="center" prop="anser2" label="输入的文字" >
+        <el-table-column header-align="center" align="center" label="选择题答案" >
+          <template slot-scope="scope">
+            <div v-for="(item,index) in scope.row.anser2">
+              <span class="flex_a" style="width: 120px;margin: 0 auto"> {{index + 1 }}. {{item}}</span>
+            </div>
+
+          </template>
         </el-table-column>
       </el-table>
 
@@ -60,7 +68,7 @@
       return {
         width:0,
         tableHeight:0,
-        navList:[{name:"活动设置",url:''},{name:"活动数据",url:''}],
+        navList:[{name:"活动参与数据",url:''}],
         tableData: [],
         p: {page: 1, size: 20, total: 0},
 
@@ -85,6 +93,15 @@
         formData.append("pagesize", p.size);
         this.$http.post(`index.php?controller=activity&action=activityReceive&token=${this.$localStorage.get('token')}`,formData).then((res)=>{
           if(res.data.errcode === 0){
+            res.data.data.list.forEach((item)=>{
+              item.anser2.forEach((item1,i)=>{
+                if(typeof item1 === "object"){
+                  item.anser2.splice(i,1,item1.join(','))
+                }
+              })
+            });
+
+
             this.tableData = res.data.data.list;
             this.p.total = res.data.data.count;
           }

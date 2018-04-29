@@ -47,12 +47,23 @@
           <el-table-column label-class-name="table_head" header-align="center" align="center" label="ERP餐盒" width="140">
             <template slot-scope="scope">
 
-              <el-button size="small" type="primary" @click="link(scope.row.id)" v-if="scope.row.erpcode ===null">关联餐盒</el-button>
-
-              <div >
-                <span>{{scope.row.erpcode}}</span>
-                <el-button size="small" @click="unlink(scope.row.id)" v-if="scope.row.erpcode !==null">解除关联</el-button>
+              <div v-if="!scope.row.canEditErp">
+                <span class="margin_r_10" >{{scope.row.erpcode}}</span>
+                <el-button size="small" type="text" @click="erpcodeEdit(scope.row)">编辑</el-button>
               </div>
+              <div v-else>
+                <el-input size="small" v-model="scope.row.erpcode" placeholder="请输入编码"></el-input>
+                <el-button size="small" type="text" @click="erpcodeSave(scope.row.id,scope.row.erpcode)">保存</el-button>
+              </div>
+
+
+
+              <el-button size="small" type="primary" @click="link(scope.row.id)" v-if="scope.row.erpcode ===null">关联餐盒</el-button>
+                <el-button size="small" @click="unlink(scope.row.id)" v-if="scope.row.erpcode !==null && !scope.row.canEditErp">解除关联</el-button>
+
+
+
+
             </template>
           </el-table-column>
 
@@ -185,6 +196,28 @@
     methods: {
       ...mapActions(['setBoxSettingTree','setBoxSettingLevelId']),
       ...mapGetters(['getBoxSettingTree','getBoxSettingLevelId']),
+      erpcodeSave(id,erpcode){
+        console.log(erpcode)
+
+        if( erpcode !== null && erpcode.length > 10){
+          this.$message.warning('不能超过10个字符');
+          return
+        }
+        let params = {
+          redirect: "x2a.lunchbox.linkerp",
+          lunboxid: id,
+          erpfoodid:erpcode
+        };
+        oneTwoApi(params).then((res) => {
+          if(res.errcode === 0){
+            this.$message("操作成功");
+            this.showResouce(this.p,this.dishesName);
+          }
+        });
+      },
+      erpcodeEdit(row){
+        row.canEditErp = !row.canEditErp
+      },
       submitErp(){
         this.currentRow.check = null;
         this.showResouce(this.p);
@@ -388,6 +421,10 @@
 
         };
         oneTwoApi(params).then((res) => {
+          res.data.list.forEach((item)=>{
+            item.canEditErp = false;
+          })
+
           if(res.errcode === 0){
             this.tableData = res.data.list;
             this.p.total = res.data.count;

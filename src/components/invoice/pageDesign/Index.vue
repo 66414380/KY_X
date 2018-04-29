@@ -313,13 +313,6 @@
           this.$message.error('上传头像图片大小不能超过 500kb!');
         }
 
-        // setTimeout(() => {
-        //   if (this.$refs.img.clientHeight > 350 || this.$refs.img.clientWidth > 350) {
-        //     this.$message.error('图片尺寸不能超过350px!');
-        //     this.form2.log_img = ''
-        //   }
-        // }, 400);
-
         return img && isLt5;
 
       },

@@ -1,5 +1,5 @@
 <template>
-  <div >
+  <div v-show="getTreeArr['列表']">
 
     <div class="bodyTop padding_b_10">
       <div class="margin_b_10">
@@ -9,14 +9,14 @@
       <div class="flex_es">
 
         <div>
-          <el-button size="small" @click="add('新增方案')" >新增方案</el-button>
-          <el-button size="small"  @click="delSelected()">批量删除</el-button>
-          <el-button size="small" @click="isSwitch()">批量开启/关闭</el-button>
+          <el-button size="small" @click="add('新增方案')" v-show="getTreeArr['新增活动']">新增方案</el-button>
+          <el-button size="small"  @click="delSelected()" v-show="getTreeArr['批量删除']">批量删除</el-button>
+          <el-button size="small" @click="isSwitch()" v-show="getTreeArr['批量开启/关闭']">批量开启/关闭</el-button>
         </div>
 
         <div class="flex_a">
           <div class="margin_r_10">
-            <el-input size="small" v-model="sgroupname" placeholder="请输入方案名称"></el-input>
+            <el-input size="small" v-model="activityName" placeholder="请输入方案名称"></el-input>
           </div>
           <el-button size="small" @click="search()">搜索</el-button>
 
@@ -54,22 +54,28 @@
           <!--</el-table-column>-->
           <el-table-column label-class-name="table_head" header-align="center" align="center"  min-width="240" label="方案起止时间">
             <template slot-scope="scope">
-              <div>起 {{scope.row.start_time}} </div>
-              <div>截止 {{scope.row.end_time}} </div>
+              <div v-if="scope.row.start_time !== ''">起 {{scope.row.start_time}} </div>
+              <div v-if="scope.row.end_time !== ''">截止 {{scope.row.end_time}} </div>
             </template>
           </el-table-column>
           <el-table-column label-class-name="table_head" header-align="center" align="center" prop="card_name" min-width="140" label="优惠券名称">
           </el-table-column>
-          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="sgroupname" min-width="160" label="方案过期倒计时">
+          <el-table-column label-class-name="table_head" header-align="center" align="center" min-width="180" label="方案过期倒计时">
+            <template slot-scope="scope">
+              <div v-if="scope.row.end_time !== '' && scope.row.start_time !== ''">
+                <time-component :end-time="scope.row.end_time" :start-time="scope.row.start_time" :update-time="timeNow"></time-component>
+              </div>
+
+            </template>
           </el-table-column>
-          <el-table-column label-class-name="table_head" header-align="center" align="center" prop="sgroupname" min-width="160" label="方案过期提醒状态">
-          </el-table-column>
+          <!--<el-table-column label-class-name="table_head" header-align="center" align="center" prop="sgroupname" min-width="160" label="方案过期提醒状态">-->
+          <!--</el-table-column>-->
           <el-table-column label-class-name="table_head" header-align="center" align="center" label="操作" width="280">
             <template slot-scope="scope">
-              <el-button size="small" type="text" style="color:green;" @click="optionShow('修改方案',scope.row.id)">修改</el-button>
-              <el-button size="small" type="text" style="color:blue;" @click="optionShow('查看方案',scope.row.id)">查看</el-button>
-              <el-button size="small" type="text" style="color:red;" @click="del(scope.row.id)">删除</el-button>
-              <el-button size="small" type="text" style="color:burlywood;" @click="activeDown()">方案下发</el-button>
+              <el-button size="small" type="text" style="color:green;" @click="optionShow('修改方案',scope.row.id)" v-show="getTreeArr['编辑活动']">修改</el-button>
+              <el-button size="small" type="text" style="color:blue;" @click="optionShow('查看方案',scope.row.id)" v-show="getTreeArr['活动详情']">查看</el-button>
+              <el-button size="small" type="text" style="color:red;" @click="del(scope.row.id)" v-show="getTreeArr['删除']">删除</el-button>
+              <!--<el-button size="small" type="text" style="color:burlywood;" @click="activeDown()">方案下发</el-button>-->
             </template>
           </el-table-column>
         </el-table>
@@ -83,21 +89,9 @@
     <!--题目列表-->
     <el-dialog :visible.sync="visiblePopList" title="选择类型页" size="tiny">
       <div class="flex_a margin_t_10" v-for="(item,index) in formEdit.subject_data">
-
-        <div class="button flex pointer margin_r_10" @click="editOneSubject(item,index,'修改题目')"  v-if="index === 0" :style="{'background-color':(showSubjectIndex === 0)?'#E8EEF5':''}">题目一</div>
-        <div class="button flex pointer margin_r_10" @click="editOneSubject(item,index,'修改题目')"  v-if="index === 1" :style="{'background-color':(showSubjectIndex === 1)?'#E8EEF5':''}">题目二</div>
-        <div class="button flex pointer margin_r_10" @click="editOneSubject(item,index,'修改题目')"  v-if="index === 2" :style="{'background-color':(showSubjectIndex === 2)?'#E8EEF5':''}">题目三</div>
-        <div class="button flex pointer margin_r_10" @click="editOneSubject(item,index,'修改题目')"  v-if="index === 3" :style="{'background-color':(showSubjectIndex === 3)?'#E8EEF5':''}">题目四</div>
-        <div class="button flex pointer margin_r_10" @click="editOneSubject(item,index,'修改题目')"  v-if="index === 4" :style="{'background-color':(showSubjectIndex === 4)?'#E8EEF5':''}">题目五</div>
-        <div class="button flex pointer margin_r_10" @click="editOneSubject(item,index,'修改题目')"  v-if="index === 5" :style="{'background-color':(showSubjectIndex === 5)?'#E8EEF5':''}">题目六</div>
-        <div class="button flex pointer margin_r_10" @click="editOneSubject(item,index,'修改题目')"  v-if="index === 6" :style="{'background-color':(showSubjectIndex === 6)?'#E8EEF5':''}">题目七</div>
-        <div class="button flex pointer margin_r_10" @click="editOneSubject(item,index,'修改题目')"  v-if="index === 7" :style="{'background-color':(showSubjectIndex === 7)?'#E8EEF5':''}">题目八</div>
-        <div class="button flex pointer margin_r_10" @click="editOneSubject(item,index,'修改题目')"  v-if="index === 8" :style="{'background-color':(showSubjectIndex === 8)?'#E8EEF5':''}">题目九</div>
-        <div class="button flex pointer margin_r_10" @click="editOneSubject(item,index,'修改题目')"  v-if="index === 9" :style="{'background-color':(showSubjectIndex === 9)?'#E8EEF5':''}">题目十</div>
-
+        <div class="button flex pointer margin_r_10" @click="editOneSubject(item,index,'修改题目')" :style="{'background-color':(showSubjectIndex === index)?'#E8EEF5':''}">题目{{index + 1}}</div>
         <div class="button flex margin_l_10" :style="{'background-color':(item.subject_type === 1)?'#E8EEF5':''}">填空题</div>
         <div class="button flex margin_l_10" :style="{'background-color':(item.subject_type === 2 || item.subject_type === 3)?'#E8EEF5':''}">选择题</div>
-
         <div class="flex_a margin_r_10" style="width: 72px">
           <div  class="m-storeCode margin_l_10"
                 @click.prevent="removeSubjectList(index)">
@@ -158,7 +152,7 @@
           </el-form-item>
 
           <el-form-item label="方案编码:" v-if="showName !== '新增方案'">
-            <el-input v-model="formEdit.id" placeholder="" disabled></el-input>
+            <el-input class="input_width" v-model="formEdit.id" placeholder="" disabled></el-input>
           </el-form-item>
 
           <div v-for="(domain, index) in formEdit.third_code" class="flex_r">
@@ -267,49 +261,44 @@
           <!--</el-form-item>-->
 
           <el-form-item label="专属访问信息:" >
-            <div class="flex_r">
-              <div>
+
                 <!--<div class="flex_a">-->
                   <!--<span style="width: 120px">首页网址</span> <el-input v-model="formEdit.url" placeholder="" size="small"></el-input>-->
                 <!--</div>-->
                 <div class="flex_a">
-                  <span style="width: 120px">appID</span> <el-input :disabled="show" v-model="formEdit.appId" placeholder="" size="small"></el-input>
+                  <span style="width: 115px">appID</span> <el-input style="width: 198px" :disabled="show" v-model="formEdit.appId" placeholder="请输入appID" size="small"></el-input>
                 </div>
                 <div class="flex_a">
-                  <span style="width: 120px">小程序路径</span> <el-input :disabled="show" v-model="formEdit.path" placeholder="" size="small"></el-input>
+                  <span style="width: 115px">小程序路径</span> <el-input style="width: 198px" :disabled="show" v-model="formEdit.path" placeholder="请输入小程序路径" size="small"></el-input>
                 </div>
-              </div>
+                <div class="flex_a">
 
-              <!--<div class="margin_l_10 flex_sc">-->
-                <!--<span class="margin_r_10" style="width: 110px;text-align: right">小程序码</span>-->
-                <!--<el-upload-->
-                  <!--class="avatar-uploader margin_r_10"-->
-                  <!--:action="$updateUrl"-->
-                  <!--name='filename'-->
-                  <!--:show-file-list="false"-->
-                  <!--:on-success="handleAvatarSuccess1"-->
-                  <!--:before-upload="beforeAvatarUpload">-->
-                  <!--<img v-if="formEdit1.imgurl_1" :src="formEdit1.imgurl_appId" class="small_image">-->
-                  <!--<div v-else class="small_image flex"><i class="el-icon-plus"></i></div>-->
-                <!--</el-upload>-->
+                  <el-form-item label="公众号APPID:" label-width="115px" prop="wx_appid" :rules="{required: true, message: '请输入公众号APPID', trigger: 'blur'}">
+                    <el-input style="width: 200px" :disabled="show" v-model="formEdit.wx_appid" placeholder="请输入公众号APPID" size="small"></el-input>
+                  </el-form-item>
 
-                <!--<div class="flex_f flex_sb" style="height: 100px">-->
+                </div>
+
+
+              <div class=" flex_a margin_t_10" v-if="show">
+                <span class="margin_r_10" style="width: 105px;text-align: left">小程序码</span>
+
+                <div class="el-upload">
+                  <img v-if="formEdit.qr_code" :src="formEdit.qr_code" class="qr_code_image">
+                  <div v-else class="small_image flex"></div>
+                </div>
+
+
+                <div class="margin_l_10 flex_f flex_sb" style="height: 100px">
                   <!--<div class="flex_a">-->
                     <!--<el-input v-model="formEdit.url" placeholder="" size="small"></el-input>-->
                     <!--<el-button size="small" class="margin_l_10" style="color: #34D066;border-color: #34D066;" >确定</el-button>-->
                   <!--</div>-->
-                  <!--<a class="width_100" :href="formEdit.businessImg" :download="formEdit.businessImg">-->
-                    <!--<el-button size="small" class="width_100" style="color: #20a0ff;border-color: #20a0ff;" >下载</el-button>-->
+                    <el-button size="small" class="width_100" style="color: #20a0ff;border-color: #20a0ff;" @click="openDownLoad(formEdit.id)">下载</el-button>
 
-                  <!--</a>-->
+                </div>
+              </div>
 
-
-                <!--</div>-->
-
-              <!--</div>-->
-
-
-            </div>
 
           </el-form-item>
 
@@ -371,22 +360,21 @@
         </div>
 
         <div  v-else>
+          <el-form ref="formRules1" :model="formEdit1" label-width="140px">
 
-          <div class="flex_a margin_b_10">
-            <span class="form1_width margin_r_10" >活动卡券编码:</span>
-            <el-input class="input_width" :disabled="show" v-model="formEdit.card_id" placeholder="请输入编码"></el-input>
-          </div>
+          <el-form-item label="活动卡券编码:" prop="card_id" :rules="{required: true, message: '请输入活动卡券编码', trigger: 'blur'}">
+            <el-input class="input_width" :disabled="show" v-model="formEdit1.card_id" placeholder="请输入活动卡券编码"></el-input>
+          </el-form-item>
 
-          <div class="flex_a margin_b_10">
-            <span class="form1_width margin_r_10" >活动卡面编码:</span>
-            <el-input class="input_width" :disabled="show" v-model="formEdit.material_id" placeholder="请输入编码"></el-input>
-          </div>
-
+          <el-form-item label="活动卡面编码:" prop="material_id" :rules="{required: true, message: '请输入活动卡面编码', trigger: 'blur'}">
+            <el-input class="input_width" :disabled="show" v-model="formEdit1.material_id" placeholder="请输入活动卡面编码"></el-input>
+          </el-form-item>
+          </el-form>
           <div class="flex_r margin_b_10">
             <div class="form2_width margin_r_10" >
               <div>
                 <div class="t_a" >设置领取规则</div>
-                <div class="t_a">（空为不限制）</div>
+                <div class="t_a">（空或0为不限制）</div>
               </div>
 
             </div>
@@ -450,134 +438,224 @@
                 <div class="big_image ">
 
                   <img class="width_100 height_100" v-if="formEdit.home_background_url" :src="formEdit.home_background_url">
-                  <img class="imgurl_1_1"  v-if="formEdit.home_notes_url" :src="formEdit.home_notes_url">
-                  <img class="imgurl_1_3" v-if="formEdit.home_start_url" :src="formEdit.home_start_url">
+                  <img class="home_notes_url"  v-if="formEdit.home_notes_url" :src="formEdit.home_notes_url">
+                  <img class="home_start_url" v-if="formEdit.home_start_url" :src="formEdit.home_start_url">
                 </div>
               </div>
 
               <div class="flex_r f_f m_t_20">
-                <div class="margin_t_10 margin_r_10">
-                  <el-upload
-                    :disabled="show"
-                    class="avatar-uploader "
-                    :action="$updateUrl"
-                    name='filename'
-                    :show-file-list="false"
-                    :on-success="handleAvatarSuccess_home_notes_url"
-                    :before-upload="beforeAvatarUpload">
-                    <div v-if="formEdit.home_notes_url" class="small_image flex">
-                      <img :src="formEdit.home_notes_url" class="width_100">
-                    </div>
-                    <div v-else class="small_image flex"><i class="el-icon-plus"></i></div>
-                  </el-upload>
-                  <div class="t_a">答题须知按钮</div>
-                </div>
+                <el-popover
 
-                <div class="margin_t_10 margin_r_10">
-                  <el-upload
-                    :disabled="show"
-                    class="avatar-uploader "
-                    :action="$updateUrl"
-                    name='filename'
-                    :show-file-list="false"
-                    :on-success="handleAvatarSuccess_home_background_url"
-                    :before-upload="beforeAvatarUpload">
-                    <div v-if="formEdit.home_background_url" class="small_image flex">
-                      <img :src="formEdit.home_background_url" class="height_100">
-                    </div>
-                    <div v-else class="small_image flex"><i class="el-icon-plus"></i></div>
-                  </el-upload>
-                  <div class="t_a">背景图</div>
-                </div>
+                  placement="top-start"
+                  width="200"
+                  trigger="hover">
+                  <div>
+                    请上传
+                  </div>
+                  <div>
+                    尺寸为W320px,H66px
+                  </div>
+                  <div>
+                    大小不超过300kb的图片
+                  </div>
 
-                <div class="margin_t_10 margin_r_10">
-                  <el-upload
-                    :disabled="show"
-                    class="avatar-uploader "
-                    :action="$updateUrl"
-                    name='filename'
-                    :show-file-list="false"
-                    :on-success="handleAvatarSuccess_home_start_url"
-                    :before-upload="beforeAvatarUpload">
-                    <div v-if="formEdit.home_start_url" class="small_image flex">
-                      <img :src="formEdit.home_start_url" class="width_100">
-                    </div>
-                    <div v-else class="small_image flex"><i class="el-icon-plus"></i></div>
-                  </el-upload>
-                  <div class="t_a">开始答题按钮</div>
-                </div>
+                  <div class="margin_t_10 margin_r_10" slot="reference">
+                    <el-upload
+                      :disabled="show"
+                      class="avatar-uploader "
+                      :action="$updateUrl"
+                      name='filename'
+                      :show-file-list="false"
+                      :on-success="handleAvatarSuccess_home_notes_url"
+                      :before-upload="beforeAvatarUpload">
+                      <div v-if="formEdit.home_notes_url" class="small_image flex">
+                        <img :src="formEdit.home_notes_url" class="width_100">
+                      </div>
+                      <div v-else class="small_image flex"><i class="el-icon-plus"></i></div>
+                    </el-upload>
+                    <div class="t_a">答题须知按钮</div>
+                  </div>
+
+                </el-popover>
+
+                <el-popover
+                  placement="top-start"
+                  width="200"
+                  trigger="hover">
+                  <div>
+                    请上传
+                  </div>
+                  <div>
+                    尺寸为W750px,H1108px
+                  </div>
+                  <div>
+                    大小不超过600kb的图片
+                  </div>
+                  <div class="margin_t_10 margin_r_10" slot="reference">
+                    <el-upload
+                      :disabled="show"
+                      class="avatar-uploader "
+                      :action="$updateUrl"
+                      name='filename'
+                      :show-file-list="false"
+                      :on-success="handleAvatarSuccess_home_background_url"
+                      :before-upload="beforeAvatarUpload2">
+                      <div v-if="formEdit.home_background_url" class="small_image flex">
+                        <img :src="formEdit.home_background_url" class="height_100" >
+                      </div>
+                      <div v-else class="small_image flex"><i class="el-icon-plus"></i></div>
+                    </el-upload>
+                    <div class="t_a">背景图</div>
+                  </div>
+                </el-popover>
+
+                <el-popover
+                  placement="top-start"
+                  width="200"
+                  trigger="hover">
+                  <div>
+                    请上传
+                  </div>
+                  <div>
+                    尺寸为W310px,H88px
+                  </div>
+                  <div>
+                    大小不超过300kb的图片
+                  </div>
+                  <div class="margin_t_10 margin_r_10" slot="reference">
+                    <el-upload
+                      :disabled="show"
+                      class="avatar-uploader "
+                      :action="$updateUrl"
+                      name='filename'
+                      :show-file-list="false"
+                      :on-success="handleAvatarSuccess_home_start_url"
+                      :before-upload="beforeAvatarUpload">
+                      <div v-if="formEdit.home_start_url" class="small_image flex">
+                        <img :src="formEdit.home_start_url" class="width_100">
+                      </div>
+                      <div v-else class="small_image flex"><i class="el-icon-plus"></i></div>
+                    </el-upload>
+                    <div class="t_a">开始答题按钮</div>
+                  </div>
+                </el-popover>
+
               </div>
             </div>
 
             <div class="flex_r" v-if="buttonInt === 2">
+
               <div class="margin_t_10 margin_r_10">
                 <div class="t_a">效果图</div>
                 <div class="big_image ">
                   <div class="width_100 height_100 flex" v-if="formEdit.notes_background_url" style="background-color: rgba(0,0,0,0.8)">
                     <img :src="formEdit.notes_background_url" style="width: 85%">
                   </div>
-                  <img class="imgurl_1_1" v-if="formEdit.notes_info" :src="formEdit.notes_info">
-                  <img class="imgurl_2_3" v-if="formEdit.notes_button" :src="formEdit.notes_button">
+
+                    <textarea class="notes_info" style="border: none;outline: none;background-color:transparent;" readonly v-model="formEdit.notes_info">
+                    </textarea>
+                  <div >
+
+                  </div>
+
+                  <img class="notes_button" v-if="formEdit.notes_button" :src="formEdit.notes_button">
                 </div>
               </div>
 
+
               <div class="flex_r f_f m_t_20">
-                <div class="margin_t_10 margin_r_10">
-                  <el-upload
-                    :disabled="show"
-                    class="avatar-uploader "
-                    :action="$updateUrl"
-                    name='filename'
-                    :show-file-list="false"
-                    :on-success="handleAvatarSuccess_notes_background_url"
-                    :before-upload="beforeAvatarUpload">
-                    <div v-if="formEdit.notes_background_url" class="small_image flex">
-                      <img :src="formEdit.notes_background_url" class="height_100">
+                <el-popover
+                  placement="top-start"
+                  width="200"
+                  trigger="hover">
+                  <div>
+                    请上传
+                  </div>
+                  <div>
+                    尺寸为W580px,H760px
+                  </div>
+                  <div>
+                    大小不超过300kb的图片
+                  </div>
+                  <div class="margin_t_10 margin_r_10" slot="reference">
+                    <el-upload
+                      :disabled="show"
+                      class="avatar-uploader "
+                      :action="$updateUrl"
+                      name='filename'
+                      :show-file-list="false"
+                      :on-success="handleAvatarSuccess_notes_background_url"
+                      :before-upload="beforeAvatarUpload">
+                      <div v-if="formEdit.notes_background_url" class="small_image flex">
+                        <img :src="formEdit.notes_background_url" class="height_100">
+                      </div>
+                      <div v-else class="small_image flex"><i class="el-icon-plus"></i></div>
+                    </el-upload>
+                    <div class="t_a">答题须知框</div>
+                  </div>
+                </el-popover>
+
+
+                <div class="margin_t_10 margin_r_10" >
+
+
+                  <el-input
+                    type="textarea"
+                    :rows="5"
+                    placeholder="请输入内容"
+                    @change="textAreaChange"
+                    v-model="formEdit.notes_info">
+                  </el-input>
+                  <el-popover
+                    placement="top-start"
+                    width="200"
+                    trigger="hover">
+                    <div>
+                      一行最多17个字，超过换行。最多不能十行
                     </div>
-                    <div v-else class="small_image flex"><i class="el-icon-plus"></i></div>
-                  </el-upload>
-                  <div class="t_a">答题须知框</div>
+                    <div class="t_a" slot="reference">答题须知详情</div>
+                  </el-popover>
+
                 </div>
 
-                <div class="margin_t_10 margin_r_10">
-                  <el-upload
-                    :disabled="show"
-                    class="avatar-uploader "
-                    :action="$updateUrl"
-                    name='filename'
-                    :show-file-list="false"
-                    :on-success="handleAvatarSuccess_notes_info"
-                    :before-upload="beforeAvatarUpload">
-                    <div v-if="formEdit.notes_info" class="small_image flex">
-                      <img :src="formEdit.notes_info" class="width_100">
-                    </div>
-                    <div v-else class="small_image flex"><i class="el-icon-plus"></i></div>
-                  </el-upload>
-                  <div class="t_a">答题须知详情</div>
-                </div>
 
-                <div class="margin_t_10 margin_r_10">
-                  <el-upload
-                    :disabled="show"
-                    class="avatar-uploader "
-                    :action="$updateUrl"
-                    name='filename'
-                    :show-file-list="false"
-                    :on-success="handleAvatarSuccess_notes_button"
-                    :before-upload="beforeAvatarUpload">
-                    <div v-if="formEdit.notes_button" class="small_image flex">
-                      <img :src="formEdit.notes_button" class="width_100">
-                    </div>
-                    <div v-else class="small_image flex"><i class="el-icon-plus"></i></div>
-                  </el-upload>
-                  <div class="t_a">答题须知按钮</div>
-                </div>
+                <el-popover
+                  placement="top-start"
+                  width="200"
+                  trigger="hover">
+                  <div>
+                    请上传
+                  </div>
+                  <div>
+                    尺寸为W310px,H88px
+                  </div>
+                  <div>
+                    大小不超过300kb的图片
+                  </div>
+                  <div class="margin_t_10 margin_r_10" slot="reference">
+                    <el-upload
+                      :disabled="show"
+                      class="avatar-uploader "
+                      :action="$updateUrl"
+                      name='filename'
+                      :show-file-list="false"
+                      :on-success="handleAvatarSuccess_notes_button"
+                      :before-upload="beforeAvatarUpload">
+                      <div v-if="formEdit.notes_button" class="small_image flex">
+                        <img :src="formEdit.notes_button" class="width_100">
+                      </div>
+                      <div v-else class="small_image flex"><i class="el-icon-plus"></i></div>
+                    </el-upload>
+                    <div class="t_a">答题须知按钮</div>
+                  </div>
+                </el-popover>
+
               </div>
             </div>
 
-            <div v-if="buttonInt === 3">
+            <div v-if="buttonInt === 3" style="min-height: 337px">
 
-              <div v-for="(item,index) in formEdit.subject_data">
+              <div v-for="(item,index) in formEdit.subject_data" >
 
                 <div class="flex_r" v-if="index === showSubjectIndex">
                   <div class="margin_t_10 margin_r_10">
@@ -638,22 +716,22 @@
                             <img class="height_100 width_100" v-if="item.option[3].img" :src="item.option[3].img">
                           </div>
                           <div style="width: 33.33%" class="height_100">
-                            <img class="height_100 width_100" v-if="item.option[4].img" :src="item.option[4].img">
+                            <img class="height_100 width_100" v-if="item.option.length > 4 && item.option[4].img" :src="item.option[4].img">
                           </div>
                           <div style="width: 33.33%" class="height_100">
-                            <img class="height_100 width_100" v-if="item.option[5].img" :src="item.option[5].img">
+                            <img class="height_100 width_100" v-if=" item.option.length > 5 &&item.option[5].img" :src="item.option[5].img">
                           </div>
                         </div>
 
                         <div style="height: 33.33%" class="width_100 flex_a">
                           <div style="width: 33.33%" class="height_100">
-                            <img class="height_100 width_100" v-if="item.option[6].img" :src="item.option[6].img">
+                            <img class="height_100 width_100" v-if="item.option.length > 6 && item.option[6].img" :src="item.option[6].img">
                           </div>
                           <div style="width: 33.33%" class="height_100">
-                            <img class="height_100 width_100" v-if="item.option[7].img" :src="item.option[7].img">
+                            <img class="height_100 width_100" v-if="item.option.length > 7 && item.option[7].img" :src="item.option[7].img">
                           </div>
                           <div style="width: 33.33%" class="height_100">
-                            <img class="height_100 width_100" v-if="item.option[8].img" :src="item.option[8].img">
+                            <img class="height_100 width_100" v-if="item.option.length > 8 &&item.option[8].img" :src="item.option[8].img">
                           </div>
                         </div>
 
@@ -661,81 +739,325 @@
                     </div>
                   </div>
                   <div class="flex_r f_f m_t_20">
-                    <div class="margin_t_10 margin_r_10">
-                      <el-upload
-                        :disabled="show"
-                        class="avatar-uploader "
-                        :action="$updateUrl"
-                        name='filename'
-                        :show-file-list="false"
-                        :on-success="(res, file)=>{
+
+                    <el-popover
+                      placement="top-start"
+                      width="200"
+                      trigger="hover"
+                      >
+
+                      <div>
+                        请上传
+                      </div>
+                      <div>
+                        尺寸为W750px,H1108px
+                      </div>
+                      <div>
+                        大小不超过600kb的图片
+                      </div>
+
+                      <div class="margin_t_10 margin_r_10" slot="reference">
+                        <el-upload
+                          :disabled="show"
+                          class="avatar-uploader "
+                          :action="$updateUrl"
+                          name='filename'
+                          :show-file-list="false"
+                          :on-success="(res, file)=>{
                       return handleAvatarSuccess_background(res, file,item)
                       }"
-                        :before-upload="beforeAvatarUpload">
-                        <div v-if="item.subject_background_url" class="small_image flex">
-                          <img :src="item.subject_background_url" class="height_100">
-                        </div>
-                        <div v-else class="small_image flex"><i class="el-icon-plus"></i></div>
-                      </el-upload>
-                      <div class="t_a">背景图</div>
-                    </div>
+                          :before-upload="beforeAvatarUpload2">
+                          <div v-if="item.subject_background_url" class="small_image flex">
+                            <img :src="item.subject_background_url" class="height_100">
+                          </div>
+                          <div v-else class="small_image flex"><i class="el-icon-plus"></i></div>
+                        </el-upload>
+                        <div class="t_a">背景图</div>
+                      </div>
+                    </el-popover>
 
-                    <div class="margin_t_10 margin_r_10">
-                      <el-upload
-                        :disabled="show"
-                        class="avatar-uploader "
-                        :action="$updateUrl"
-                        name='filename'
-                        :show-file-list="false"
-                        :on-success="(res, file)=>{
-                      return handleAvatarSuccess_subject_problem(res, file,item)
+
+                    <el-popover
+                      v-if="item.subject_type === 1"
+                      placement="top-start"
+                      width="200"
+                      trigger="hover"
+                    >
+                      <div>
+                        请上传
+                      </div>
+                      <div>
+                        尺寸为W600px,H184px
+                      </div>
+                      <div>
+                        大小不超过300kb的图片
+                      </div>
+
+                      <div class="margin_t_10 margin_r_10" slot="reference">
+                        <el-upload
+                          :disabled="show"
+                          class="avatar-uploader "
+                          :action="$updateUrl"
+                          name='filename'
+                          :show-file-list="false"
+                          :on-success="(res, file)=>{
+                      return handleAvatarSuccess_subject_problem1(res, file,item)
                       }"
-                        :before-upload="beforeAvatarUpload">
-                        <div v-if="item.subject_problem" class="small_image flex">
-                          <img :src="item.subject_problem" class="width_100">
-                        </div>
-                        <div v-else class="small_image flex"><i class="el-icon-plus"></i></div>
-                      </el-upload>
-                      <div class="t_a">问题</div>
-                    </div>
+                          :before-upload="beforeAvatarUpload">
+                          <div v-if="item.subject_problem" class="small_image flex">
+                            <img :src="item.subject_problem" class="width_100">
+                          </div>
+                          <div v-else class="small_image flex"><i class="el-icon-plus"></i></div>
+                        </el-upload>
+                        <div class="t_a">问题</div>
+                      </div>
+                    </el-popover>
+                    <el-popover
+                      v-else
+                      placement="top-start"
+                      width="200"
+                      trigger="hover"
+                    >
+                      <div>
+                        请上传
+                      </div>
+                      <div>
+                        尺寸为W560px,H104px
+                      </div>
+                      <div>
+                        大小不超过300kb的图片
+                      </div>
 
-                    <div class="margin_t_10 margin_r_10">
-                      <el-upload
-                        :disabled="show"
-                        class="avatar-uploader "
-                        :action="$updateUrl"
-                        name='filename'
-                        :show-file-list="false"
-                        :on-success="(res, file)=>{
+                      <div class="margin_t_10 margin_r_10" slot="reference">
+                        <el-upload
+                          :disabled="show"
+                          class="avatar-uploader "
+                          :action="$updateUrl"
+                          name='filename'
+                          :show-file-list="false"
+                          :on-success="(res, file)=>{
+                      return handleAvatarSuccess_subject_problem23(res, file,item)
+                      }"
+                          :before-upload="beforeAvatarUpload">
+                          <div v-if="item.subject_problem" class="small_image flex">
+                            <img :src="item.subject_problem" class="width_100">
+                          </div>
+                          <div v-else class="small_image flex"><i class="el-icon-plus"></i></div>
+                        </el-upload>
+                        <div class="t_a">问题</div>
+                      </div>
+                    </el-popover>
+
+
+
+                    <el-popover
+                      placement="top-start"
+                      width="200"
+                      trigger="hover"
+                    >
+                      <div>
+                        请上传
+                      </div>
+                      <div>
+                        尺寸为W310px,H88px
+                      </div>
+                      <div>
+                        大小不超过300kb的图片
+                      </div>
+
+                      <div class="margin_t_10 margin_r_10" slot="reference">
+                        <el-upload
+                          :disabled="show"
+                          class="avatar-uploader "
+                          :action="$updateUrl"
+                          name='filename'
+                          :show-file-list="false"
+                          :on-success="(res, file)=>{
                       return handleAvatarSuccess_subject_button(res, file,item)
                       }"
-                        :before-upload="beforeAvatarUpload">
-                        <div v-if="item.subject_button" class="small_image flex">
-                          <img :src="item.subject_button" class="width_100">
-                        </div>
-                        <div v-else class="small_image flex"><i class="el-icon-plus"></i></div>
-                      </el-upload>
-                      <div class="t_a">按钮</div>
-                    </div>
+                          :before-upload="beforeAvatarUpload">
+                          <div v-if="item.subject_button" class="small_image flex">
+                            <img :src="item.subject_button" class="width_100">
+                          </div>
+                          <div v-else class="small_image flex"><i class="el-icon-plus"></i></div>
+                        </el-upload>
+                        <div class="t_a">按钮</div>
+                      </div>
 
-                    <div v-if="item.subject_type !== 1" class="margin_t_10 margin_r_10" v-for="(item1,index1) in item.option">
-                      <el-upload
-                        :disabled="show"
-                        class="avatar-uploader "
-                        :action="$updateUrl"
-                        name='filename'
-                        :show-file-list="false"
-                        :on-success="(res, file)=>{
-                          return handleAvatarSuccess_option(res, file,item1)
+                    </el-popover>
+
+
+                    <!--2选-->
+                    <el-popover
+                      v-for="(item1,index1) in item.option"
+                      :key="item1.id"
+                      v-if="item.subject_type !== 1 && item.option.length === 2"
+                      placement="top-start"
+                      width="200"
+                      trigger="hover">
+                      <div>
+                        请上传
+                      </div>
+                      <div>
+                        尺寸为W290px,H580px
+                      </div>
+                      <div>
+                        大小不超过300kb的图片
+                      </div>
+
+
+                      <div  slot="reference" class="margin_t_10 margin_r_10"  >
+                        <el-upload
+                          :disabled="show"
+                          class="avatar-uploader "
+                          :action="$updateUrl"
+                          name='filename'
+                          :show-file-list="false"
+                          :on-success="(res, file)=>{
+                          return handleAvatarSuccess_option_2s(res, file,item1)
                       }"
-                        :before-upload="beforeAvatarUpload">
-                        <div v-if="item1.img" class="small_image flex">
-                          <img :src="item1.img" class="height_100">
+                          :before-upload="beforeAvatarUpload">
+                          <div v-if="item1.img" class="small_image flex">
+                            <img :src="item1.img" class="height_100">
+                          </div>
+                          <div v-else class="small_image flex"><i class="el-icon-plus"></i></div>
+                        </el-upload>
+                        <div class="width_100 flex" >
+
+                          <el-input style="width: 80px;" :disabled="show" v-model="item1.name" :placeholder="'回答' + (index1 + 1)" size="small"></el-input>
                         </div>
-                        <div v-else class="small_image flex"><i class="el-icon-plus"></i></div>
-                      </el-upload>
-                      <div class="t_a">回答{{index1 + 1}}</div>
-                    </div>
+                      </div>
+
+                    </el-popover>
+
+                    <!--3选-->
+                    <el-popover
+                      v-for="(item1,index1) in item.option"
+                      :key="item1.id"
+                      v-if="item.subject_type !== 1 && item.option.length === 3"
+                      placement="top-start"
+                      width="200"
+                      trigger="hover">
+                      <div>
+                        请上传
+                      </div>
+                      <div>
+                        尺寸为W194px,H580px
+                      </div>
+                      <div>
+                        大小不超过300kb的图片
+                      </div>
+
+
+                      <div  slot="reference" class="margin_t_10 margin_r_10"  >
+                        <el-upload
+                          :disabled="show"
+                          class="avatar-uploader "
+                          :action="$updateUrl"
+                          name='filename'
+                          :show-file-list="false"
+                          :on-success="(res, file)=>{
+                          return handleAvatarSuccess_option_3s(res, file,item1)
+                      }"
+                          :before-upload="beforeAvatarUpload">
+                          <div v-if="item1.img" class="small_image flex">
+                            <img :src="item1.img" class="height_100">
+                          </div>
+                          <div v-else class="small_image flex"><i class="el-icon-plus"></i></div>
+                        </el-upload>
+                        <div class="width_100 flex" >
+
+                          <el-input style="width: 80px;" :disabled="show" v-model="item1.name" :placeholder="'回答' + (index1 + 1)" size="small"></el-input>
+                        </div>
+                      </div>
+
+                    </el-popover>
+
+                    <!--4选-->
+                    <el-popover
+                      v-for="(item1,index1) in item.option"
+                      :key="item1.id"
+                      v-if="item.subject_type !== 1 && item.option.length === 4"
+                      placement="top-start"
+                      width="200"
+                      trigger="hover">
+                      <div>
+                        请上传
+                      </div>
+                      <div>
+                        尺寸为W290px,H290px
+                      </div>
+                      <div>
+                        大小不超过300kb的图片
+                      </div>
+
+
+                      <div  slot="reference" class="margin_t_10 margin_r_10"  >
+                        <el-upload
+                          :disabled="show"
+                          class="avatar-uploader "
+                          :action="$updateUrl"
+                          name='filename'
+                          :show-file-list="false"
+                          :on-success="(res, file)=>{
+                          return handleAvatarSuccess_option_4s(res, file,item1)
+                      }"
+                          :before-upload="beforeAvatarUpload">
+                          <div v-if="item1.img" class="small_image flex">
+                            <img :src="item1.img" class="height_100">
+                          </div>
+                          <div v-else class="small_image flex"><i class="el-icon-plus"></i></div>
+                        </el-upload>
+                        <div class="width_100 flex" >
+
+                          <el-input style="width: 80px;" :disabled="show" v-model="item1.name" :placeholder="'回答' + (index1 + 1)" size="small"></el-input>
+                        </div>
+                      </div>
+
+                    </el-popover>
+
+                    <!--5选以上-->
+                    <el-popover
+                      v-for="(item1,index1) in item.option"
+                      :key="item1.id"
+                      v-if="item.subject_type !== 1 && item.option.length > 4"
+                      placement="top-start"
+                      width="200"
+                      trigger="hover">
+                      <div>
+                        请上传
+                      </div>
+                      <div>
+                        尺寸为W194px,H194px
+                      </div>
+                      <div>
+                        大小不超过300kb的图片
+                      </div>
+
+
+                      <div  slot="reference" class="margin_t_10 margin_r_10"  >
+                        <el-upload
+                          :disabled="show"
+                          class="avatar-uploader "
+                          :action="$updateUrl"
+                          name='filename'
+                          :show-file-list="false"
+                          :on-success="(res, file)=>{
+                          return handleAvatarSuccess_option_5s(res, file,item1)
+                      }"
+                          :before-upload="beforeAvatarUpload">
+                          <div v-if="item1.img" class="small_image flex">
+                            <img :src="item1.img" class="height_100">
+                          </div>
+                          <div v-else class="small_image flex"><i class="el-icon-plus"></i></div>
+                        </el-upload>
+                        <div class="width_100 flex" >
+
+                          <el-input style="width: 80px;" :disabled="show" v-model="item1.name" :placeholder="'回答' + (index1 + 1)" size="small"></el-input>
+                        </div>
+                      </div>
+
+                    </el-popover>
 
 
                   </div>
@@ -744,11 +1066,11 @@
                     <div class="reg_box">
                       <div class="margin_b_10" style="text-align: center;font-size: 18px">规则说明</div>
                       <div class="margin_b_10">
-                        <span v-if="!show">1.最多输入<input type="number" class="form_input" v-model.number="item.subject_rule.max" @change="changeNumberMax(item)" />(33)个字</span>
+                        <span v-if="!show">1.最多输入<input type="number" min="1" max="33" class="form_input" v-model.number="item.subject_rule.max" @change="changeNumberMax(item)" />(33)个字</span>
                         <span v-else>1.最多输入<span class="form_input b_c" >{{item.subject_rule.max}}</span>(33)个字</span>
                       </div>
                       <div class="margin_b_10">
-                        <span v-if="!show">2.最小输入<input type="number" class="form_input" v-model.number="item.subject_rule.min" @change="changeNumberMin(item)"/>(0-33)个字</span>
+                        <span v-if="!show">2.最小输入<input type="number" min="1" max="33" class="form_input" v-model.number="item.subject_rule.min" @change="changeNumberMin(item)"/>(1-33)个字</span>
                         <span v-else>2.最小输入<span  class="form_input b_c" >{{item.subject_rule.min}}</span>(0-33)个字</span>
                       </div>
                       <div class="margin_b_10">3.不可全部为标点</div>
@@ -767,65 +1089,118 @@
               <div class="margin_t_10 margin_r_10">
                 <div class="t_a">效果图</div>
                 <div class="big_image ">
-                  <img class="imgurl_4_1"  v-if="formEdit.receive_success_url" :src="formEdit.receive_success_url">
+                  <img class="receive_success_url"  v-if="formEdit.receive_success_url" :src="formEdit.receive_success_url">
                   <div class="width_100 height_100 flex" v-if="formEdit.receive_info_url" style="background-color: rgba(0,0,0,0.8)">
                     <img :src="formEdit.receive_info_url" style="width: 85%">
                   </div>
-                  <img class="imgurl_4_3" v-if="formEdit.share_button" :src="formEdit.share_button">
+                  <img class="share_button" v-if="formEdit.share_button" :src="formEdit.share_button">
                 </div>
               </div>
 
               <div class="flex_r f_f m_t_20">
-                <div class="margin_t_10 margin_r_10">
-                  <el-upload
-                    :disabled="show"
-                    class="avatar-uploader "
-                    :action="$updateUrl"
-                    name='filename'
-                    :show-file-list="false"
-                    :on-success="handleAvatarSuccess_receive_success_url"
-                    :before-upload="beforeAvatarUpload">
-                    <div v-if="formEdit.receive_success_url" class="small_image flex">
-                      <img :src="formEdit.receive_success_url" class="width_100">
-                    </div>
-                    <div v-else class="small_image flex"><i class="el-icon-plus"></i></div>
-                  </el-upload>
-                  <div class="t_a">领取完成</div>
-                </div>
 
-                <div class="margin_t_10 margin_r_10">
-                  <el-upload
-                    :disabled="show"
-                    class="avatar-uploader "
-                    :action="$updateUrl"
-                    name='filename'
-                    :show-file-list="false"
-                    :on-success="handleAvatarSuccess_receive_info_url"
-                    :before-upload="beforeAvatarUpload">
-                    <div v-if="formEdit.receive_info_url" class="small_image flex">
-                      <img :src="formEdit.receive_info_url" class="height_100">
-                    </div>
-                    <div v-else class="small_image flex"><i class="el-icon-plus"></i></div>
-                  </el-upload>
-                  <div class="t_a">领取详情</div>
-                </div>
 
-                <div class="margin_t_10 margin_r_10">
-                  <el-upload
-                    :disabled="show"
-                    class="avatar-uploader "
-                    :action="$updateUrl"
-                    name='filename'
-                    :show-file-list="false"
-                    :on-success="handleAvatarSuccess_share_button"
-                    :before-upload="beforeAvatarUpload">
-                    <div v-if="formEdit.share_button" class="small_image flex">
-                      <img :src="formEdit.share_button" class="width_100">
-                    </div>
-                    <div v-else class="small_image flex"><i class="el-icon-plus"></i></div>
-                  </el-upload>
-                  <div class="t_a">领取按钮</div>
-                </div>
+                <el-popover
+                  placement="top-start"
+                  width="200"
+                  trigger="hover">
+                  <div>
+                    请上传
+                  </div>
+                  <div>
+                    尺寸为W330px,H250px
+                  </div>
+                  <div>
+                    大小不超过300kb的图片
+                  </div>
+
+                  <div class="margin_t_10 margin_r_10" slot="reference">
+                    <el-upload
+                      :disabled="show"
+                      class="avatar-uploader "
+                      :action="$updateUrl"
+                      name='filename'
+                      :show-file-list="false"
+                      :on-success="handleAvatarSuccess_receive_success_url"
+                      :before-upload="beforeAvatarUpload">
+                      <div v-if="formEdit.receive_success_url" class="small_image flex">
+                        <img :src="formEdit.receive_success_url" class="width_100">
+                      </div>
+                      <div v-else class="small_image flex"><i class="el-icon-plus"></i></div>
+                    </el-upload>
+                    <div class="t_a">领取完成</div>
+                  </div>
+
+                </el-popover>
+
+
+
+                <el-popover
+                  placement="top-start"
+                  width="200"
+                  trigger="hover">
+                  <div>
+                    请上传
+                  </div>
+                  <div>
+                    尺寸为W580px,H450px
+                  </div>
+                  <div>
+                    大小不超过300kb的图片
+                  </div>
+                  <div class="margin_t_10 margin_r_10" slot="reference">
+                    <el-upload
+                      :disabled="show"
+                      class="avatar-uploader "
+                      :action="$updateUrl"
+                      name='filename'
+                      :show-file-list="false"
+                      :on-success="handleAvatarSuccess_receive_info_url"
+                      :before-upload="beforeAvatarUpload">
+                      <div v-if="formEdit.receive_info_url" class="small_image flex">
+                        <img :src="formEdit.receive_info_url" class="height_100">
+                      </div>
+                      <div v-else class="small_image flex"><i class="el-icon-plus"></i></div>
+                    </el-upload>
+                    <div class="t_a">领取详情</div>
+                  </div>
+
+                </el-popover>
+
+                <el-popover
+                  placement="top-start"
+                  width="200"
+                  trigger="hover">
+                  <div>
+                    请上传
+                  </div>
+                  <div>
+                    尺寸为W310px,H88px
+                  </div>
+                  <div>
+                    大小不超过300kb的图片
+                  </div>
+                  <div class="margin_t_10 margin_r_10" slot="reference">
+                    <el-upload
+                      :disabled="show"
+                      class="avatar-uploader "
+                      :action="$updateUrl"
+                      name='filename'
+                      :show-file-list="false"
+                      :on-success="handleAvatarSuccess_share_button"
+                      :before-upload="beforeAvatarUpload">
+                      <div v-if="formEdit.share_button" class="small_image flex">
+                        <img :src="formEdit.share_button" class="width_100">
+                      </div>
+                      <div v-else class="small_image flex"><i class="el-icon-plus"></i></div>
+                    </el-upload>
+                    <div class="t_a">领取按钮</div>
+                  </div>
+
+                </el-popover>
+
+
+
               </div>
             </div>
 
@@ -843,72 +1218,135 @@
               </div>
 
               <div class="flex_r f_f m_t_20">
-                <div class="margin_t_10 margin_r_10">
-                  <el-upload
-                    :disabled="show"
-                    class="avatar-uploader "
-                    :action="$updateUrl"
-                    name='filename'
-                    :show-file-list="false"
-                    :on-success="handleAvatarSuccess_element1"
-                    :before-upload="beforeAvatarUpload">
-                    <div v-if="formEdit.element1" class="small_image flex">
-                      <img :src="formEdit.element1" class="width_100">
-                    </div>
-                    <div v-else class="small_image flex"><i class="el-icon-plus"></i></div>
-                  </el-upload>
-                  <div class="t_a">分享元素1</div>
-                </div>
 
-                <div class="margin_t_10 margin_r_10">
-                  <el-upload
-                    :disabled="show"
-                    class="avatar-uploader "
-                    :action="$updateUrl"
-                    name='filename'
-                    :show-file-list="false"
-                    :on-success="handleAvatarSuccess_element2"
-                    :before-upload="beforeAvatarUpload">
-                    <div v-if="formEdit.element2" class="small_image flex">
-                      <img :src="formEdit.element2" class="height_100">
-                    </div>                       <div v-else class="small_image flex"><i class="el-icon-plus"></i></div>
-                  </el-upload>
-                  <div class="t_a">分享元素2</div>
-                </div>
+                <el-popover
+                  placement="top-start"
+                  width="200"
+                  trigger="hover">
+                  <div>
+                    请上传
+                  </div>
+                  <div>
+                    尺寸为W92px,H80px
+                  </div>
+                  <div>
+                    大小不超过300kb的图片
+                  </div>
 
-                <div class="margin_t_10 margin_r_10">
-                  <el-upload
-                    :disabled="show"
-                    class="avatar-uploader "
-                    :action="$updateUrl"
-                    name='filename'
-                    :show-file-list="false"
-                    :on-success="handleAvatarSuccess_element3"
-                    :before-upload="beforeAvatarUpload">
-                    <div v-if="formEdit.element3" class="small_image flex">
-                      <img :src="formEdit.element3" class="width_100">
-                    </div>
-                    <div v-else class="small_image flex"><i class="el-icon-plus"></i></div>
-                  </el-upload>
-                  <div class="t_a">分享元素3</div>
-                </div>
+                  <div class="margin_t_10 margin_r_10" slot="reference">
+                    <el-upload
+                      :disabled="show"
+                      class="avatar-uploader "
+                      :action="$updateUrl"
+                      name='filename'
+                      :show-file-list="false"
+                      :on-success="handleAvatarSuccess_element1"
+                      :before-upload="beforeAvatarUpload">
+                      <div v-if="formEdit.element1" class="small_image flex">
+                        <img :src="formEdit.element1" class="width_100">
+                      </div>
+                      <div v-else class="small_image flex"><i class="el-icon-plus"></i></div>
+                    </el-upload>
+                    <div class="t_a">分享元素1</div>
+                  </div>
+                </el-popover>
 
-                <div class="margin_t_10 margin_r_10">
-                  <el-upload
-                    :disabled="show"
-                    class="avatar-uploader "
-                    :action="$updateUrl"
-                    name='filename'
-                    :show-file-list="false"
-                    :on-success="handleAvatarSuccess_element4"
-                    :before-upload="beforeAvatarUpload">
-                    <div v-if="formEdit.element4" class="small_image flex">
-                      <img :src="formEdit.element4" class="width_100">
-                    </div>
-                    <div v-else class="small_image flex"><i class="el-icon-plus"></i></div>
-                  </el-upload>
-                  <div class="t_a">分享元素4</div>
-                </div>
+                <el-popover
+                  placement="top-start"
+                  width="200"
+                  trigger="hover">
+                  <div>
+                    请上传
+                  </div>
+                  <div>
+                    尺寸为W500px,H760px
+                  </div>
+                  <div>
+                    大小不超过300kb的图片
+                  </div>
+
+                  <div class="margin_t_10 margin_r_10" slot="reference">
+                    <el-upload
+                      :disabled="show"
+                      class="avatar-uploader "
+                      :action="$updateUrl"
+                      name='filename'
+                      :show-file-list="false"
+                      :on-success="handleAvatarSuccess_element2"
+                      :before-upload="beforeAvatarUpload">
+                      <div v-if="formEdit.element2" class="small_image flex">
+                        <img :src="formEdit.element2" class="height_100">
+                      </div>                       <div v-else class="small_image flex"><i class="el-icon-plus"></i></div>
+                    </el-upload>
+                    <div class="t_a">分享元素2</div>
+                  </div>
+                </el-popover>
+
+
+                <el-popover
+                  placement="top-start"
+                  width="200"
+                  trigger="hover">
+                  <div>
+                    请上传
+                  </div>
+                  <div>
+                    尺寸为W280px,H88px
+                  </div>
+                  <div>
+                    大小不超过300kb的图片
+                  </div>
+
+                  <div class="margin_t_10 margin_r_10" slot="reference">
+                    <el-upload
+                      :disabled="show"
+                      class="avatar-uploader "
+                      :action="$updateUrl"
+                      name='filename'
+                      :show-file-list="false"
+                      :on-success="handleAvatarSuccess_element3"
+                      :before-upload="beforeAvatarUpload">
+                      <div v-if="formEdit.element3" class="small_image flex">
+                        <img :src="formEdit.element3" class="width_100">
+                      </div>
+                      <div v-else class="small_image flex"><i class="el-icon-plus"></i></div>
+                    </el-upload>
+                    <div class="t_a">分享元素3</div>
+                  </div>
+                </el-popover>
+
+                <el-popover
+                  placement="top-start"
+                  width="200"
+                  trigger="hover">
+                  <div>
+                    请上传
+                  </div>
+                  <div>
+                    尺寸为W310px,H88px
+                  </div>
+                  <div>
+                    大小不超过300kb的图片
+                  </div>
+
+                  <div class="margin_t_10 margin_r_10" slot="reference">
+                    <el-upload
+                      :disabled="show"
+                      class="avatar-uploader "
+                      :action="$updateUrl"
+                      name='filename'
+                      :show-file-list="false"
+                      :on-success="handleAvatarSuccess_element4"
+                      :before-upload="beforeAvatarUpload">
+                      <div v-if="formEdit.element4" class="small_image flex">
+                        <img :src="formEdit.element4" class="width_100">
+                      </div>
+                      <div v-else class="small_image flex"><i class="el-icon-plus"></i></div>
+                    </el-upload>
+                    <div class="t_a">分享元素4</div>
+                  </div>
+                </el-popover>
+
               </div>
             </div>
 
@@ -922,10 +1360,10 @@
 
 
 
-      <div class="margin_t_10">
-        <el-button type="primary" @click="submitFrom11('formRules')" v-if="!showFormSwitch">方案下发</el-button>
+      <div class="margin_t_10 flex_ce" style="margin-right: 10%">
+        <!--<el-button type="primary" @click="submitFrom11('formRules')" v-if="!showFormSwitch">方案下发</el-button>-->
         <el-button type="success" @click="submitFrom()" v-if="!showFormSwitch" :disabled="show">保存</el-button>
-        <el-button @click="dialogFormVisible = false">取消</el-button>
+        <el-button @click="dialogFormVisible = false" type="danger">取消</el-button>
         <el-button type="success" @click="next()" v-if="showFormSwitch">下一步</el-button>
       </div>
     </el-dialog>
@@ -946,6 +1384,30 @@
         <el-button type="primary" @click="changeStoresStatus()">确认</el-button>
       </div>
     </el-dialog>
+
+    <!--下载-->
+    <el-dialog
+      title="下载图片"
+      :visible.sync="dialogVisible2"
+      width="50%" size="tiny" @close="closeImg">
+
+      <!--<el-select v-model="downLoadValue" placeholder="请选择图片规格" @change="changeImg">-->
+        <!--<el-option-->
+          <!--v-for="item in options"-->
+          <!--:key="item.value"-->
+          <!--:label="item.label"-->
+          <!--:value="item.value">-->
+        <!--</el-option>-->
+      <!--</el-select>-->
+
+      <img :src="imgUrl" alt="">
+      <div class="margin_t_10">
+        <!--<el-button @click="dialogVisible2 = false">取消</el-button>-->
+        <a class="width_100"  v-if="imgUrl !== ''" :href="imgUrl" :download="imgUrl">
+          <el-button type="primary">下载</el-button>
+        </a>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -959,8 +1421,12 @@
   import {oneTwoApi} from '@/api/api.js';
   import getApi1 from '../../infrastructure/DishesLibrary/dishesLibrary.service'
   import getApi from './activitySetting.service'
+  import timeComponent from './timeComponent.vue'
   export default {
-    components: {},
+
+    components: {
+      timeComponent
+    },
     computed: {
       ...mapGetters([
         'getTreeArr', 'getBodyHeight'
@@ -968,6 +1434,30 @@
     },
     data() {
       return {
+        imgUrl:'',
+        activityId:'',
+        downLoadValue:'',
+        options: [{
+          value: '60',
+          label: '宽度60px'
+        }, {
+          value: '90',
+          label: '宽度90px'
+        }, {
+          value: '120',
+          label: '宽度120px'
+        }, {
+          value: '150',
+          label: '宽度150px'
+        }, {
+            value: '300',
+            label: '宽度300px'
+          }, {
+            value: '600',
+            label: '宽度600px'
+          },
+        ],
+        timeNow:new Date() * 1,
         num:'',
         subjectIndex:'',
         showSubjectIndex:'',
@@ -980,13 +1470,14 @@
         levelName: '',
         dialogFormVisible: false,
         dialogVisible1:false,
+        dialogVisible2:false,
         storeStatusValue:false,
         showName: '',
         tableWidth: 0,
         tableHeight: 0,
-        navList: [{name: "方案管理", url: ''},{name: "方案列表", url: ''}],
+        navList: [{name: "活动方案", url: ''},{name: "方案列表", url: ''}],
         show:false,
-        sgroupname: '',
+        activityName: '',
         storeName: '',
         tableData: [],
         p: {page: 1, size: 20, total: 0},
@@ -999,12 +1490,12 @@
           start_time:'',//活动开始时间 时间戳
           end_time:'',//活动结束时间 时间戳
           type:0,//0：直接领取 1：答题后领取
-          card_id:'',//卡券编号
-          material_id:'',//卡面编号
+
           limit_house_num:'',//每x小时限制领取一次 不限制为空或0
           limit_num:'',//每人限领x次 不限制为空或0
           appId:'',//小程序APPID
           path:'',//小程序页面路径
+          wx_appid:'',
           qrCode:'',//小程序二维码地址
           subject_data:[],
 
@@ -1027,7 +1518,7 @@
           url:'',
 
           imgurl_appId:'',
-
+          qr_code:'',
 
           status1:false,
           status2:false,
@@ -1039,13 +1530,9 @@
         },
 
         formEdit1: {
+          card_id:'',//卡券编号
+          material_id:'',//卡面编号
 
-
-
-          imgurl_1:'',
-
-
-          radioSelect:''
         },
 
         subjectAddList:{ //增加题目
@@ -1057,7 +1544,7 @@
           select_num:'',//选中数量
           option:[],//图片数量（单选，多选)
           multi_selection:'',//__多选 题目数__
-          subject_rule:{max:'',min:''}
+          subject_rule:{max:33,min:1}
         },
 
 
@@ -1070,6 +1557,41 @@
     methods: {
       ...mapActions(['setActivitySettingTree', 'setActivitySettingLevelId']),
       ...mapGetters(['getActivitySettingTree', 'getActivitySettingLevelId']),
+      closeImg(){
+        this.imgUrl = '';
+        this.activityId = '';
+        this.downLoadValue = ''
+      },
+      changeImg(e){
+
+
+      },
+      openDownLoad(id){
+        this.activityId = id;
+        this.dialogVisible2 = true;
+            getApi.downloadQrCode(this.activityId,'240').then((res) => {
+              if (res.data.errcode === 0) {
+                this.imgUrl = res.data.data
+              }
+            });
+      },
+
+      textAreaChange(e){
+       let str =  e.split('\n').toString();
+       let list = str.split(',');
+        if(list.length >10){
+          this.$message.warning('不能超过10行')
+        }
+        list.forEach((item ,index)=>{
+          if(item.length > 17){
+              this.$message.warning(`第${index +1}行已经超出17个字符`)
+          }
+        })
+
+      },
+
+
+
       //批量状态设置
       changeStoresStatus() {
         let storeStatusValue,list = [];
@@ -1083,13 +1605,13 @@
             list.push(item.id)
           }
         });
-        // getApi.storesStatus(list.join(','), storeStatusValue).then((res) => {
-        //   if(res.data.errcode === 0){
-        //     this.$message('操作成功');
-        //     this.showResouce(this.p, this.getX1StoreLevelId());
-        //     this.dialogVisible1 = false
-        //   }
-        // })
+        getApi.batchStatus(list.join(","),this.storeStatusValue).then((res) => {
+          if (res.data.errcode === 0) {
+            this.showResouce(this.p);
+            this.$message('操作成功');
+            this.dialogVisible1 =false
+          }
+        });
       },
       isSwitch() {
         if(this.tableData.some((item) => {return item.select === true}) === true){
@@ -1114,7 +1636,7 @@
             cancelButtonText: '取消',
             type: 'warning'
           }).then(() => {
-            getApi.delActivity(list.join(",")).then((res) => {
+            getApi.batchDel(list.join(",")).then((res) => {
               if (res.data.errcode === 0) {
                 this.showResouce(this.p);
                 this.$message('操作成功');
@@ -1203,7 +1725,7 @@
           subject_background_url:'',
           option:[],
           multi_selection:'',
-          subject_rule:{max:'',min:''}
+          subject_rule:{max:33,min:1}
         }
       },
       subjectAdd(){
@@ -1238,7 +1760,7 @@
         }
 
         for(let i=0;i<num;i++){
-          optionList.push({img:''})
+          optionList.push({img:'',select:false,name:'',id:i})
         }
 
         if( this.subjectTitle === '增加题目'){
@@ -1252,11 +1774,8 @@
             option:optionList,
             multi_selection:this.subjectAddList.multi_selection,
             select_num:this.subjectAddList.select_num,
-            subject_rule:{max:'',min:''}
+            subject_rule:{max:33,min:1}
           });
-
-
-
           this.showSubjectIndex = this.formEdit.subject_data.length -1
         } else {
           this.formEdit.subject_data.splice(this.subjectIndex,1,{
@@ -1271,6 +1790,7 @@
             subject_rule:{max:this.subjectAddList.subject_rule.max,min:this.subjectAddList.subject_rule.min}
           })
         }
+
         this.visiblePop = false;
         this.subjectAddList = {
           subject_type:'',
@@ -1278,9 +1798,12 @@
           multi_selection:''
         }
 
-
       },
       next(){
+        if(new Date(this.formEdit.start_time) * 1 > new Date(this.formEdit.end_time) * 1){
+          this.$message.warning('开始时间不能大于结束时间')
+          return
+        }
         this.$refs['formRules'].validate((valid) => {
           if (valid) {
             this.showFormSwitch = false
@@ -1326,7 +1849,7 @@
 
       close(){
         this.showFormSwitch = true;
-
+        this.show = false;
         this.formEdit = {
           name: '',//方案名称
             third_code: [
@@ -1336,12 +1859,11 @@
             start_time:'',//活动开始时间 时间戳
             end_time:'',//活动结束时间 时间戳
             type:0,//0：直接领取 1：答题后领取
-            card_id:'',//卡券编号
-            material_id:'',//卡面编号
             limit_house_num:'',//每x小时限制领取一次 不限制为空或0
             limit_num:'',//每人限领x次 不限制为空或0
             appId:'',//小程序APPID
             path:'',//小程序页面路径
+            wx_appid:'',
             qrCode:'',//小程序二维码地址
             subject_data:[],
 
@@ -1373,6 +1895,10 @@
             status5:false,
             status6:false,
             radio:''
+        };
+        this.formEdit1 = {
+            card_id:'',//卡券编号
+            material_id:'',//卡面编号
         }
 
       },
@@ -1383,33 +1909,42 @@
       },
 
       submitFrom() {
-        if(this.showName === '新增方案'){
-          getApi.addActivity(this.getActivitySettingLevelId(), this.formEdit).then((res) => {
-            if (res.data.errcode === 0) {
-              this.showResouce(this.p);
-              this.$message('操作成功');
-              this.dialogFormVisible = false
-            }
-          })
-        }else {
-          getApi.updateActivity(this.formEdit).then((res) => {
-            if (res.data.errcode === 0) {
-              this.showResouce(this.p);
-              this.$message('操作成功');
-              this.dialogFormVisible = false
-            }
-          })
-        }
 
+        this.$refs['formRules1'].validate((valid) => {
+          if (valid) {
+
+            if(this.showName === '新增方案'){
+              getApi.addActivity(this.getActivitySettingLevelId(), this.formEdit,this.formEdit1).then((res) => {
+                if (res.data.errcode === 0) {
+                  this.showResouce(this.p);
+                  this.$message('操作成功');
+                  this.dialogFormVisible = false
+                }
+              })
+            }else {
+              getApi.updateActivity(this.formEdit,this.formEdit1).then((res) => {
+                if (res.data.errcode === 0) {
+                  this.showResouce(this.p);
+                  this.$message('操作成功');
+                  this.dialogFormVisible = false
+                }
+              })
+            }
+
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
 
       },
       getPage(page) {
         this.p.page = page;
-        this.showResouce(this.p, this.sgroupname);
+        this.showResouce(this.p, this.activityName);
       },
       getPageSize(size) {
         this.p.size = size;
-        this.showResouce(this.p, this.sgroupname);
+        this.showResouce(this.p, this.activityName);
       },
 
       del(id) {
@@ -1431,7 +1966,7 @@
         });
       },
       search() {
-        this.showResouce(this.p = {page: 1, size: 20, total: 0}, this.sgroupname);
+        this.showResouce(this.p = {page: 1, size: 20, total: 0}, this.activityName);
       },
 
       optionShow(name, id) {
@@ -1440,18 +1975,17 @@
         getApi.getInfo(id).then((res) => {
           if (res.data.errcode === 0) {
             res.data.data.status === 1 ? res.data.data.status = true:res.data.data.status = false;
-            res.data.data.start_time = (res.data.data.start_time + '000') * 1;
-            res.data.data.end_time = (res.data.data.end_time + '000') * 1;
+            res.data.data.start_time === ''? res.data.data.start_time = '': res.data.data.start_time  = (res.data.data.start_time + '000') * 1;
+            res.data.data.end_time === ''? res.data.data.end_time  = '': res.data.data.end_time  = (res.data.data.end_time + '000') * 1;
             this.formEdit = res.data.data;
+            this.formEdit1.card_id = res.data.data.card_id;
+            this.formEdit1.material_id = res.data.data.material_id
           }
 
-        })
+        });
 
-        if(name === '查看方案'){
-          this.show = true
-        } else {
-          this.show = false
-        }
+        (name === '查看方案')? this.show = true : this.show = false
+
 
       },
       activeDown() {
@@ -1467,19 +2001,21 @@
             if (this.getActivitySettingLevelId() === '') {
               this.setActivitySettingLevelId({levelId: res.data.data[0].id});
             }
-            this.showResouce(this.p, this.sgroupname);
+            this.showResouce(this.p, this.activityName);
             recur(res.data.data, true, this.getActivitySettingLevelId(), this)
           }
         });
       },
 
-      showResouce(p,storeName = ''){
-        getApi.getActivityList(p,this.getActivitySettingLevelId(), storeName).then((res) => {
+      showResouce(p,activityName = ''){
+        getApi.getActivityList(p,this.getActivitySettingLevelId(), activityName).then((res) => {
+          res.data.data.list.forEach((item)=>{
+            item.select = false
+          })
           if (res.data.errcode === 0) {
             this.tableData = res.data.data.list;
             this.p.total = res.data.data.count;
           }
-
         })
       },
 
@@ -1491,71 +2027,273 @@
         this.formEdit.third_code.push({code1: '', code2: ''});
       },
 
-      handleAvatarSuccess1(res, file) {
-        this.formEdit1.imgurl_1 = file.response.data.file_url;
-      },
-
 
       handleAvatarSuccess_background(res, file,item){
-        item.subject_background_url = file.response.data.file_url;
+
+        let img = new Image();
+        img.src = file.response.data.file_url;
+        img.onload = ()=>{
+          if(img.width !==750 && img.height !== 1108){
+            this.$message.warning('宽高必须为W750px,H1108px');
+            item.subject_background_url = ''
+          } else {
+            item.subject_background_url = file.response.data.file_url;
+          }
+        }
       },
-      handleAvatarSuccess_subject_problem(res, file,item){
-        item.subject_problem = file.response.data.file_url;
+      handleAvatarSuccess_subject_problem1(res, file,item){
+        let img = new Image();
+        img.src = file.response.data.file_url;
+        img.onload = ()=>{
+          if(img.width !==600 && img.height !== 184){
+            this.$message.warning('宽高必须为W600px,H184px');
+            item.subject_problem = ''
+          } else {
+            item.subject_problem = file.response.data.file_url;
+          }
+        }
+      },
+      handleAvatarSuccess_subject_problem23(res, file,item){
+        let img = new Image();
+        img.src = file.response.data.file_url;
+        img.onload = ()=>{
+          if(img.width !==560 && img.height !== 104){
+            this.$message.warning('宽高必须为W560px,H104px');
+            item.subject_problem = ''
+          } else {
+            item.subject_problem = file.response.data.file_url;
+          }
+        }
       },
       handleAvatarSuccess_subject_button(res, file,item){
-        item.subject_button = file.response.data.file_url;
+        let img = new Image();
+        img.src = file.response.data.file_url;
+        img.onload = ()=>{
+          if(img.width !==310 && img.height !== 88){
+            this.$message.warning('宽高必须为W310px,H88px');
+            item.subject_button = ''
+          } else {
+            item.subject_button = file.response.data.file_url;
+          }
+        }
       },
+
+      handleAvatarSuccess_option_2s(res, file,item){
+        let img = new Image();
+        img.src = file.response.data.file_url;
+        img.onload = ()=>{
+          if(img.width !==290 && img.height !== 580){
+            this.$message.warning('宽高必须为W290px,H580px');
+            item.img = ''
+          } else {
+            item.img = file.response.data.file_url;
+          }
+        }
+      },
+      handleAvatarSuccess_option_3s(res, file,item){
+
+        let img = new Image();
+        img.src = file.response.data.file_url;
+        img.onload = ()=>{
+          if(img.width !==194 && img.height !== 580){
+            this.$message.warning('宽高必须为W194px,H580px');
+            item.img = ''
+          } else {
+            item.img = file.response.data.file_url;
+          }
+        }
+      },
+
+      handleAvatarSuccess_option_4s(res, file,item){
+        let img = new Image();
+        img.src = file.response.data.file_url;
+        img.onload = ()=>{
+          if(img.width !==290 && img.height !== 290){
+            this.$message.warning('宽高必须为W290px,H290px');
+            item.img = ''
+          } else {
+            item.img = file.response.data.file_url;
+          }
+        }
+      },
+      handleAvatarSuccess_option_5s(res, file,item){
+        let img = new Image();
+        img.src = file.response.data.file_url;
+        img.onload = ()=>{
+          if(img.width !==194 && img.height !== 194){
+            this.$message.warning('宽高必须为W194px,H194px');
+            item.img = ''
+          } else {
+            item.img = file.response.data.file_url;
+          }
+        }
+      },
+
       handleAvatarSuccess_option(res, file,item){
         item.img = file.response.data.file_url;
       },
 
       handleAvatarSuccess_home_notes_url(res, file) {
-        this.formEdit.home_notes_url = file.response.data.file_url;
+        let img = new Image();
+        img.src = file.response.data.file_url;
+        img.onload = ()=>{
+          if(img.width !==320 && img.height !== 66){
+            this.$message.warning('宽高必须为W320px,H66px');
+            this.formEdit.home_notes_url = ''
+          } else {
+            this.formEdit.home_notes_url = file.response.data.file_url;
+          }
+
+        }
       },
 
       handleAvatarSuccess_home_background_url(res, file) {
-        this.formEdit.home_background_url = file.response.data.file_url;
+        let img = new Image();
+        img.src = file.response.data.file_url;
+        img.onload = ()=>{
+          if(img.width !==750 && img.height !== 1108){
+            this.$message.warning('宽高必须为W750px,H1108px');
+            this.formEdit.home_background_url = ''
+          } else {
+            this.formEdit.home_background_url = file.response.data.file_url;
+          }
+        }
       },
 
       handleAvatarSuccess_home_start_url(res, file) {
-        this.formEdit.home_start_url = file.response.data.file_url;
+        let img = new Image();
+        img.src = file.response.data.file_url;
+        img.onload = ()=>{
+          if(img.width !==310 && img.height !== 88){
+            this.$message.warning('宽高必须为W310px,H88px');
+            this.formEdit.home_start_url = ''
+          } else {
+            this.formEdit.home_start_url = file.response.data.file_url;
+          }
+        }
       },
       handleAvatarSuccess_notes_background_url(res, file) {
-        this.formEdit.notes_background_url = file.response.data.file_url;
+        let img = new Image();
+        img.src = file.response.data.file_url;
+        img.onload = ()=>{
+          if(img.width !==580 && img.height !== 760){
+            this.$message.warning('宽高必须为W580px,H760px');
+            this.formEdit.notes_background_url = ''
+          } else {
+            this.formEdit.notes_background_url = file.response.data.file_url;
+          }
+        }
       },
       handleAvatarSuccess_notes_info(res, file) {
         this.formEdit.notes_info = file.response.data.file_url;
       },
       handleAvatarSuccess_notes_button(res, file) {
-        this.formEdit.notes_button = file.response.data.file_url;
+        let img = new Image();
+        img.src = file.response.data.file_url;
+        img.onload = ()=>{
+          if(img.width !==310 && img.height !== 88){
+            this.$message.warning('宽高必须为W310px,H88px');
+            this.formEdit.notes_button = ''
+          } else {
+            this.formEdit.notes_button = file.response.data.file_url;
+          }
+        }
       },
 
       handleAvatarSuccess_receive_success_url(res, file) {
-        this.formEdit.receive_success_url = file.response.data.file_url;
+        let img = new Image();
+        img.src = file.response.data.file_url;
+        img.onload = ()=>{
+          if(img.width !==330 && img.height !== 250){
+            this.$message.warning('宽高必须为W330px,H250px');
+            this.formEdit.receive_success_url = ''
+          } else {
+            this.formEdit.receive_success_url = file.response.data.file_url;
+          }
+        }
       },
       handleAvatarSuccess_receive_info_url(res, file) {
-        this.formEdit.receive_info_url = file.response.data.file_url;
+        let img = new Image();
+        img.src = file.response.data.file_url;
+        img.onload = ()=>{
+          if(img.width !==580 && img.height !== 450){
+            this.$message.warning('宽高必须为W580px,H450px');
+            this.formEdit.receive_info_url = ''
+          } else {
+            this.formEdit.receive_info_url = file.response.data.file_url;
+          }
+        }
       },
       handleAvatarSuccess_share_button(res, file) {
-        this.formEdit.share_button = file.response.data.file_url;
+        let img = new Image();
+        img.src = file.response.data.file_url;
+        img.onload = ()=>{
+          if(img.width !==310 && img.height !== 88){
+            this.$message.warning('宽高必须为W310px,H88px');
+            this.formEdit.share_button = ''
+          } else {
+            this.formEdit.share_button = file.response.data.file_url;
+          }
+        }
+
       },
       handleAvatarSuccess_element1(res, file) {
-        this.formEdit.element1 = file.response.data.file_url;
+        let img = new Image();
+        img.src = file.response.data.file_url;
+        img.onload = ()=>{
+          if(img.width !==92 && img.height !== 80){
+            this.$message.warning('宽高必须为W92px,H80px');
+            this.formEdit.element1 = ''
+          } else {
+            this.formEdit.element1 = file.response.data.file_url;
+          }
+        }
       },
       handleAvatarSuccess_element2(res, file) {
-        this.formEdit.element2 = file.response.data.file_url;
+        let img = new Image();
+        img.src = file.response.data.file_url;
+        img.onload = ()=>{
+          if(img.width !==500 && img.height !== 760){
+            this.$message.warning('宽高必须为W500px,H760px');
+
+            this.formEdit.element2 = ''
+          } else {
+            this.formEdit.element2 = file.response.data.file_url;
+          }
+        }
       },
       handleAvatarSuccess_element3(res, file) {
-        this.formEdit.element3 = file.response.data.file_url;
+        let img = new Image();
+        img.src = file.response.data.file_url;
+        img.onload = ()=>{
+          if(img.width !==280 && img.height !== 88){
+            this.$message.warning('宽高必须为W280px,H88px');
+            this.formEdit.element3 = ''
+          } else {
+            this.formEdit.element3 = file.response.data.file_url;
+          }
+        }
+
+
       },
       handleAvatarSuccess_element4(res, file) {
-        this.formEdit.element4 = file.response.data.file_url;
+        let img = new Image();
+        img.src = file.response.data.file_url;
+        img.onload = ()=>{
+          if(img.width !==310 && img.height !== 88){
+            this.$message.warning('宽高必须为W310px,H88px');
+            this.formEdit.element4 = ''
+          } else {
+            this.formEdit.element4 = file.response.data.file_url;
+          }
+        }
       },
 
       beforeAvatarUpload(file) {
+
         const isPNG = file.type === 'image/png';
         const isJPG = file.type === 'image/jpeg';
-        const isLt5M = file.size / 1024 / 1024 < 5;
+        const isLt5M = file.size / 1024 / 1024 < 0.3;
         let img;
 
         if (isJPG || isPNG) {
@@ -1565,8 +2303,28 @@
           this.$message.error('上传图片只能是 JPG,PNG 格式!');
         }
         if (!isLt5M) {
-          this.$message.error('上传图片大小不能超过 5MB!');
+          this.$message.error('上传图片大小不能超过 300k!');
         }
+
+        return img && isLt5M;
+      },
+      beforeAvatarUpload2(file) {
+
+        const isPNG = file.type === 'image/png';
+        const isJPG = file.type === 'image/jpeg';
+        const isLt5M = file.size / 1024 / 1024 < 0.6;
+        let img;
+
+        if (isJPG || isPNG) {
+          img = true
+        } else {
+          img = false;
+          this.$message.error('上传图片只能是 JPG,PNG 格式!');
+        }
+        if (!isLt5M) {
+          this.$message.error('上传图片大小不能超过 600k!');
+        }
+
         return img && isLt5M;
       },
 
@@ -1586,7 +2344,9 @@
         recur(this.getActivitySettingTree(), false, this.getActivitySettingLevelId(), this)
       }
 
-
+      this.int = setInterval(()=>{
+        this.timeNow = new Date() * 1;
+      },1000)
     },
 
     mounted() {
@@ -1613,7 +2373,8 @@
     },
     destroyed() {
       Hub.$off("showAdd");
-
+      clearInterval(this.int);
+      this.int = null;
     }
   }
 </script>
@@ -1625,6 +2386,7 @@
     border: 1px solid #B2BFD0;
     border-radius: 5px;
     outline: none;
+    text-align: center;
   }
   .form_width{
     width: 120px;
@@ -1648,7 +2410,9 @@
   .t_a{
     text-align: center;
   }
-
+  .item_name{
+    width: 40px;
+  }
   .button{
     border: 1px solid #B2BFD0;
     border-radius: 4px;
@@ -1670,6 +2434,9 @@
     height: 100px;
 
   }
+  .qr_code_image{
+    height: 100px;
+  }
   .pop_top0{
     width: 100%;
     height: 40px;
@@ -1688,7 +2455,7 @@
     margin: 0 20px;
   }
 
-  .imgurl_1_1{
+  .home_notes_url{
     width: 43%;
     height: 9%;
     position: absolute;
@@ -1696,15 +2463,22 @@
     right: 6%;
   }
 
-  .imgurl_1_3{
+  .home_start_url{
     width: 44%;
     height: 9%;
     position: absolute;
     bottom: 8%;
     right: 28%;
   }
-
-  .imgurl_2_3{
+  .notes_info{
+    width: 77%;
+    height: 37%;
+    position: absolute;
+    top: 29%;
+    left: 15%;
+    font-size: 10px;
+  }
+  .notes_button{
     width: 44%;
     height: 9%;
     position: absolute;
@@ -1712,7 +2486,7 @@
     right: 28%;
   }
 
-  .imgurl_4_1{
+  .receive_success_url{
     width: 44%;
     height: 16%;
     position: absolute;
@@ -1720,7 +2494,7 @@
     right: 28%;
   }
 
-  .imgurl_4_3{
+  .share_button{
     width: 44%;
     height: 9%;
     position: absolute;
@@ -1790,6 +2564,14 @@
   .b_c{
     background-color: #eef1f6;
     color: #bbb;
+  }
+  .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    height: 100px;
   }
 
 </style>

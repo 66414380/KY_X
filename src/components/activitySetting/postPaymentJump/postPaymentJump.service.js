@@ -1,9 +1,9 @@
 import {axios,get} from '../../utility/communApi'
 
 //活动方案列表
-let getActivityList = (p,levelid,name) => {
+let getJumpList = (p,levelid,name) => {
   return new Promise((resolve, reject) => {
-    axios.get(`index.php?controller=activity&action=activityList&token=${get('token')}`,{ params: {
+    axios.get(`index.php?controller=jump&action=jumpList&token=${get('token')}`,{ params: {
         level_id:levelid,
         name:name,
         page:p.page,
@@ -29,7 +29,6 @@ let addActivity = (level_id,formEdit,formEdit1) => {
     formData.append("end_time",  formEdit.end_time === undefined || formEdit.end_time === '' ? '' : (new Date(formEdit.end_time) * 1 + '').substr(0, 10));
     formData.append("appId", formEdit.appId);
     formData.append("path", formEdit.path);
-    formData.append("wx_appid", formEdit.wx_appid);
     formData.append("card_id", formEdit1.card_id);
     formData.append("material_id", formEdit1.material_id);
     formData.append("limit_house_num", formEdit.limit_house_num);
@@ -81,7 +80,6 @@ let updateActivity = (formEdit,formEdit1) => {
     formData.append("end_time",  formEdit.end_time === undefined || formEdit.end_time === '' ? '' : (new Date(formEdit.end_time) * 1 + '').substr(0, 10));
     formData.append("appId", formEdit.appId);
     formData.append("path", formEdit.path);
-    formData.append("wx_appid", formEdit.wx_appid);
     formData.append("card_id", formEdit1.card_id);
     formData.append("material_id", formEdit1.material_id);
     formData.append("limit_house_num", formEdit.limit_house_num);
@@ -142,19 +140,8 @@ let batchStatus = (id,storeStatusValue) => {
   })
 };
 
-//下载图片
-let downloadQrCode = (id,width) => {
-  return new Promise((resolve, reject) => {
-    let formData = new FormData();
-    formData.append("id", id);
-    formData.append("width", width);
-    axios.post(`index.php?controller=activity&action=downloadQrCode&token=${get('token')}`,formData).then((res)=>{
-      resolve(res)
-    })
-  })
-};
 
-export default {getActivityList,addActivity,getInfo,updateActivity,delActivity,batchDel,batchStatus,downloadQrCode}
+export default {getJumpList,addActivity,getInfo,updateActivity,delActivity,batchDel,batchStatus}
 
 
 

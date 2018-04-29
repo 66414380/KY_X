@@ -161,15 +161,10 @@
 
               <el-button size="small" type="primary" @click="link(scope.row.x0_productid)" v-if="scope.row.erpcode ===null">关联菜品</el-button>
 
-              <div class="">
 
-                <!--<div class="flex_a" v-if="scope.row.erpcode !==null">-->
-                  <!--<span class="margin_r_10" >{{scope.row.erpcode}}</span>-->
-
-                <!--</div>-->
 
                 <el-button size="small" @click="unlink(scope.row.x0_productid)" v-if="scope.row.erpcode !==null && !scope.row.canEditErp">解除关联</el-button>
-              </div>
+
 
 
             </template>
