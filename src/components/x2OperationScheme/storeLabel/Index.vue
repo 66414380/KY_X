@@ -68,7 +68,7 @@
     </div>
 
     <!--编辑-->
-    <el-dialog :title="showName" :visible.sync="dialogFormVisible2" @open="open" @close="close">
+    <el-dialog :title="showName" :visible.sync="dialogFormVisible2" @open="open" @close="close" width="660px">
       <el-form ref="formRules" :model="formEdit" label-width="100px">
 
         <el-form-item label="标签编码:" v-if="showName !== '新增'">
@@ -120,13 +120,13 @@
             <el-table-column label-class-name="table_head" header-align="center" align="center" prop="storename"
                              label="门店">
             </el-table-column>
-            <el-table-column label-class-name="table_head" header-align="center" align="center" prop="mt" label="美团">
+            <el-table-column label-class-name="table_head" header-align="center" align="center" prop="mt" label="美团" width="120">
               <template slot-scope="scope">
 
                 <el-checkbox v-model="scope.row.mt"></el-checkbox>
               </template>
             </el-table-column>
-            <el-table-column label-class-name="table_head" header-align="center" align="center" prop="el" label="饿了么">
+            <el-table-column label-class-name="table_head" header-align="center" align="center" prop="el" label="饿了么" width="120">
               <template slot-scope="scope">
                 <el-checkbox v-model="scope.row.el"></el-checkbox>
               </template>
@@ -148,7 +148,7 @@
     </el-dialog>
 
 
-    <el-dialog title="选择门店" :visible.sync="dialogFormVisible">
+    <el-dialog title="选择门店" :visible.sync="dialogFormVisible" width="560px">
 
       <div class="flex_a">
         <div></div>
@@ -171,13 +171,13 @@
           <el-table-column label-class-name="table_head" header-align="center" align="center" prop="storename"
                            label="门店"></el-table-column>
 
-          <el-table-column :render-header="selectMt" label-class-name="table_head" header-align="center" align="center">
+          <el-table-column :render-header="selectMt" label-class-name="table_head" header-align="center" align="center" width="120">
             <template slot-scope="scope">
               <el-checkbox v-model="scope.row.mt" @change="handleCheckedMt"></el-checkbox>
             </template>
           </el-table-column>
 
-          <el-table-column :render-header="selectEl" label-class-name="table_head" header-align="center" align="center">
+          <el-table-column :render-header="selectEl" label-class-name="table_head" header-align="center" align="center" width="120">
             <template slot-scope="scope">
               <el-checkbox v-model="scope.row.el" @change="handleCheckedEl"></el-checkbox>
             </template>
@@ -197,7 +197,7 @@
 
     </el-dialog>
 
-    <el-dialog title="查看门店" :visible.sync="dialogFormVisible1">
+    <el-dialog title="查看门店" :visible.sync="dialogFormVisible1" width="500px">
       <el-table :data="storeDataShow" border>
         <el-table-column label-class-name="table_head" header-align="center" align="center" prop="storename" label="门店">
         </el-table-column>
@@ -244,7 +244,7 @@
         showName: '',
         tableWidth: 0,
         tableHeight: 0,
-        navList: [{name: "门店管理", url: ''}, {name: "门店标签", url: ''}],
+        navList: [{name: "聚合外卖管理", url: ''},{name: "门店管理", url: ''},{name: "门店标签", url: ''}],
 
         sgroupname: '',
         storeName: '',

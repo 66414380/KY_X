@@ -46,7 +46,7 @@
           <el-table-column label-class-name="table_head" header-align="center" align="center" prop="remark" label="备注">
           </el-table-column>
 
-          <el-table-column label-class-name="table_head" header-align="center" align="center" label="操作" width="200">
+          <el-table-column label-class-name="table_head" header-align="center" align="center" label="操作" width="220">
             <template slot-scope="scope">
 
               <el-button size="small" @click="option('查看',scope.row.id,scope.row.levelid)">查看</el-button>
@@ -69,7 +69,7 @@
 
 
     <!--编辑/查看-->
-    <el-dialog :title="showName" :visible.sync="dialogFormVisible2">
+    <el-dialog :title="showName" :visible.sync="dialogFormVisible2" width="560px">
       <el-form ref="formRules" :model="formEdit" label-width="100px">
 
         <el-form-item label="规格名称	:" prop="skuname" :rules="{required: true, message: '请输入规格名称', trigger: 'blur'}">
@@ -152,7 +152,7 @@
         dishesName: '',
         tableWidth: 0,
         tableHeight: 0,
-        navList: [{name: "菜品管理", url: ''}, {name: "菜品规格", url: ''}],
+        navList: [{name: "聚合外卖管理", url: ''},{name: "菜品列表", url: ''}, {name: "菜品规格", url: ''}],
         tableData: [],
         p: {page: 1, size: 20, total: 0},
         formEdit:{

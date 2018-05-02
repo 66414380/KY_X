@@ -67,7 +67,7 @@
       title="下发"
       :visible.sync="dialogVisible"
       @close="close"
-      width="50%">
+      width="560px">
 
       <el-form ref="formRules" :model="formDown" label-width="140px">
 
@@ -129,7 +129,7 @@
 
 
     <!--选择门店-->
-    <el-dialog title="选择门店" :visible.sync="dialogFormVisible1" @open="open">
+    <el-dialog title="选择门店" :visible.sync="dialogFormVisible1" @open="open" width="560px">
       <div class="flex_sb">
         <span>提示：点击门店标签名称可查看该门店标签里的门店及外卖平台</span>
         <div class="flex_a">
@@ -138,7 +138,7 @@
         </div>
       </div>
       <div class="margin_t_10">
-        <el-table :data="storeData" border style="width: 100%;" @select-all="handleSelectionChange" ref="multipleTable">
+        <el-table :data="storeData" border style="width: 100%;" @select-all="handleSelectionChange" ref="multipleTable" height="400">
 
           <el-table-column
             header-align="center" align="center"
@@ -171,7 +171,7 @@
     </el-dialog>
 
     <!--编辑/查看-->
-    <el-dialog :title="showName" :visible.sync="dialogFormVisible2">
+    <el-dialog :title="showName" :visible.sync="dialogFormVisible2" width="560px">
       <el-form ref="formRules" :model="formEdit" label-width="100px">
 
         <el-form-item label="菜品组名称	:" prop="pgroupname" :rules="{required: true, message: '请输入菜品组名称', trigger: 'blur'}">
@@ -244,7 +244,7 @@
     </el-dialog>
 
     <!--菜品-->
-    <el-dialog title="编辑菜品" :visible.sync="dialogFormVisible3">
+    <el-dialog title="编辑菜品" :visible.sync="dialogFormVisible3" width="560px">
 
       <div class="flex_sb">
         <div class=" flex_a">
@@ -260,7 +260,7 @@
       </div>
 
       <div class="margin_t_10">
-        <el-table :data="dishesData" border style="width: 100%;">
+        <el-table :data="dishesData" border style="width: 100%;" height="400">
           <el-table-column label-class-name="table_head" header-align="center" align="center" prop="x0_productid" label="菜品编码">
             <template slot-scope="scope">
               <div>
@@ -344,7 +344,7 @@
         dataLeft: [],
         tableWidth: 0,
         tableHeight: 0,
-        navList: [{name: "菜品管理", url: ''}, {name: "菜品组", url: ''}],
+        navList: [{name: "聚合外卖管理", url: ''},{name: "菜品列表", url: ''}, {name: "菜品组", url: ''}],
         pgroupname:'',
         formDown: {
           radio1: '',
@@ -483,7 +483,7 @@
         this.showResouce(this.p = {page: 1, size: 20, total: 0},this.pgroupname);
       },
       handleCheckAll1(bool){
-        if (bool.target.checked === true) {
+        if (bool === true) {
           this.dishesData.forEach((data) => {
             data.select = true
           })

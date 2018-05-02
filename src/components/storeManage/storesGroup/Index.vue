@@ -17,7 +17,7 @@
         <el-table-column header-align="center" align="center" prop="name" label="门店标签名称">
 
         </el-table-column>
-        <el-table-column header-align="center" align="center" label="操作" width="200">
+        <el-table-column header-align="center" align="center" label="操作" width="240">
           <template slot-scope="scope">
             <div class="flex">
 
@@ -38,7 +38,7 @@
     <el-dialog
       title="查看门店"
       :visible.sync="dialogVisible"
-      width="50%">
+      width="560px">
       <el-table :data="storeData" border>
         <el-table-column label-class-name="table_head" header-align="center" align="center" label="序号" width="100">
           <template slot-scope="scope">
@@ -64,7 +64,7 @@
       title="编辑"
       :visible.sync="dialogVisible1"
       @open="myOpen"
-      width="50%">
+      width="560px">
       <el-form ref="formRules" :model="formEdit" label-width="100px">
 
         <el-form-item label="标签名称	:" prop="name" :rules="{required: true, message: '请输入标签名称', trigger: 'blur'}">
@@ -159,7 +159,7 @@
         dialogVisible: false,
         dialogVisible1: false,
         tableHeight: 0,
-        navList: [{name: "门店管理", url: ''}, {name: "门店标签", url: ''}],
+        navList: [{name: "聚合支付管理", url: ''},{name: "门店管理", url: ''}, {name: "门店标签", url: ''}],
         tableData: [],//列表
         storeData: [],//查看门店
         p: {page: 1, size: 20, total: 0},

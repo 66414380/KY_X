@@ -59,7 +59,7 @@
         <el-dialog
           title="公众号"
           :visible.sync="dialogVisible"
-          width="50%">
+          width="400px">
           <el-form ref="formRules" :model="form" label-width="100px">
             <el-form-item label="公众号:">
               <el-input v-model="form.code" disabled></el-input>

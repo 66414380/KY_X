@@ -57,7 +57,7 @@
                                  label="上次联网时间">
                 </el-table-column>
                 <el-table-column label-class-name="table_head" header-align="center" align="center"
-                                 label="操作" width="320">
+                                 label="操作" width="340">
                   <template slot-scope="scope">
                     <el-button size="small" type="primary" @click="edit('修改打印机',1,scope.row.id)"
                                v-show="getTreeArr['打印机修改']">修改打印机
@@ -124,7 +124,7 @@
       :visible.sync="dialogVisible1"
       @open="open1"
       @close="close1"
-      width="50%">
+      width="560px">
       <el-form ref="formRules" :model="formPrint" label-width="100px">
         <el-form-item label="打印机编码:" v-if="name === '修改打印机'">
           <el-input v-model="formPrint.id" placeholder="请输入内容" disabled></el-input>
@@ -209,8 +209,7 @@
         <el-form-item label="状态:">
           <el-switch
             v-model="formPrint.status"
-            on-color="#13ce66"
-            off-color="#ff4949">
+            >
           </el-switch>
         </el-form-item>
         <div class="margin_t_10">
@@ -352,8 +351,7 @@
             <el-form-item label="订单来源">
               <el-switch
                 v-model="formPrintTemp.switch1"
-                on-color="#13ce66"
-                off-color="#ff4949">
+                >
               </el-switch>
               <el-select v-model="formPrintTemp.fontSize1" clearable placeholder="字号选择" style="width: 130px;">
                 <el-option
@@ -371,8 +369,7 @@
             <el-form-item label="店铺地址">
               <el-switch
                 v-model="formPrintTemp.switch11"
-                on-color="#13ce66"
-                off-color="#ff4949">
+                >
               </el-switch>
               <el-select v-model="formPrintTemp.fontSize11" clearable placeholder="字号选择" style="width: 130px;"
                          v-if="formPrintTemp.switch11">
@@ -389,8 +386,7 @@
             <el-form-item label="店铺电话">
               <el-switch
                 v-model="formPrintTemp.switch12"
-                on-color="#13ce66"
-                off-color="#ff4949">
+                >
               </el-switch>
               <el-select v-model="formPrintTemp.fontSize12" clearable placeholder="字号选择" style="width: 130px;"
                          v-if="formPrintTemp.switch12">
@@ -407,8 +403,7 @@
             <el-form-item label="下单时间">
               <el-switch
                 v-model="formPrintTemp.switch13"
-                on-color="#13ce66"
-                off-color="#ff4949">
+                >
               </el-switch>
               <el-select v-model="formPrintTemp.fontSize13" clearable placeholder="字号选择" style="width: 130px;"
                          v-if="formPrintTemp.switch13">
@@ -425,8 +420,7 @@
             <el-form-item label="支付方式">
               <el-switch
                 v-model="formPrintTemp.switch14"
-                on-color="#13ce66"
-                off-color="#ff4949">
+               >
               </el-switch>
               <el-select v-model="formPrintTemp.fontSize14" clearable placeholder="字号选择" style="width: 130px;"
                          v-if="formPrintTemp.switch14">
@@ -443,8 +437,7 @@
             <el-form-item label="折前金额">
               <el-switch
                 v-model="formPrintTemp.switch15"
-                on-color="#13ce66"
-                off-color="#ff4949">
+                >
               </el-switch>
               <el-select v-model="formPrintTemp.fontSize15" clearable placeholder="字号选择" style="width: 130px;"
                          v-if="formPrintTemp.switch15">
@@ -461,8 +454,7 @@
             <el-form-item label="折扣金额">
               <el-switch
                 v-model="formPrintTemp.switch16"
-                on-color="#13ce66"
-                off-color="#ff4949">
+                >
               </el-switch>
               <el-select v-model="formPrintTemp.fontSize16" clearable placeholder="字号选择" style="width: 130px;"
                          v-if="formPrintTemp.switch16">
@@ -479,8 +471,7 @@
             <el-form-item label="期望送达时间">
               <el-switch
                 v-model="formPrintTemp.switch17"
-                on-color="#13ce66"
-                off-color="#ff4949">
+                >
               </el-switch>
               <el-select v-model="formPrintTemp.fontSize17" clearable placeholder="字号选择" style="width: 130px;"
                          v-if="formPrintTemp.switch17">
@@ -497,8 +488,7 @@
             <el-form-item label="客人备注">
               <el-switch
                 v-model="formPrintTemp.switch18"
-                on-color="#13ce66"
-                off-color="#ff4949">
+           >
               </el-switch>
               <el-select v-model="formPrintTemp.fontSize18" clearable placeholder="字号选择" style="width: 130px;"
                          v-if="formPrintTemp.switch18">
@@ -618,7 +608,7 @@
         dialogVisible2: false,
         dialogVisible3: false,
         dialogVisible4: false,
-        navList: [{name: "打印机配置", url: ''}],
+        navList: [{name: "聚合外卖管理", url: ''},{name: "门店管理", url: ''},{name: "打印机配置", url: ''}],
         printData: [],
         storeData: [],
         storeData_id: '',
@@ -987,7 +977,7 @@
         //获取门店列表
         let params = {
           redirect: "x2.store.index",
-          levelId: levelId,
+          levelid: levelId,
           storeName: '',
           noPage:1
         };

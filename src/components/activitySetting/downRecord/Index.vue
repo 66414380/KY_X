@@ -51,18 +51,18 @@
       </div>
 
 
-    <el-dialog title="下发记录详情" :visible.sync="dialogFormVisible" >
+    <el-dialog title="下发记录详情" :visible.sync="dialogFormVisible" width="600px">
       <div>
-        <span>操作员：aa</span>
+        <span>操作员：{{jumpUseInfo.operator}}</span>
       </div>
       <div>
-        <span>添加时间：2018</span>
+        <span>添加时间：{{jumpUseInfo.addTime}}</span>
       </div>
       <div>
-        <span>执行时间：2018</span>
+        <span>执行时间：{{jumpUseInfo.runTime}}</span>
       </div>
       <div>
-        <span>状态：成功</span>
+        <span>状态：{{jumpUseInfo.statusFormate}}</span>
       </div>
 
       <div class="margin_t_10">下发方案</div>
@@ -79,7 +79,7 @@
       </el-table>
 
       <div class="margin_t_10">下发门店</div>
-      <el-table :data="storeData" border style="width: 100%;" >
+      <el-table :data="jumpUseInfo.store" border style="width: 100%;" >
         <el-table-column label-class-name="table_head" header-align="center" align="center" label="序号" min-width="100">
           <template slot-scope="scope">
             <div>{{scope.$index + 1}}</div>
@@ -121,16 +121,14 @@
         tableData: [],
         p: {page: 1, size: 20, total: 0},
         schemeData:[],
+        jumpUseInfo:{},
 
-        storeData:[]
       }
     },
     watch: {},
     methods: {
       ...mapActions(['setActivityDownRecordTree', 'setActivityDownRecordLevelId']),
       ...mapGetters(['getActivityDownRecordTree', 'getActivityDownRecordLevelId']),
-
-
       getPage(page) {
         this.p.page = page;
         this.showResouce(this.p);
@@ -139,8 +137,6 @@
         this.p.size = size;
         this.showResouce(this.p);
       },
-
-
       search() {
         this.showResouce(this.p = {page: 1, size: 20, total: 0});
       },
@@ -148,12 +144,14 @@
       optionShow(id) {
         this.dialogFormVisible = true;
         getApi.jumpUseInfo(id).then((res) => {
-
-
+          if (res.data.errcode === 0) {
+            this.jumpUseInfo = res.data.data
+          }
         })
       },
       activeDown() {
-        this.$router.push('/activitySetting/activeDown')
+
+        this.$router.push({path:`/activitySetting/activeDown/${this.getActivityDownRecordLevelId()}`})
 
       },
 

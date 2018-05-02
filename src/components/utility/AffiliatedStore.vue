@@ -4,7 +4,7 @@
     @open="open2"
     @close="dialogClose2"
     :visible.sync="dialogVisible"
-    width="70%" size="large">
+    width="1100px" >
     <div class="flex_a margin_b_10">
       <!--<el-cascader-->
       <!--:props="defaultProps"-->

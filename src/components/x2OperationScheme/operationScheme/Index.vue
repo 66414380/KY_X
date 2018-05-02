@@ -518,7 +518,7 @@
 
 
     </div>
-    <el-dialog title="是否将菜品更新变化同步至外卖平台？" :visible.sync="dialogVisible2">
+    <el-dialog title="是否将菜品更新变化同步至外卖平台？" :visible.sync="dialogVisible2" width="500px">
       <el-checkbox-group v-model="checkList">
         <el-checkbox label="mt">美团</el-checkbox>
         <el-checkbox label="el">饿了么</el-checkbox>
@@ -551,7 +551,7 @@
     </el-dialog>
 
     <!--选择门店-->
-    <el-dialog title="选择门店" :visible.sync="dialogFormVisible1" >
+    <el-dialog title="选择门店" :visible.sync="dialogFormVisible1" width="500px">
       <div class="flex_ce">
         <div class="flex_a">
           <el-input size="small" placeholder="请输入门店名称" class="margin_r_10" v-model="storeName"></el-input>
@@ -585,7 +585,7 @@
     </el-dialog>
 
 
-    <el-dialog title="" :visible.sync="dialogFormVisible2" >
+    <el-dialog title="" :visible.sync="dialogFormVisible2" width="500px">
       <div class="flex_f flex_a width_100">
         <div class="margin_b_10" v-for="(item,index) in history" >{{item.username}} {{item.time}}</div>
       </div>
@@ -633,7 +633,7 @@
         dialogVisible2: false,
         tableWidth: 0,
         tableHeight: 0,
-        navList: [{name: "运营方案", url: ''}],
+        navList: [{name: "聚合外卖管理", url: ''},{name: "运营方案", url: ''}],
         levelName:'',
         form:{tableData: []},
         p: {page: 1, size: 20, total: 0},

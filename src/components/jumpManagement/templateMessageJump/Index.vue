@@ -131,8 +131,7 @@
         <el-form-item label="状态:" >
           <el-switch
             v-model="formEdit.status"
-            on-color="#13ce66"
-            off-color="#ff4949">
+            >
           </el-switch>
         </el-form-item>
 
@@ -167,8 +166,7 @@
                 v-model="formEdit.status1"
                 on-text=""
                 off-text=""
-                on-color="#13ce66"
-                off-color="#ff4949">
+                >
               </el-switch>
             </div>
 
@@ -199,50 +197,35 @@
             <span class="form_width">过期时间</span>
             <el-switch
               v-model="formEdit.status2"
-              on-text=""
-              off-text=""
-              on-color="#13ce66"
-              off-color="#ff4949">
+            >
             </el-switch>
           </div>
           <div class="margin_b_10">
             <span class="form_width">购买成功提醒</span>
             <el-switch
               v-model="formEdit.status3"
-              on-text=""
-              off-text=""
-              on-color="#13ce66"
-              off-color="#ff4949">
+              >
             </el-switch>
           </div>
           <div class="margin_b_10">
             <span class="form_width">赠送成功提醒</span>
             <el-switch
               v-model="formEdit.status4"
-              on-text=""
-              off-text=""
-              on-color="#13ce66"
-              off-color="#ff4949">
+              >
             </el-switch>
           </div>
           <div class="margin_b_10">
             <span class="form_width">退款中提醒</span>
             <el-switch
               v-model="formEdit.status5"
-              on-text=""
-              off-text=""
-              on-color="#13ce66"
-              off-color="#ff4949">
+             >
             </el-switch>
           </div>
           <div class="margin_b_10">
             <span class="form_width">退款完成提醒</span>
             <el-switch
               v-model="formEdit.status6"
-              on-text=""
-              off-text=""
-              on-color="#13ce66"
-              off-color="#ff4949">
+             >
             </el-switch>
           </div>
 

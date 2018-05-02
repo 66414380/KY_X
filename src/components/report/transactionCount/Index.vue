@@ -89,7 +89,7 @@
         showDataStyle:0,
         width:0,
         tableHeight:0,
-        navList:[{name:"统计报表",url:''},{name:"交易统计",url:''}],
+        navList:[{name: "数据统计", url: ''}, {name: "聚合支付运营数据", url: ''}, {name:"交易统计",url:''}],
 
         storeData: [],
         value: '',

@@ -7,7 +7,7 @@
 
     <div class="margin_t_10 width_100">
       <el-form ref="formRules" :model="form">
-      <el-table :data="form.dishesData" border :height="tableHeight" style="width: 100%;">
+      <el-table :data="form.dishesData" border class="width_100">
         <el-table-column label-class-name="table_head" header-align="center" align="center" label="菜品名称" width="200">
           <template slot-scope="scope">
             <el-form-item label="" :prop="'dishesData.' + scope.$index + '.product_name'" :rules="{required: true, validator: checkName, trigger: 'blur'}">
@@ -125,16 +125,15 @@
 
 <script>
   import getApi from "./addDishes.service"
-  import ElButton from "../../../../../node_modules/element-ui/packages/button/src/button.vue";
+
 
   export default {
     components: {
-      ElButton
+
     },
 
     data() {
       return {
-        tableHeight: 0,
         navList: [{name: "菜品库", url: '/infrastructure/DishesLibrary'}, {name: "新增菜品", url: ''}],
         brandList: [],
         form:{dishesData: []},
@@ -247,6 +246,7 @@
       },
     },
     created() {
+      console.log(this.$route.params.number)
       for (let i = 0; i < this.$route.params.number; i++) {
         this.form.dishesData.push({
           product_name: "",

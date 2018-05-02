@@ -37,7 +37,7 @@
           <el-button size="small" @click="show(scope.row)" v-show="getTreeArr['查看门店']" >查看门店</el-button>
         </template>
       </el-table-column>
-      <el-table-column label-class-name="table_head" header-align="center" align="center" label="操作" width="400">
+      <el-table-column label-class-name="table_head" header-align="center" align="center" label="操作" width="420">
         <template slot-scope="scope">
           <el-button size="small" type="primary" @click="edit('修改',scope.row)" v-show="getTreeArr['修改']">修改</el-button>
           <el-button size="small" @click="edit('查看',scope.row)" v-show="getTreeArr['详情']">查看</el-button>
@@ -54,9 +54,9 @@
     </footer>
 
     <!--查看门店-->
-    <el-dialog title="查看门店" :visible.sync="dialogFormVisible">
+    <el-dialog title="查看门店" :visible.sync="dialogFormVisible" width="560px">
       <el-table :data="storeData" border style="width: 100%;">
-        <el-table-column label-class-name="table_head" header-align="center" align="center" prop="code" label="序号">
+        <el-table-column label-class-name="table_head" header-align="center" align="center" prop="code" label="序号" width="80">
           <template slot-scope="scope">
             <div>
               {{scope.$index + 1}}
@@ -73,7 +73,7 @@
     </el-dialog>
 
     <!--新增/修改方案-->
-    <el-dialog :title="showName" :visible.sync="dialogFormVisible1" @open="open1" @close="close1">
+    <el-dialog :title="showName" :visible.sync="dialogFormVisible1" @open="open1" @close="close1" width="660px">
 
     <div v-show="showFrist">
       <el-form ref="clientForm" :model="clientForm" label-width="180px">
@@ -122,8 +122,7 @@
           <el-switch
             :disabled="showName === '查看'"
             v-model="clientForm.status"
-            on-color="#13ce66"
-            off-color="#ff4949" >
+          >
           </el-switch>
         </el-form-item>
       </el-form>
@@ -179,8 +178,7 @@
               <div class="flex_a">
                 <el-switch
                   v-model="clientForm_second.auto_log"
-                  on-color="#13ce66"
-                  off-color="#ff4949" :disabled="showName === '查看'">
+                  :disabled="showName === '查看'">
                 </el-switch>
 
                 <div class="margin_l_10 margin_r_10 t_a">
@@ -198,8 +196,7 @@
               <div class="flex_a">
                 <el-switch
                   v-model="clientForm_second.code_lacation"
-                  on-color="#13ce66"
-                  off-color="#ff4949" :disabled="showName === '查看'">
+                 :disabled="showName === '查看'">
                 </el-switch>
 
                 <div class="margin_l_10 margin_r_10 t_a">
@@ -256,7 +253,7 @@
     </el-dialog>
 
     <!--下发-->
-    <el-dialog title="" :visible.sync="dialogFormVisible2" @open="open2" @close="close2">
+    <el-dialog title="" :visible.sync="dialogFormVisible2" @open="open2" @close="close2" width="560px">
       <el-radio-group v-model="storeRadio" @change="changeRadio">
         <el-radio :label="1">门店标签</el-radio>
         <el-radio :label="2">门店</el-radio>
@@ -436,7 +433,7 @@
         storeData0: [],
         storeData1: [],
         tableHeight: 0,
-        navList: [{name: "发票方案", url: ''}],
+        navList: [{name: "聚合支付管理", url: ''},{name: "发票管理", url: ''},{name: "发票方案", url: ''}],
         name: '',
         id: '',
         roleType: [],

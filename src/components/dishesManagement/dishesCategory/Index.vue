@@ -56,7 +56,7 @@
 
 
           </el-table-column>
-          <el-table-column label-class-name="table_head" header-align="center" align="center" label="操作" width="200">
+          <el-table-column label-class-name="table_head" header-align="center" align="center" label="操作" width="220">
             <template slot-scope="scope">
 
               <el-button size="small" @click="option('查看',scope.row.id,scope.row.levelid)">查看</el-button>
@@ -76,7 +76,7 @@
     </div>
 
     <!--编辑/查看-->
-    <el-dialog :title="showName" :visible.sync="dialogFormVisible2">
+    <el-dialog :title="showName" :visible.sync="dialogFormVisible2" width="560px">
       <el-form ref="formRules" :model="formEdit" label-width="100px">
         <el-form-item label="品类编码:" v-if="showName !== '新增'">
           <el-input v-model="formEdit.id" placeholder="" disabled></el-input>
@@ -163,7 +163,7 @@
         showName:'',
         tableWidth: 0,
         tableHeight: 0,
-        navList: [{name: "菜品管理", url: ''}, {name: "菜品品类", url: ''}],
+        navList: [{name: "聚合外卖管理", url: ''},{name: "菜品列表", url: ''}, {name: "菜品品类", url: ''}],
         show:true,
         categoryName: '',
         tableData: [],

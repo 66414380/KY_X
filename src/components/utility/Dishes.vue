@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="请选择" :visible.sync="dialogVisible" @close="close" @open="open">
+  <el-dialog title="请选择" :visible.sync="dialogVisible" @close="close" @open="open" width="560px">
     <div class="flex_ce">
       <div class="flex_a">
         <el-input size="small" placeholder="请输入编码、名称" class="margin_r_10" v-model="dishesName"></el-input>
@@ -7,7 +7,7 @@
       </div>
     </div>
     <div class="margin_t_10">
-      <el-table :data="list" border style="width: 100%;" highlight-current-row @current-change="handleCurrentChange">
+      <el-table :data="list" border style="width: 100%;" height="400" highlight-current-row @current-change="handleCurrentChange">
         <el-table-column label-class-name="table_head" header-align="center" align="center" prop="id" label="编码">
         </el-table-column>
         <el-table-column label-class-name="table_head" header-align="center" align="center" prop="name" :label="name">

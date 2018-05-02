@@ -68,8 +68,7 @@
       <div class="flex_a">
         <el-switch
           v-model="clientFormData.auto_log"
-          on-color="#13ce66"
-          off-color="#ff4949" :disabled="showName === '查看'">
+          :disabled="showName === '查看'">
         </el-switch>
 
         <div class="margin_l_10 margin_r_10 t_a">
@@ -87,8 +86,7 @@
       <div class="flex_a">
         <el-switch
           v-model="clientFormData.code_lacation"
-          on-color="#13ce66"
-          off-color="#ff4949" :disabled="showName === '查看'">
+          :disabled="showName === '查看'">
         </el-switch>
 
         <div class="margin_l_10 margin_r_10 t_a">
@@ -126,8 +124,7 @@
           <div class="flex_a">
             <el-switch
               v-model="clientFormData.card_package_allow"
-              on-color="#13ce66"
-              off-color="#ff4949" :disabled="showName === '查看' || getAddInvoicePower === false">
+            :disabled="showName === '查看' || getAddInvoicePower === false">
             </el-switch>
 
             <div class="margin_l_10 margin_r_10 t_a">
@@ -154,7 +151,7 @@
           v-on:leave-cancelled="leaveCancelled"
         >
           <div v-if="clientFormData.card_package_allow" class="heightTran">
-            <el-form-item label-width="140px" label="请填写商户简称：" prop="merchant_abbreviation" :rules="{required: true, message: '请填写商户简称', trigger: 'blur'}">
+            <el-form-item label-width="140px" label="请填写商户简称：" prop="merchant_abbreviation"  :rules="{validator: checkStr, required: true, trigger: 'blur'}">
               <el-input v-model="clientFormData.merchant_abbreviation" placeholder="请输入商户简称" :disabled="showName === '查看' || getAddInvoicePower === false"></el-input>
             </el-form-item>
             <el-form-item label-width="140px" label="请上传商户logo：">
@@ -187,8 +184,7 @@
           <div class="flex_a">
             <el-switch
               v-model="clientFormData.alipay_allow"
-              on-color="#13ce66"
-              off-color="#ff4949" :disabled="showName === '查看' || getAddInvoicePower === false">
+              :disabled="showName === '查看' || getAddInvoicePower === false">
             </el-switch>
 
             <div class="margin_l_10 margin_r_10 t_a">
@@ -201,8 +197,7 @@
           <div class="flex_a">
             <el-switch
               v-model="clientFormData.other_pay_allow"
-              on-color="#13ce66"
-              off-color="#ff4949" :disabled="showName === '查看' || getAddInvoicePower === false">
+              :disabled="showName === '查看' || getAddInvoicePower === false">
             </el-switch>
 
             <div class="margin_l_10 margin_r_10 t_a">
@@ -235,6 +230,19 @@
       };
     },
     methods: {
+
+      checkStr (rule, value, callback){
+        if (value === '') {
+          callback(new Error('请填写商户简称'));
+        }else {
+          if(value.length <= 9){
+            callback()
+          }else {
+            callback(new Error('商户简称字数不能超过9个'));
+          }
+        }
+      },
+
       showInvoice(){
         this.showIncrement.check = !this.showIncrement.check;
         if(this.showIncrement.check){

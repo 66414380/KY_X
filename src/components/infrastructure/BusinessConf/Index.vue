@@ -42,8 +42,7 @@
                 <div v-show="getTreeArr['修改']" @click.prevent="handleSwitch(scope.row.id,scope.row.is_pay_invoice)">
                   <el-switch
                     v-model="scope.row.is_pay_invoice"
-                    on-color="#13ce66"
-                    off-color="#ff4949">
+                 >
                   </el-switch>
                 </div>
               </template>
@@ -87,7 +86,7 @@
         tableWidth: 0,
         tableHeight: 0,
         levelId:'',
-        navList: [{name: "商户配置", url: ''}],
+        navList: [{name: "基础设置", url: ''}, {name: "电子发票卡券", url: ''}],
         storeName: '',
         storeData: [],
         p: {page: 1, size: 20, total: 0},

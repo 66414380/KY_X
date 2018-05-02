@@ -48,7 +48,7 @@
                            label="用户组名称"></el-table-column>
           <el-table-column label-class-name="table_head" header-align="center" align="center" prop="status" label="状态"
                            width="80"></el-table-column>
-          <el-table-column label-class-name="table_head" header-align="center" align="center" label="操作" width="240">
+          <el-table-column label-class-name="table_head" header-align="center" align="center" label="操作" width="260">
             <template slot-scope="scope">
               <el-button size="small" @click="editAccount('编辑用户组',scope.row)" v-show="getTreeArr['编辑']">编辑</el-button>
               <el-button size="small" type="danger" @click="del(scope.row)" v-show="getTreeArr['删除']">删除</el-button>
@@ -67,7 +67,7 @@
       @close="dialogClose"
       :title="groupName"
       :visible.sync="dialogVisible"
-      width="50%">
+      width="560px">
       <el-form ref="formRules" :model="formUserGroup" label-width="100px">
 
         <el-form-item label="名称:" prop="name" :rules="{required: true, message: '请输入用户组名称', trigger: 'blur'}">
@@ -122,11 +122,10 @@
     <el-dialog
       title="开启/关闭"
       :visible.sync="dialogVisible1"
-      width="50%" size="tiny">
+      width="400px" >
       <el-switch
         v-model="storeStatusValue"
-        on-color="#13ce66"
-        off-color="#ff4949">
+       >
       </el-switch>
       <div class="margin_t_10">
         <el-button @click="dialogVisible1 = false">取消</el-button>
@@ -141,7 +140,7 @@
       @open="open2"
       @close="dialogClose2"
       :visible.sync="dialogVisible3"
-      width="50%">
+      width="560px">
       <el-form ref="formRules2" :model="formUser" label-width="100px">
 
         <el-form-item label="名称:" prop="nickname" :rules="{required: true, message: '请输入用户名称', trigger: 'blur'}">
@@ -203,8 +202,7 @@
 
           <el-switch
             v-model="formUser.status"
-            on-color="#13ce66"
-            off-color="#ff4949">
+           >
           </el-switch>
         </el-form-item>
 
@@ -221,7 +219,7 @@
       :visible.sync="dialogVisible2"
       @open="open2"
       @close="close2"
-      width="50%" size="tiny">
+      width="400px" >
       <div class="flex_f flex">
 
         <div>
@@ -307,7 +305,7 @@
         dialogVisible3: false,
         tableHeight: 0,
         tableWidth: 0,
-        navList: [{name: "基础设置", url: ''}, {name: "权限管理", url: ''}],
+        navList: [{name: "基础设置", url: ''}, {name: "权限管理", url: ''},{name: "用户组管理", url: ''}],
         storeStatusValue: false,
 
         roleGroupName: '',

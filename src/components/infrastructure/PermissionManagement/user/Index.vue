@@ -20,7 +20,7 @@
       </div>
     </div>
 
-    <el-table :data="userList" border :height="tableHeight" v-show="getTreeArr['用户列表']" @select-all="handleSelectionChange" ref="multipleTable">
+    <el-table :data="userList" border  v-show="getTreeArr['用户列表']" @select-all="handleSelectionChange" ref="multipleTable">
       <el-table-column
         header-align="center" align="center"
         type="selection"
@@ -31,13 +31,13 @@
         </template>
       </el-table-column>
 
-      <el-table-column label-class-name="table_head" header-align="center" align="center" prop="id"
+      <el-table-column label-class-name="table_head" header-align="center" align="center" prop="id" width="80"
                        label="编码"></el-table-column>
       <el-table-column label-class-name="table_head" header-align="center" align="center" prop="phone"
                        label="用户账号/手机号"></el-table-column>
       <el-table-column label-class-name="table_head" header-align="center" align="center" prop="nickname"
                        label="用户姓名"></el-table-column>
-      <el-table-column label-class-name="table_head" header-align="center" align="center" prop="status"
+      <el-table-column label-class-name="table_head" header-align="center" align="center" prop="status" width="80"
                        label="状态"></el-table-column>
 
       <el-table-column label-class-name="table_head" header-align="center" align="center" prop="role_id"
@@ -53,7 +53,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label-class-name="table_head" header-align="center" align="center" label="操作" width="360">
+      <el-table-column label-class-name="table_head" header-align="center" align="center" label="操作" width="420">
         <template slot-scope="scope">
           <el-button size="small" type="primary" @click="showStore(scope.row)" v-show="getTreeArr['关联门店']">关联门店</el-button>
           <el-button size="small" @click="editAccount('查看',scope.row)" v-show="getTreeArr['查看用户详情']">查看</el-button>
@@ -75,7 +75,7 @@
       @open="dialogOpen"
       @close="dialogClose"
       :visible.sync="dialogVisible"
-      width="50%">
+      width="560px">
       <el-form ref="formRules" :model="formUser" label-width="100px">
 
         <el-form-item label="名称:" prop="nickname" :rules="{required: true, message: '请输入名称', trigger: 'blur'}">
@@ -125,8 +125,7 @@
 
           <el-switch
             v-model="formUser.status"
-            on-color="#13ce66"
-            off-color="#ff4949">
+            >
           </el-switch>
         </el-form-item>
 
@@ -142,7 +141,7 @@
       :title="userName"
 
       :visible.sync="dialogVisible3"
-      width="50%">
+      width="560px">
       <el-form ref="formRules3" :model="formUserEdit" label-width="100px">
 
         <el-form-item label="名称:" prop="nickname" :rules="{required: true, message: '请输入名称', trigger: 'blur'}">
@@ -221,8 +220,7 @@
 
           <el-switch :disabled="showDetail"
             v-model="formUserEdit.status"
-            on-color="#13ce66"
-            off-color="#ff4949">
+            >
           </el-switch>
         </el-form-item>
 
@@ -238,7 +236,7 @@
     <el-dialog
       title=""
       :visible.sync="dialogVisible1"
-      width="100%" size="large">
+      width="100%" >
       <!--<el-table :data="storeData1" border>-->
         <!--<el-table-column label-class-name="table_head" header-align="center" align="center" prop="x" width="120"-->
                          <!--label="模块"></el-table-column>-->
@@ -261,11 +259,10 @@
     <el-dialog
       title="开启/关闭"
       :visible.sync="dialogVisible4"
-      width="50%" size="tiny">
+      width="400px" >
       <el-switch
         v-model="storeStatusValue"
-        on-color="#13ce66"
-        off-color="#ff4949">
+        >
       </el-switch>
       <div class="margin_t_10">
         <el-button @click="dialogVisible4 = false">取消</el-button>
@@ -336,7 +333,6 @@
         dialogVisible3:false,
         dialogVisible4:false,
 
-        tableHeight: 0,
         navList: [{name: "基础设置", url: ''}, {name: "权限管理", url: ''}],
         groupList:[],
         storeName: '',
@@ -656,9 +652,7 @@
 
     },
     updated() {
-      getScrollHeight().then((h) => {
-        this.tableHeight = h;
-      })
+
     },
     destroyed() {
 

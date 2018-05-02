@@ -47,8 +47,7 @@
             <template slot-scope="scope">
               <el-switch
                 v-model="scope.row.status"
-                on-color="#13ce66"
-                off-color="#ff4949">
+               >
               </el-switch>
             </template>
           </el-table-column>

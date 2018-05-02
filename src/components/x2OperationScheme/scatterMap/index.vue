@@ -113,7 +113,7 @@
     components: {},
     data() {
       return {
-        navList: [{name: "x2运营数据", url: ''}, {name: "散点地图", url: ''}],
+        navList: [{name: "数据统计", url: ''}, {name: "聚合外卖运营数据", url: ''},  {name: "散点地图", url: ''}],
         levelName: '',
         storeData_id: '',
         tableWidth: 0,

@@ -94,7 +94,7 @@
       return {
         width:0,
         tableHeight:0,
-        navList:[{name:"统计报表",url:''},{name:"差异账单查询",url:''}],
+        navList:[{name: "数据统计", url: ''}, {name: "聚合支付运营数据", url: ''}, {name:"差异账单查询",url:''}],
         store_id:'',
         iway:'',
         storeData:[],

@@ -103,7 +103,7 @@
     <el-dialog
       title=""
       :visible.sync="dialogVisible"
-      width="50%" size="tiny" @close="close" @open="open">
+      width="400px"  @close="close" @open="open">
 
       <el-radio-group v-model="radio2" @change="handleAll">
         <el-radio :label="1">配置中</el-radio>
@@ -142,7 +142,7 @@
         dialogVisible: false,
 
         radio2: '',
-        navList: [{name: "推送状态", url: ''}],
+        navList: [{name: "聚合外卖管理", url: ''},{name: "门店管理", url: ''},{name: "推送状态", url: ''}],
         selectOne:false,
         storeName: '',
 

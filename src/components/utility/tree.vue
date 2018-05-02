@@ -7,8 +7,8 @@
         <span :style="{display:(item.children && item.children.length !== 0)?'none':'inline-block'}"
               style="vertical-align: middle;width: 25px"></span>
         <span @click.stop.self='item.show=!item.show' v-if='item.children && item.children.length !== 0'
-              :style="{transform:(item.show)?'rotate(90deg)':'rotate(0deg)'}" style="margin-right: 8px;"
-              class="el-tree-node__expand-icon"></span>
+              :style="{transform:(item.show)?'rotate(90deg)':'rotate(0deg)'}"
+              class="el-tree-node__expand-icon el-icon-caret-right tree_size"></span>
 
         <span @click.stop.self="test(item)" class="pointer el-tree-node__label" style="color: #bfcbd9">{{item.name}}</span>
 

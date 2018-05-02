@@ -156,7 +156,7 @@
       return {
         tableWidth:0,
         tableHeight:0,
-        navList:[{name:"账户管理",url:''}],
+        navList:[{name: "聚合支付管理", url: ''},{name:"账户管理",url:''}],
         p: {page:1, size:10, total:0},
         ruleForm: {
           payMethod: '', // 支付方式

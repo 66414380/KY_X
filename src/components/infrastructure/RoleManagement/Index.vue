@@ -59,7 +59,7 @@
       :visible.sync="dialogVisible"
       @open="dialogOpen"
       @close="dialogClose"
-      width="30%">
+      width="560px">
       <el-form ref="formRules" :model="form" label-width="100px">
         <!--<el-form-item label="编码:" prop="code">-->
         <!--<el-input v-model="form.code" placeholder="请输入内容" disabled></el-input>-->
@@ -123,8 +123,7 @@
 
           <el-switch
             v-model="form.status"
-            on-color="#13ce66"
-            off-color="#ff4949">
+          >
           </el-switch>
         </el-form-item>
         <div class="margin_t_10">
@@ -140,7 +139,7 @@
       :visible.sync="dialogVisible2"
       @close="roleClose"
       @open="roleOpen"
-      width="100%" size="large">
+      width="100%" >
       <div>
         <roleTree :data="roleList" :count=0></roleTree>
         <el-button type="primary" @click="submitRole()">确定</el-button>
@@ -270,7 +269,7 @@
         dialogVisible: false,
         dialogVisible2: false,
         tableHeight: 0,
-        navList: [{name: "基础设置", url: ''}, {name: "角色管理", url: ''}],
+        navList: [{name: "基础设置", url: ''}, {name: "权限管理", url: ''},{name: "角色管理", url: ''}],
         name: '',
         selectedAll: false,
         roleType:[],

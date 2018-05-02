@@ -7,11 +7,11 @@ let jumpUseAdd = (form,selectStore) => {
     formData.append("jumpId", form.name);
     formData.append("storeIds", selectStore);
     formData.append("isStop", form.checked ? 1: 0);
-    formData.append("rules", form.rules);
+    formData.append("rule", form.rule);
     formData.append("isRun", form.runTime);
 
     formData.append("runTime", form.runTimeValue);
-    formData.append("delayTime", form.delayTime);
+    // formData.append("delayTime", form.delayTime);
 
 
     axios.post(`index.php?controller=jump&action=jumpUseAdd&token=${get('token')}`,formData).then((res)=>{

@@ -73,7 +73,7 @@
       return {
         width:0,
         tableHeight:0,
-        navList:[{name:"基础设置",url:''},{name:"操作日志",url:''}],
+        navList:[{name:"系统设置",url:''},{name:"操作日志",url:''}],
 
         value: '',
         tableData: [],

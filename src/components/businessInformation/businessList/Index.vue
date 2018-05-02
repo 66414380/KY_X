@@ -98,7 +98,7 @@
     <el-dialog
       title="将此商户放入至"
       :visible.sync="dialogVisible1"
-      width="50%" size="tiny">
+      width="500px">
       <div class="flex flex_d_c">
         <div v-for="(item,index) in agentList" :key="item.levelId"  class=" margin_b_10">
           <el-button :plain="true" type="info" style="width: 250px" @click="handleAgent(item.levelId)">{{item.levelName}}</el-button>
@@ -112,7 +112,7 @@
     <el-dialog
       title=""
       :visible.sync="dialogVisible2"
-      width="50%" size="tiny" @close="close2">
+      width="500px" @close="close2">
       <el-form ref="formRules" :model="rejectForm" label-width="100px">
         <el-form-item label="驳回原因:" prop="text" :rules="{required: true, message: '请输入内容', trigger: 'blur'}">
           <el-input v-model="rejectForm.text" type="textarea" :rows="5" placeholder="请输入内容"></el-input>
@@ -129,7 +129,7 @@
     <el-dialog
       title="查看证件资料"
       :visible.sync="dialogVisible"
-      width="50%" @close="close">
+      width="500px" @close="close">
 
       <div class="flex_j">
         <el-form label-width="120px" class="myBusiness">
@@ -184,7 +184,7 @@
     },
     data() {
       return {
-        navList: [{name: "商户资料核实", url: ''}, {name: "商户审核", url: ''}],
+        navList: [{name: "系统设置", url: ''}, {name: "商户审核", url: ''}],
         activeName: '1',
         tableHeight: 0,
         dialogVisible: false,

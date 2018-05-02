@@ -107,7 +107,7 @@
         dishname:'',
         tableWidth: 0,
         tableHeight: 0,
-        navList: [{name: "菜品同步记录", url: ''}],
+        navList: [{name: "聚合外卖管理", url: ''},{name: "门店管理", url: ''},{name: "菜品同步记录", url: ''}],
         levelName:'',
         tableData: [],
         p: {page: 1, size: 20, total: 0},

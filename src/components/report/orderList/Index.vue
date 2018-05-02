@@ -301,7 +301,7 @@
         dialogVisible:false,
         width: 0,
         tableHeight: 0,
-        navList: [{name: "统计报表", url: ''}, {name: "订单列表", url: ''}],
+        navList: [{name: "数据统计", url: ''}, {name: "聚合外卖运营数据", url: ''}, {name: "订单列表", url: ''}],
         time_start: '',
         time_end: '',
         start_stamp: '',

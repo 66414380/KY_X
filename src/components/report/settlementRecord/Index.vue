@@ -123,7 +123,7 @@
         name:'',
         tableWidth:0,
         tableHeight:0,
-        navList:[{name:"统计报表",url:''},{name:"结算记录",url:''}],
+        navList:[{name: "数据统计", url: ''}, {name: "聚合支付运营数据", url: ''}, {name:"结算记录",url:''}],
         input1:'',
         input2:'',
         userList: [],

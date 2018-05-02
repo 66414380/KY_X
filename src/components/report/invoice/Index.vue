@@ -6,33 +6,35 @@
       </div>
       <div class="flex_es ">
         <xo-datePicker @getRadioDate="getRadioDate"></xo-datePicker>
-        <div class="flex_ec">
-          <div class="margin_r_10">
-            <span>开票状态</span>
-            <el-select v-model="status_id" filterable clearable placeholder="请选择">
-              <el-option
-                v-for="item in statusList"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id">
-              </el-option>
-            </el-select>
-          </div>
-          <div class="margin_r_10">
-            <span>门店</span>
-            <el-select v-model="store_id" filterable clearable placeholder="请选择">
-              <el-option
-                v-for="item in storeData"
-                :key="item.id"
-                :label="item.storeName"
-                :value="item.id">
-              </el-option>
-            </el-select>
-          </div>
 
-          <el-button class="margin_l_10" @click="search()">查询</el-button>
-          <el-button type="primary" @click="out()">导出</el-button>
+      </div>
+
+      <div class="flex_ce margin_t_10">
+        <div class="margin_r_10">
+          <span>开票状态</span>
+          <el-select v-model="status_id" filterable clearable placeholder="请选择" size="small">
+            <el-option
+              v-for="item in statusList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id">
+            </el-option>
+          </el-select>
         </div>
+        <div class="margin_r_10">
+          <span>门店</span>
+          <el-select v-model="store_id" filterable clearable placeholder="请选择" size="small">
+            <el-option
+              v-for="item in storeData"
+              :key="item.id"
+              :label="item.storeName"
+              :value="item.id">
+            </el-option>
+          </el-select>
+        </div>
+
+        <el-button class="margin_l_10" @click="search()" size="small">查询</el-button>
+        <el-button type="primary" @click="out()" size="small">导出</el-button>
       </div>
 
       <div class="flex_es padding_t_10">
@@ -179,7 +181,7 @@
         storeData:[],
         width: 0,
         tableHeight: 0,
-        navList: [{name: "统计报表", url: ''}, {name: "发票", url: ''}],
+        navList: [{name: "数据统计", url: ''}, {name: "发票运营数据", url: ''}],
 
         tableData: [],
         p: {page: 1, size: 20, total: 0},

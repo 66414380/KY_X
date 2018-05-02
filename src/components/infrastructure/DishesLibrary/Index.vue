@@ -78,7 +78,7 @@
     <el-dialog
       title="批量新增"
       :visible.sync="dialogVisible2"
-      width="50%" size="tiny">
+      width="400px" >
       <div class="flex_f flex">
         <div class="margin_b_10">请问需要新增多少？</div>
         <div class="flex_a">
@@ -98,7 +98,7 @@
       :visible.sync="dialogVisible4"
       @open="open4"
       @close="close4"
-      width="50%" size="tiny">
+      width="400px">
       <div class="flex_f flex">
 
         <div>
@@ -152,8 +152,7 @@
     <el-dialog
       title="编辑"
       :visible.sync="dialogVisible1"
-      size="large"
-      width="80%">
+      width="1100px">
       <el-form ref="formRules" :model="form">
       <el-table :data="form.brandEditList" border style="width: 100%;">
         <el-table-column label-class-name="table_head" header-align="center" align="center" label="菜品编码" width="200">

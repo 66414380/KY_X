@@ -138,7 +138,7 @@
       return {
         width: 0,
         tableHeight: 0,
-        navList: [{name: "统计报表", url: ''}, {name: "交易列表", url: ''}],
+        navList: [{name: "数据统计", url: ''}, {name: "聚合外卖运营数据", url: ''},  {name: "订单统计", url: ''}],
         radio:"",
         storeData:[],
         storeId:'',

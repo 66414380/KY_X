@@ -63,8 +63,7 @@
       width="50%" size="tiny">
       <el-switch
         v-model="storeStatusValue"
-        on-color="#13ce66"
-        off-color="#ff4949">
+       >
       </el-switch>
       <div class="margin_t_10">
         <el-button @click="dialogVisible1 = false">取消</el-button>
@@ -95,7 +94,7 @@
         dialogVisible1:false,
         storeStatusValue: false,
         tableHeight: 0,
-        navList: [{name: "基础设置", url: ''}, {name: "支付配置", url: ''}],
+        navList: [{name: "基础设置", url: ''}, {name: "支付管理", url: ''},{name: "支付配置", url: ''}],
 
         payWayList: [],
         p: {page: 1, size: 20, total: 0},

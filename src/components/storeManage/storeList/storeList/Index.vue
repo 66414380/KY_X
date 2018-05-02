@@ -92,9 +92,7 @@
               <el-switch @change="()=>{
                 return changeStatus(scope.row)
               }"
-                         v-model="scope.row.status"
-                         on-color="#13ce66"
-                         off-color="#ff4949">
+                         v-model="scope.row.status">
               </el-switch>
             </template>
 
@@ -189,11 +187,9 @@
     <el-dialog
       title="开启/关闭"
       :visible.sync="dialogVisible1"
-      width="50%" size="tiny">
+      width="400px" >
       <el-switch
-        v-model="storeStatusValue"
-        on-color="#13ce66"
-        off-color="#ff4949">
+        v-model="storeStatusValue">
       </el-switch>
       <div class="margin_t_10">
         <el-button @click="dialogVisible1 = false">取消</el-button>
@@ -205,7 +201,7 @@
       title="新增门店"
       :visible.sync="dialogVisible2"
       @close="close2"
-      width="50%" size="tiny">
+      width="400px" >
       <el-checkbox v-model="checkAll" @change="changeAll(checkAll)">全选</el-checkbox>
       <div class="margin_b_10" v-for="(item,index) in baseStore">
         <div>
@@ -222,7 +218,7 @@
     </el-dialog>
 
     <!--发票方案编辑-->
-    <el-dialog title="发票方案编辑" :visible.sync="dialogVisible3" @open="open1" @close="close1">
+    <el-dialog title="发票方案编辑" :visible.sync="dialogVisible3" @open="open1" @close="close1" width="660px">
 
 
         <el-form ref="clientForm" :model="clientForm" label-width="180px">
@@ -269,9 +265,7 @@
 
           <el-form-item  label="状态">
             <el-switch
-              v-model="clientForm.status"
-              on-color="#13ce66"
-              off-color="#ff4949" >
+              v-model="clientForm.status">
             </el-switch>
           </el-form-item>
         </el-form>
@@ -306,9 +300,7 @@
 
                 <div class="flex_a">
                   <el-switch
-                    v-model="clientForm_second.auto_log"
-                    on-color="#13ce66"
-                    off-color="#ff4949">
+                    v-model="clientForm_second.auto_log">
                   </el-switch>
 
                   <div class="margin_l_10 margin_r_10 t_a">
@@ -325,9 +317,7 @@
 
                 <div class="flex_a">
                   <el-switch
-                    v-model="clientForm_second.code_lacation"
-                    on-color="#13ce66"
-                    off-color="#ff4949">
+                    v-model="clientForm_second.code_lacation">
                   </el-switch>
 
                   <div class="margin_l_10 margin_r_10 t_a">
@@ -397,7 +387,7 @@
         dialogVisible3: false,
         tableHeight: 0,
         tableWidth: 0,
-        navList: [{name: "门店管理", url: ''}, {name: "门店列表", url: ''}],
+        navList: [{name: "聚合支付管理", url: ''},{name: "门店管理", url: ''}, {name: "门店列表", url: ''}],
 
         storeName: '',
         storeData: [],

@@ -47,7 +47,7 @@ let jumpInfo = (id) => {
 
 
 //修改活动方案
-let jumpEdit = (formEdit,formEdit1) => {
+let jumpEdit = (level_id,formEdit) => {
   return new Promise((resolve, reject) => {
     let formData = new FormData();
     formData.append("id", formEdit.id);
@@ -79,11 +79,11 @@ let jumpDel = (id) => {
 };
 
 //批量删除
-let batchDel = (id) => {
+let JumpDelAll = (id) => {
   return new Promise((resolve, reject) => {
     let formData = new FormData();
     formData.append("id", id);
-    axios.post(`index.php?controller=activity&action=batchDel&token=${get('token')}`,formData).then((res)=>{
+    axios.post(`index.php?controller=jump&action=JumpDelAll&token=${get('token')}`,formData).then((res)=>{
       resolve(res)
     })
   })
@@ -91,19 +91,19 @@ let batchDel = (id) => {
 
 
 //批量开启关闭
-let batchStatus = (id,storeStatusValue) => {
+let JumpEditAll = (id,storeStatusValue) => {
   return new Promise((resolve, reject) => {
     let formData = new FormData();
     formData.append("id", id);
-    formData.append("status", storeStatusValue === true ? 1: 0);
-    axios.post(`index.php?controller=activity&action=batchStatus&token=${get('token')}`,formData).then((res)=>{
+    formData.append("status", storeStatusValue === true ? 1: 2);
+    axios.post(`index.php?controller=jump&action=JumpEditAll&token=${get('token')}`,formData).then((res)=>{
       resolve(res)
     })
   })
 };
 
 
-export default {getJumpList,jumpAdd,jumpInfo,jumpEdit,jumpDel,batchDel,batchStatus}
+export default {getJumpList,jumpAdd,jumpInfo,jumpEdit,jumpDel,JumpDelAll,JumpEditAll}
 
 
 

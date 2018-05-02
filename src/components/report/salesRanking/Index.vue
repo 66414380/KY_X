@@ -32,25 +32,22 @@
               <div>请选择时间</div>
 
               <div class="flex_a">
-                <div class=" margin_r_10 ">
-
                   <el-date-picker
                     size="small"
                     v-model="time_start"
                     type="datetime"
                     placeholder="选择开始日期时间">
                   </el-date-picker>
-                </div>
 
-                <div>
-                  <span>至</span>
+                <span class="margin_l_10 margin_r_10">至</span>
+
                   <el-date-picker
                     size="small"
                     v-model="time_end"
                     type="datetime"
                     placeholder="选择结束日期时间">
                   </el-date-picker>
-                </div>
+
               </div>
             </div>
 
@@ -115,7 +112,7 @@
         levelName: '',
         tableWidth: 0,
         tableHeight: 0,
-        navList: [{name: "统计报表", url: ''}, {name: "菜品销售排行", url: ''}],
+        navList: [{name: "数据统计", url: ''}, {name: "聚合外卖运营数据", url: ''}, {name: "菜品销售排行", url: ''}],
         storeData: [],
         tableData: [],
         storeId: '',

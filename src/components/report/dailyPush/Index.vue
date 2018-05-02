@@ -74,7 +74,7 @@
         width:0,
         tableHeight:0,
         dialogFormVisible:false,
-        navList:[{name:"基础设置",url:''},{name:"日报推送",url:''}],
+        navList:[{name: "数据统计", url: ''}, {name: "聚合外卖运营数据", url: ''}, {name:"日报推送",url:''}],
         tableData: [],
         p: {page: 1, size: 20, total: 0},
         searchName:'',

@@ -186,12 +186,13 @@
       title="新增菜品"
       :visible.sync="dialogVisible2"
       @close="close2"
-      width="50%" size="tiny">
+      width="400px" >
+      <el-checkbox v-model="checkAll" @change="changeAll(checkAll)">全选</el-checkbox>
       <div class="margin_b_10" v-for="(item,index) in baseDishes">
         <div>
           {{index}}
           <div class="padding_l_10" v-for="(item1,index1) in item">
-            <el-checkbox v-model="item1.OK">{{item1.product_name}}</el-checkbox>
+            <el-checkbox v-model="item1.OK" @change="changeOne">{{item1.product_name}}</el-checkbox>
           </div>
         </div>
       </div>
@@ -224,10 +225,12 @@
     },
     data() {
       return {
+        totalSelect:0,//点击新增时的门店的选择总数
+        checkAll:false,
         dialogVisible2: false,
         tableWidth: 0,
         tableHeight: 0,
-        navList: [{name: "菜品管理", url: ''},{name: "菜品列表", url: ''}],
+        navList: [{name: "聚合外卖管理", url: ''},{name: "菜品列表", url: ''},{name: "菜品列表", url: ''}],
         levelName:'',
         dishesName: '',
         tableData: [],
@@ -243,6 +246,32 @@
     methods: {
       ...mapActions(['setStoreDishesManageTree','setStoreDishesManageLevelId']),
       ...mapGetters(['getStoreDishesManageTree','getStoreDishesManageLevelId']),
+      changeOne(){
+        let i = 0;
+        for(let map in this.baseDishes){
+          this.baseDishes[map].forEach((item)=>{
+            if(item.OK === true){
+              i++
+            }
+          })
+        }
+        (i === this.totalSelect)? this.checkAll = true: this.checkAll = false
+      },
+      changeAll(bool){
+        if(bool){
+          for(let map in this.baseDishes){
+            this.baseDishes[map].forEach((item)=>{
+              item.OK = true
+            })
+          }
+        }else {
+          for(let map in this.baseDishes){
+            this.baseDishes[map].forEach((item)=>{
+              item.OK = false
+            })
+          }
+        }
+      },
       erpcodeSave(id,erpcode){
         console.log(erpcode)
 
@@ -351,10 +380,13 @@
           this.$message('请选择菜品');
         } else {
           this.dialogVisible2 = true;
+          this.totalSelect = 0;
+          this.checkAll = false;
           getApi.getDishes(this.getStoreDishesManageLevelId()).then((res) => {
             if (res.data.errcode === 0) {
               for (let map in res.data.data) {
                 res.data.data[map].forEach((item) => {
+                  this.totalSelect++;
                   item.OK = false
                 })
               }

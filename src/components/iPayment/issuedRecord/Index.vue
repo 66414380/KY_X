@@ -4,7 +4,7 @@
       <el-row>
         <el-col :span="24">
           <el-col :span="18" style="display: flex;align-items: center">
-            <xo-nav-path></xo-nav-path>
+            <xo-nav-path :navList="navList"></xo-nav-path>
           </el-col>
           <el-col :span="2" :offset="2">
             <router-link to="/iPayment/issuedRecord/newIssued">
@@ -110,8 +110,8 @@
         <el-dialog
           title="下发记录详情"
           :visible.sync="dialogVisible"
-          size="small"
           :before-close="handleClose"
+          width="600px"
         >
           <div>操作员: {{checkData.operator}}</div>
           <div>添加时间: {{checkData.addTime}}</div>
@@ -233,13 +233,14 @@
 
 <script>
   import xoScreenForm from './ScreenForm.vue'
-  import xoNavPath from './NavPath.vue'
+
   import {mapGetters, mapActions} from 'vuex'
   import {oneTwoApi} from '@/api/api.js'
   import Hub from '../../utility/commun'
   export default {
     data() {
       return {
+        navList: [{name: "聚合支付管理", url: ''},{name: "支付下发", url: ''}],
         p: {page: 1, size: 10, total: 0},
         form: {
           options: [],
@@ -335,13 +336,8 @@
     },
     components: {
       xoScreenForm,
-      xoNavPath
     },
     mounted() {
-      // 高度调整
-      var topH = document.querySelector('.el-form--label-top').clientHeight;
-      var pageH = document.querySelector('.el-pagination').clientHeight;
-      this.height = window.innerHeight - this.getTopHeight - topH - pageH - 180;
 
       // 下发状态接口
       var params = {
@@ -360,6 +356,12 @@
 
       this.api();
       Hub.$emit('mountedOk','mountedOk');
+    },
+    updated(){
+      // 高度调整
+      var topH = document.querySelector('.el-form--label-top').clientHeight;
+      var pageH = document.querySelector('.el-pagination').clientHeight;
+      this.height = window.innerHeight - this.getTopHeight - topH - pageH - 180;
     },
     destroyed(){
 

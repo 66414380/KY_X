@@ -63,8 +63,7 @@
                     return handleStatus(e,item.base_store_id,item.wm_store_source)
                   }"
                   v-model="item.poi_status"
-                  on-color="#13ce66"
-                  off-color="#ff4949">
+                  >
                 </el-switch>
               </div>
 
@@ -120,11 +119,10 @@
     <el-dialog
       title="开启/关闭"
       :visible.sync="dialogVisible1"
-      width="50%" size="tiny">
+      width="400px" >
       <el-switch
         v-model="storeStatusValue"
-        on-color="#13ce66"
-        off-color="#ff4949">
+        >
       </el-switch>
       <div class="margin_t_10">
         <el-button @click="dialogVisible1 = false">取消</el-button>
@@ -137,7 +135,7 @@
       title="新增门店"
       :visible.sync="dialogVisible2"
       @close="close2"
-      width="50%" size="tiny">
+      width="400px" >
       <div class="margin_b_10" v-for="(item,index) in baseStore">
         <div>
           {{index}}
@@ -178,7 +176,7 @@
         dialogVisible1: false,
         dialogVisible3: false,
 
-        navList: [{name: "门店管理", url: ''}],
+        navList: [{name: "聚合外卖管理", url: ''},{name: "门店管理", url: ''},{name: "门店列表", url: ''}],
         storeName: '',
         dishesList: [
           {code: '123', name: '炳胜（马场店）'},

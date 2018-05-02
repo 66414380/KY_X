@@ -33,8 +33,6 @@
           <template slot-scope="scope">
               <el-switch v-show="getTreeArr['开启、关闭']"
                 v-model="scope.row.isOpen"
-                on-color="#13ce66"
-                off-color="#ff4949"
                 on-value="1"
                 off-value="0"
                 @change="changeSwitch(scope.row.isOpen,scope.row.id)"
@@ -66,7 +64,7 @@
     data() {
       return {
         tableHeight: 0,
-        navList: [{name: "运营方案", url: ''}],
+        navList: [{name: "聚合支付管理", url: ''},{name: "运营方案", url: ''}],
         tableData: [],
         p: {page: 1, size: 20, total: 0},
         arr:{}

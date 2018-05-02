@@ -56,7 +56,7 @@
     </footer>
 
     <!--查看门店-->
-    <el-dialog title="查看门店" :visible.sync="dialogFormVisible" >
+    <el-dialog title="查看门店" :visible.sync="dialogFormVisible" width="600px">
       <el-form label-width="80px">
 
         <el-form-item label="操作员:">
@@ -118,7 +118,7 @@
         options: [],
         status:'',
         tableHeight: 0,
-        navList: [{name: "下发记录", url: ''}],
+        navList: [{name: "聚合支付管理", url: ''},{name: "发票管理", url: ''},{name: "下发记录", url: ''}],
         roleType: [],
         p: {page: 1, size: 20, total: 0},
         searchName: '',

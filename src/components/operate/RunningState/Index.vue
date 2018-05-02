@@ -162,7 +162,7 @@
                          label="打印机ID">
         </el-table-column>
         <el-table-column label-class-name="table_head" :render-header="headerPrint" header-align="center" align="center"
-                         width="100">
+                         width="140">
           <template slot-scope="scope">
             <el-button type="text" @click="submit(scope.row.storeid,scope.row.appid,scope.row.printerid,'testPrinter')">打印</el-button>
           </template>
@@ -242,7 +242,7 @@
         dialogVisible4: false,
         tableHeight: 0,
         tableWidth: 0,
-        navList: [{name: "终端状态", url: ''}],
+        navList: [{name: "终端管理", url: ''},{name: "终端状态", url: ''}],
 
         searchName: '',
         storeData: [],

@@ -11,7 +11,7 @@ import localStorage from './components/utility/localStorage'
 //IE11
 import 'babel-polyfill'
 // 样式导入
-import 'element-ui/lib/theme-default/index.css'
+// import 'element-ui/lib/theme-default/index.css'
 import 'font-awesome/css/font-awesome.css'
 
 import '@/plugins/dataFormat/index.js'

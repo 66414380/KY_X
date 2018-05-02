@@ -299,7 +299,7 @@
       return {
         width: 0,
         tableHeight: 0,
-        navList: [{name: "统计报表", url: ''}, {name: "交易列表", url: ''}],
+        navList: [{name: "数据统计", url: ''}, {name: "聚合支付运营数据", url: ''}, {name: "交易列表", url: ''}],
         order_no: '',
         out_order_no: '',
 

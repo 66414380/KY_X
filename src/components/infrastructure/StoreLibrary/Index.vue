@@ -106,11 +106,10 @@
     <el-dialog
       title="开启/关闭"
       :visible.sync="dialogVisible1"
-      width="50%" size="tiny">
+      width="400px" size="tiny">
       <el-switch
         v-model="storeStatusValue"
-        on-color="#13ce66"
-        off-color="#ff4949">
+        >
       </el-switch>
       <div class="margin_t_10">
         <el-button @click="dialogVisible1 = false">取消</el-button>
@@ -121,7 +120,7 @@
     <el-dialog
       title="修改"
       :visible.sync="dialogVisible"
-      width="50%">
+      width="560px">
       <el-form ref="formRules" :model="formEdit" label-width="100px">
         <el-form-item label="编码:" prop="id" >
           <el-input v-model="formEdit.id" placeholder="" disabled></el-input>
@@ -263,7 +262,7 @@
     <el-dialog
       title="新增门店"
       :visible.sync="dialogVisible2"
-      width="50%" size="tiny">
+      width="400px" >
       <div class="flex_f flex">
         <div class="margin_b_10">需要增加几家？</div>
         <div class="flex_a">
@@ -299,7 +298,7 @@
       :visible.sync="dialogVisible4"
       @open="open4"
       @close="close4"
-      width="50%" size="tiny">
+      width="400px" >
       <div class="flex_f flex">
 
         <div>
@@ -383,7 +382,7 @@
         dialogVisible3:false,
         dialogVisible4:false,//导入文件窗口
         tableHeight: 0,
-        navList: [{name: "门店库", url: ''}],
+        navList: [{name: "基础设置", url: ''},{name: "门店库", url: ''}],
         brandid:'',
         storeGroup: 1,
         payValue: 2,

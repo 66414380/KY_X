@@ -625,7 +625,7 @@ export default new Router({
 
         //活动设置/活动下发
         {
-          path: '/activitySetting/activeDown',
+          path: '/activitySetting/activeDown/:id',
           meta: { auth: false },
           name: '活动下发',
           component: activeDown

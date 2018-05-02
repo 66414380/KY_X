@@ -68,7 +68,7 @@
       return {
         width:0,
         tableHeight:0,
-        navList:[{name:"活动参与数据",url:''}],
+        navList:[{name:"数据统计",url:''},{name:"活动运营数据",url:''},{name:"活动参与数据",url:''}],
         tableData: [],
         p: {page: 1, size: 20, total: 0},
 

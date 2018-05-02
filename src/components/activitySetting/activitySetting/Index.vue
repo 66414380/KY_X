@@ -9,7 +9,7 @@
       <div class="flex_es">
 
         <div>
-          <el-button size="small" @click="add('新增方案')" v-show="getTreeArr['新增活动']">新增方案</el-button>
+          <el-button size="small" @click="add('新增方案')" v-show="getTreeArr['新增活动']" :disabled="showAdd !== 4">新增方案</el-button>
           <el-button size="small"  @click="delSelected()" v-show="getTreeArr['批量删除']">批量删除</el-button>
           <el-button size="small" @click="isSwitch()" v-show="getTreeArr['批量开启/关闭']">批量开启/关闭</el-button>
         </div>
@@ -87,7 +87,7 @@
 
       </div>
     <!--题目列表-->
-    <el-dialog :visible.sync="visiblePopList" title="选择类型页" size="tiny">
+    <el-dialog :visible.sync="visiblePopList" title="选择类型页" width="440px">
       <div class="flex_a margin_t_10" v-for="(item,index) in formEdit.subject_data">
         <div class="button flex pointer margin_r_10" @click="editOneSubject(item,index,'修改题目')" :style="{'background-color':(showSubjectIndex === index)?'#E8EEF5':''}">题目{{index + 1}}</div>
         <div class="button flex margin_l_10" :style="{'background-color':(item.subject_type === 1)?'#E8EEF5':''}">填空题</div>
@@ -108,7 +108,7 @@
     </el-dialog>
 
     <!--增加题目-->
-    <el-dialog :title="subjectTitle" :visible.sync="visiblePop" size="tiny">
+    <el-dialog :title="subjectTitle" :visible.sync="visiblePop" width="440px">
       <div class="margin_b_10">
 
       </div>
@@ -141,7 +141,7 @@
     </el-dialog>
 
     <!--新增/编辑-->
-    <el-dialog :title="showName" :visible.sync="dialogFormVisible" @open="open" @close="close" class="dialog">
+    <el-dialog :title="showName" :visible.sync="dialogFormVisible" @open="open" @close="close" class="dialog" width="800px">
 
 
       <el-form ref="formRules" :model="formEdit" label-width="140px">
@@ -196,8 +196,7 @@
             <el-switch
               :disabled="show"
               v-model="formEdit.status"
-              on-color="#13ce66"
-              off-color="#ff4949">
+             >
             </el-switch>
           </el-form-item>
 
@@ -1373,11 +1372,10 @@
     <el-dialog
       title="开启/关闭"
       :visible.sync="dialogVisible1"
-      width="50%" size="tiny">
+      width="400px" >
       <el-switch
         v-model="storeStatusValue"
-        on-color="#13ce66"
-        off-color="#ff4949">
+        >
       </el-switch>
       <div class="margin_t_10">
         <el-button @click="dialogVisible1 = false">取消</el-button>
@@ -1389,7 +1387,7 @@
     <el-dialog
       title="下载图片"
       :visible.sync="dialogVisible2"
-      width="50%" size="tiny" @close="closeImg">
+      width="400px"  @close="closeImg">
 
       <!--<el-select v-model="downLoadValue" placeholder="请选择图片规格" @change="changeImg">-->
         <!--<el-option-->
@@ -1475,7 +1473,7 @@
         showName: '',
         tableWidth: 0,
         tableHeight: 0,
-        navList: [{name: "活动方案", url: ''},{name: "方案列表", url: ''}],
+        navList: [{name: "活动管理", url: ''},{name: "活动方案", url: ''}],
         show:false,
         activityName: '',
         storeName: '',
@@ -1848,6 +1846,7 @@
       },
 
       close(){
+        this.$refs['formRules'].resetFields();
         this.showFormSwitch = true;
         this.show = false;
         this.formEdit = {

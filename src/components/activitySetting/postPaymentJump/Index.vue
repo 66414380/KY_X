@@ -77,7 +77,7 @@
 
 
     <!--新增/编辑-->
-    <el-dialog :title="showName" :visible.sync="dialogFormVisible" @open="open" @close="close" class="dialog">
+    <el-dialog :title="showName" :visible.sync="dialogFormVisible" @open="open" @close="close" class="dialog" width="660px">
 
 
       <el-form ref="formRules" :model="formEdit" label-width="140px">
@@ -88,7 +88,7 @@
         </el-form-item>
 
         <el-form-item label="方案编码:" v-if="showName !== '新增方案'">
-          <el-input v-model="formEdit.id" placeholder="" disabled></el-input>
+          <el-input  class="input_width" v-model="formEdit.id" placeholder="" disabled></el-input>
         </el-form-item>
 
         <div v-for="(domain, index) in formEdit.third_code" class="flex_r">
@@ -132,8 +132,8 @@
           <el-switch
             :disabled="show"
             v-model="formEdit.status"
-            on-color="#13ce66"
-            off-color="#ff4949">
+
+           >
           </el-switch>
         </el-form-item>
 
@@ -170,8 +170,8 @@
         <!--v-model="formEdit.status1"-->
         <!--on-text=""-->
         <!--off-text=""-->
-        <!--on-color="#13ce66"-->
-        <!--off-color="#ff4949">-->
+
+        <!--&gt;-->
         <!--</el-switch>-->
         <!--</div>-->
 
@@ -197,14 +197,58 @@
         <!--</el-form-item>-->
 
         <el-form-item label="跳转设置:" >
-          <el-radio-group v-model="formEdit.type">
+
             <div class="margin_b_10">
-              <el-radio :disabled="show" :label="1" ><span @click="showTableDataActivity">发自己餐厅的券</span></el-radio>
+              <el-radio :disabled="show" v-model="formEdit.type" :label="1" >{{radioNull}}</el-radio>
+
+              <el-popover
+                :disabled="formEdit.type === 0"
+                placement="bottom"
+                width="800"
+                v-model="dialogVisible2"
+              >
+                <div class="flex pop_top">选择方案</div>
+                <el-table :data="tableDataActivity" border  style="width: 100%;" height="400">
+                  <el-table-column label-class-name="table_head" header-align="center" align="center" label="序号" width="80">
+                    <template slot-scope="scope">
+                      <div>{{scope.$index + 1}}</div>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label-class-name="table_head" header-align="center" align="center" prop="name" label="方案名称" min-width="100">
+
+                  </el-table-column>
+                  <el-table-column label-class-name="table_head" header-align="center" align="center" prop="id" label="编码" width="80">
+
+                  </el-table-column>
+                  <el-table-column label-class-name="table_head" header-align="center" align="center" label="起止时间" min-width="100">
+                    <template slot-scope="scope">
+                      <div v-if="scope.row.start_time !== ''">起 {{scope.row.start_time}} </div>
+                      <div v-if="scope.row.end_time !== ''">截止 {{scope.row.end_time}} </div>
+                    </template>
+                  </el-table-column>
+
+                  <el-table-column label-class-name="table_head" header-align="center" align="center" prop="card_name" label="优惠券名称" min-width="100">
+
+                  </el-table-column>
+                  <el-table-column label-class-name="table_head" header-align="center" align="center" label="选择" width="80">
+                    <template slot-scope="scope">
+                      <el-radio :disabled="show" v-model="radio" :label="scope.row.id">{{radioNull}}</el-radio>
+                    </template>
+                  </el-table-column>
+                </el-table>
+                <!--<xo-pagination :pageData=pActivity @page="getPage1" @pageSize="getPageSize1"></xo-pagination>-->
+                <div class="margin_t_10">
+                  <el-button @click="dialogVisible2 = false">取消</el-button>
+                  <el-button type="primary" @click="selectActivity()" :disabled="show">确认</el-button>
+                </div>
+
+                <span slot="reference" @click="showTableDataActivity()" class="pointer">发自己餐厅的券</span>
+              </el-popover>
             </div>
             <div class="margin_b_10">
-              <el-radio :disabled="show" :label="0">授权款易托管（默认）</el-radio>
+              <el-radio :disabled="show" v-model="formEdit.type" :label="0">授权款易托管（默认）</el-radio>
             </div>
-          </el-radio-group>
+
         </el-form-item>
 
       </el-form>
@@ -219,52 +263,19 @@
 
 
     <!--选择方案-->
-    <el-dialog title="选择方案" :visible.sync="dialogVisible2" >
-      <el-table :data="tableDataActivity" border  style="width: 100%;">
-        <el-table-column label-class-name="table_head" header-align="center" align="center" label="序号" width="80">
-          <template slot-scope="scope">
-            <div>{{scope.$index + 1}}</div>
-          </template>
-        </el-table-column>
-        <el-table-column label-class-name="table_head" header-align="center" align="center" prop="name" label="方案名称" min-width="100">
+    <!--<el-dialog title="选择方案" :visible.sync="dialogVisible2" >-->
 
-        </el-table-column>
-        <el-table-column label-class-name="table_head" header-align="center" align="center" prop="id" label="编码" width="80">
-
-        </el-table-column>
-        <el-table-column label-class-name="table_head" header-align="center" align="center" label="起止时间" min-width="100">
-          <template slot-scope="scope">
-            <div v-if="scope.row.start_time !== ''">起 {{scope.row.start_time}} </div>
-            <div v-if="scope.row.end_time !== ''">截止 {{scope.row.end_time}} </div>
-          </template>
-        </el-table-column>
-
-        <el-table-column label-class-name="table_head" header-align="center" align="center" prop="card_name" label="优惠券名称" min-width="100">
-
-        </el-table-column>
-        <el-table-column label-class-name="table_head" header-align="center" align="center" label="选择" width="80">
-          <template slot-scope="scope">
-            <el-radio  v-model="radio" :label="scope.row.id">{{radioNull}}</el-radio>
-          </template>
-        </el-table-column>
-      </el-table>
-      <!--<xo-pagination :pageData=pActivity @page="getPage1" @pageSize="getPageSize1"></xo-pagination>-->
-      <div class="margin_t_10">
-        <el-button @click="dialogVisible2 = false">取消</el-button>
-        <el-button type="primary" @click="selectActivity()">确认</el-button>
-      </div>
-    </el-dialog>
+    <!--</el-dialog>-->
 
 
     <!--批量开启/关闭-->
     <el-dialog
       title="开启/关闭"
       :visible.sync="dialogVisible1"
-      width="50%" size="tiny">
+      width="400px" >
       <el-switch
         v-model="storeStatusValue"
-        on-color="#13ce66"
-        off-color="#ff4949">
+       >
       </el-switch>
       <div class="margin_t_10">
         <el-button @click="dialogVisible1 = false">取消</el-button>
@@ -297,7 +308,6 @@
     },
     data() {
       return {
-
         radioName:'',
         levelName: '',
         dialogFormVisible: false,
@@ -360,7 +370,7 @@
             list.push(item.id)
           }
         });
-        getApi.batchStatus(list.join(","),this.storeStatusValue).then((res) => {
+        getApi.JumpEditAll(list.join(","),this.storeStatusValue).then((res) => {
           if (res.data.errcode === 0) {
             this.showResouce(this.p);
             this.$message('操作成功');
@@ -391,7 +401,7 @@
             cancelButtonText: '取消',
             type: 'warning'
           }).then(() => {
-            getApi.batchDel(list.join(",")).then((res) => {
+            getApi.JumpDelAll(list.join(",")).then((res) => {
               if (res.data.errcode === 0) {
                 this.showResouce(this.p);
                 this.$message('操作成功');
@@ -457,10 +467,12 @@
       },
 
       submitFrom() {
-
+        if(new Date(this.formEdit.start_time) *1 > new Date(this.formEdit.end_time) *1){
+          this.$message.warning('开始时间不能大于结束时间');
+          return
+        }
         this.$refs['formRules'].validate((valid) => {
           if (valid) {
-
             if(this.showName === '新增方案'){
               getApi.jumpAdd(this.getPostPaymentJumpLevelId(), this.formEdit).then((res) => {
                 if (res.data.errcode === 0) {
@@ -470,7 +482,7 @@
                 }
               })
             }else {
-              getApi.jumpEdit(this.formEdit).then((res) => {
+              getApi.jumpEdit(this.getPostPaymentJumpLevelId(),this.formEdit).then((res) => {
                 if (res.data.errcode === 0) {
                   this.showResouce(this.p);
                   this.$message('操作成功');
@@ -526,15 +538,19 @@
       },
 
       optionShow(name, id) {
+        this.showResouce1(this.pActivity);
         this.showName = name;
         this.dialogFormVisible = true;
         getApi.jumpInfo(id).then((res) => {
           if (res.data.errcode === 0) {
+            if(res.data.data.third_code === null || res.data.data.third_code.length === 0){
+              res.data.data.third_code = [{code1: '', code2: ''}]
+            }
             res.data.data.status === 1 ? res.data.data.status = true:res.data.data.status = false;
-            res.data.data.start_time === ''? res.data.data.start_time = '': res.data.data.start_time  = (res.data.data.start_time + '000') * 1;
-            res.data.data.end_time === ''? res.data.data.end_time  = '': res.data.data.end_time  = (res.data.data.end_time + '000') * 1;
+            // res.data.data.start_time === ''? res.data.data.start_time = '': res.data.data.start_time  = new Date(res.data.data.start_time) * 1;
+            // res.data.data.end_time === ''? res.data.data.end_time  = '': res.data.data.end_time  = new Date(res.data.data.end_time) * 1;
             this.formEdit = res.data.data;
-
+            this.radio = res.data.data.activity_id
           }
 
         });
@@ -661,6 +677,11 @@
   .b_c{
     background-color: #eef1f6;
     color: #bbb;
+  }
+
+  .pop_top{
+    height: 40px;
+    background-color: #F2F2F2;
   }
 
 

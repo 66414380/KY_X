@@ -1,6 +1,6 @@
 <template>
   <div id="xoMenu" :style="{height:getBodyHeight+'px'}">
-    <el-menu default-active="2" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" theme="dark" :width="300">
+    <el-menu default-active="2" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" :width="300">
 
       <!--后期加上-->
       <el-submenu v-for="(value,index1) in leftList" :index=index1.toString() :key="index1">

@@ -106,7 +106,7 @@
       :visible.sync="dialogVisible"
       @close="close"
       @open="open"
-      width="50%">
+      width="560px">
       <el-form ref="formRules" :model="formUserEdit" label-width="100px">
         <el-form-item label="名称:" prop="nickname" :rules="{required: true, message: '请输入名称', trigger: 'blur'}">
           <el-input v-model="formUserEdit.nickname" placeholder="请输入内容" ></el-input>
@@ -182,8 +182,7 @@
 
           <el-switch
                      v-model="formUserEdit.status"
-                     on-color="#13ce66"
-                     off-color="#ff4949">
+                     >
           </el-switch>
         </el-form-item>
 
@@ -230,7 +229,7 @@
         dialogVisible: false,
 
         tableHeight: 0,
-        navList: [{name: "基础设置", url: ''}, {name: "用户管理", url: ''}],
+        navList: [{name: "基础设置", url: ''}, {name: "权限管理", url: ''},{name: "用户管理", url: ''}],
         name: '',
         selectedOptions:[],
 

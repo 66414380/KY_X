@@ -14,11 +14,18 @@
             <el-form-item label="方案名称:" prop="name" :rules="{required: true, message: '请输入方案名称', trigger: 'blur'}">
               <el-row>
                 <el-col :span="16">
-                  <el-input class="input_width" v-model="form.name" placeholder="请输入方案名称"></el-input>
+                  <!--<el-input class="input_width" v-model="form.name" placeholder="请输入方案名称"></el-input>-->
+
+                  <el-select v-model="form.name" placeholder="请选择">
+                    <el-option
+                      v-for="item in jumpList"
+                      :key="item.id"
+                      :label="item.name"
+                      :value="item.id">
+                    </el-option>
+                  </el-select>
                 </el-col>
               </el-row>
-
-
             </el-form-item>
 
             <!-- 选择门店 -->
@@ -72,7 +79,7 @@
               <el-form-item label="下发规则:">
 
                 <el-col :span="6">
-                  <el-radio class="radio" v-model="form.rules" label="2">替换</el-radio>
+                  <el-radio class="radio" v-model="form.rule" label="1">替换</el-radio>
                   <el-popover
                     ref="popover1"
                     placement="top-start"
@@ -86,7 +93,7 @@
                 </el-col>
 
                 <el-col :span="6">
-                  <el-radio class="radio" v-model="form.rules" label="1">更新</el-radio>
+                  <el-radio class="radio" v-model="form.rule" label="2">更新</el-radio>
                   <el-popover
                     ref="popover2"
                     placement="top-start"
@@ -140,14 +147,14 @@
                     </div>
                   </el-col>
 
-                  <el-col :span="10">
-                    <el-card>
-                      若执行失败，则在
-                      <el-input v-model="form.delayTime" placeholder="请输入执行的时间"></el-input>
-                      分钟后重新发起执行
-                      (为空则不发起）
-                    </el-card>
-                  </el-col>
+                  <!--<el-col :span="10">-->
+                    <!--<el-card>-->
+                      <!--若执行失败，则在-->
+                      <!--<el-input v-model="form.delayTime" placeholder="请输入执行的时间"></el-input>-->
+                      <!--分钟后重新发起执行-->
+                      <!--(为空则不发起）-->
+                    <!--</el-card>-->
+                  <!--</el-col>-->
                 </el-col>
               </el-form-item>
             </el-col>
@@ -173,18 +180,19 @@
 
   import {mapGetters, mapActions} from 'vuex'
   import {oneTwoApi} from '@/api/api.js'
-  import {getLeft} from '../../../utility/communApi'
+  import {getLeft,getLevel} from '../../../utility/communApi'
   import getApi from './activeDown.service'
+  import getApi1 from '../../postPaymentJump/postPaymentJump.service'
   export default {
     data() {
       return {
-        navList: [{name: "活动方案", url: ''},{name: "新增下发", url: ''}],
+        navList: [{name: "活动方案", url: '/activitySetting/downRecord'},{name: "新增下发", url: ''}],
         form: {
           name:'',
           data: [], // 已选门店key
           data2: [],
           value: '',
-          rules: '1',
+          rule: '1',
           runTime: '1',
           runTimeValue: '',
           delayTime: '',
@@ -193,7 +201,7 @@
           checked: false
         },
         height: 0,
-
+        jumpList:[],
         allStore: [],
         selectStore: [],
         storeName: '',
@@ -260,11 +268,23 @@
 
     },
     created(){
-      getLeft('x1').then((res) => {
+      getLevel().then((res) => {
         if (res.data.errcode === 0) {
           this.dataLeft = res.data.data
         }
       });
+
+
+
+      getApi1.getJumpList({page: 1, size: 1000, total: 0},this.$route.params.id, '').then((res) => {
+
+        if (res.data.errcode === 0) {
+          this.jumpList = res.data.data.list;
+
+        }
+      })
+
+
     },
     mounted() {
       // 高度调整

@@ -9,7 +9,7 @@
     :visible.sync="dialogVisible"
     @close="passClose"
     @open="passOpen"
-    width="100%" size="tiny">
+    width="400px" >
     <div>
       <el-form ref="formRules" :model="formPassWord" label-width="100px">
         <el-form-item label="原密码:" prop="oldPassWord" :rules="{required: true, message: '请输入原密码', trigger: 'blur'}">
