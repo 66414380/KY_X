@@ -11,7 +11,7 @@
           </el-col>
           <el-form ref="ruleForm" :model="form" label-width="120px" :rules="rules">
 
-            <el-form-item label="方案名称:" prop="name" :rules="{required: true, message: '请输入方案名称', trigger: 'blur'}">
+            <el-form-item label="方案名称:" prop="name" :rules="{type:'number',required: true, message: '请选择方案名称', trigger: 'change'}">
               <el-row>
                 <el-col :span="16">
                   <!--<el-input class="input_width" v-model="form.name" placeholder="请输入方案名称"></el-input>-->
@@ -63,7 +63,7 @@
                       <el-transfer v-model="selectStore" :data="allStore"
                                    :props="{
                                       key: 'id',
-                                      label: 'storeName'
+                                      label: 'storename'
                                     }"
                                    :titles="['全部门店', '已选门店']"
                       ></el-transfer>
@@ -182,7 +182,8 @@
   import {oneTwoApi} from '@/api/api.js'
   import {getLeft,getLevel} from '../../../utility/communApi'
   import getApi from './activeDown.service'
-  import getApi1 from '../../postPaymentJump/postPaymentJump.service'
+  import getApi1 from '../postPaymentJump.service'
+  import getApi2 from '../../../infrastructure/PermissionManagement/user/user.service'
   export default {
     data() {
       return {
@@ -252,16 +253,11 @@
 
 
       search(storeName = '',levelId = '') {
-        let params = {
-          redirect: 'x1.store.storeList',
-          levelId: levelId,
-          storeName: storeName,
-          page: 1,
-          pagesize:1000
-        };
-        oneTwoApi(params).then((res) => {
-          if (res.errcode === 0) {
-            this.allStore = res.data.list;
+
+
+        getApi2.getBsList(levelId,storeName).then((res)=>{
+          if (res.data.errcode === 0) {
+            this.allStore = res.data.data.list;
           }
         })
       },

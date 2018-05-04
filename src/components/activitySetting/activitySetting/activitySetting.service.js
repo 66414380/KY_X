@@ -24,7 +24,7 @@ let addActivity = (level_id,formEdit,formEdit1) => {
     formData.append("third_code", window.JSON.stringify(formEdit.third_code));
     formData.append("name", formEdit.name);
     formData.append("type", formEdit.type);
-    formData.append("status", formEdit.status === false? 0: 1);
+    formData.append("status", formEdit.status);
     formData.append("start_time", formEdit.start_time === undefined || formEdit.start_time === '' ? '' :  (new Date(formEdit.start_time) * 1 + '').substr(0, 10));
     formData.append("end_time",  formEdit.end_time === undefined || formEdit.end_time === '' ? '' : (new Date(formEdit.end_time) * 1 + '').substr(0, 10));
     formData.append("appId", formEdit.appId);
@@ -48,6 +48,11 @@ let addActivity = (level_id,formEdit,formEdit1) => {
     formData.append("receive_success_url", formEdit.receive_success_url);
     formData.append("receive_info_url", formEdit.receive_info_url);
     formData.append("share_button", formEdit.share_button);
+
+    formData.append("is_primary_in_receive", formEdit.is_primary_in_receive);
+    formData.append("show_wx_name", formEdit.show_wx_name);
+    formData.append("font", formEdit.font);
+    formData.append("size", formEdit.size);
 
     axios.post(`index.php?controller=activity&action=addActivity&token=${get('token')}`,formData).then((res)=>{
       resolve(res)
@@ -76,7 +81,7 @@ let updateActivity = (formEdit,formEdit1) => {
     formData.append("third_code", window.JSON.stringify(formEdit.third_code));
     formData.append("name", formEdit.name);
     formData.append("type", formEdit.type);
-    formData.append("status", formEdit.status === false? 0: 1);
+    formData.append("status", formEdit.status);
     formData.append("start_time", formEdit.start_time === undefined || formEdit.start_time === '' ? '' :  (new Date(formEdit.start_time) * 1 + '').substr(0, 10));
     formData.append("end_time",  formEdit.end_time === undefined || formEdit.end_time === '' ? '' : (new Date(formEdit.end_time) * 1 + '').substr(0, 10));
     formData.append("appId", formEdit.appId);
@@ -100,6 +105,11 @@ let updateActivity = (formEdit,formEdit1) => {
     formData.append("receive_success_url", formEdit.receive_success_url);
     formData.append("receive_info_url", formEdit.receive_info_url);
     formData.append("share_button", formEdit.share_button);
+
+    formData.append("is_primary_in_receive", formEdit.is_primary_in_receive);
+    formData.append("show_wx_name", formEdit.show_wx_name);
+    formData.append("font", formEdit.font);
+    formData.append("size", formEdit.size);
 
     axios.post(`index.php?controller=activity&action=updateActivity&token=${get('token')}`,formData).then((res)=>{
       resolve(res)

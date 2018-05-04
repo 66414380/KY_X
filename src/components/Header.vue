@@ -1,6 +1,5 @@
 <style scoped>
   .header-top {
-    background-color: #2A3642;
     height: 80px;
     color: white;
     padding: 0 20px;
@@ -22,16 +21,17 @@
 </style>
 
 <template>
-  <div ref="getTop" class="header-top flex_sb">
+  <div ref="getTop" class="header-top flex_sb" :style="{'background-color':getTheme}">
     <div class="flex">
-      <img src="../assets/home/mingsheng-log.png" alt="" style="width: 291px;height: 35px;">
+      <img v-if="logo_src !== ''" :src="logo_src" alt="" style="width: 291px;height: 35px;">
+      <img v-else src="../assets/home/ky.png" alt="" style="height: 48px;width: 160px">
       <img src="../assets/home/vertical-line.png" alt="" style="width: 2px;height: 30px;margin-left: 10px;">
       <img src="../assets/home/happy-font.png" alt="" style="width: 30px;height: 30px;margin-left: 10px;">
       <img src="../assets/home/zhihuicanyin-log.png" alt="" style="width: 95px;height: 23px;margin-left: 10px;">
     </div>
     <div>
       <i class="el-icon-loading" v-show="getLoadingStatus"></i>
-
+      <xo-theme-picker></xo-theme-picker>
       <span class="login">帮助</span>
       <el-dropdown @command="loginOut">
         <span class="login el-dropdown-link pointer">
@@ -51,13 +51,14 @@
   export default {
     computed: {
       ...mapGetters([
-        'getLoadingStatus'
+        'getLoadingStatus','getTheme'
       ]),
     },
     data() {
       return {
         height: 0,
-        user: ''
+        user: '',
+        logo_src:'',
       }
     },
     methods: {
@@ -162,6 +163,11 @@
       this.topHeight(this.height);
       // this.$store.dispatch('topHeight',this.height);
 
+      if(!this.$localStorage.get('logo')){
+        this.logo_src = '';
+      }else {
+        this.logo_src = this.$localStorage.get('logo');
+      }
     },
   }
 

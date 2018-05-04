@@ -1,13 +1,13 @@
 <template>
-  <div id="xoMenu" :style="{height:getBodyHeight+'px'}">
-    <el-menu default-active="2" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" :width="300">
+  <div id="xoMenu" :style="{height:getBodyHeight+'px','background-color':getTheme}" >
+    <!--<el-menu default-active="2" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" :width="300">-->
 
-      <!--后期加上-->
-      <el-submenu v-for="(value,index1) in leftList" :index=index1.toString() :key="index1">
-        <template slot="title">{{value.name}}</template>
-        <router-link v-for="(item,index2) in value.children" :key="item.route" :to=item.route><el-menu-item :index=formatNum(index1,index2) :key="index2">{{item.name}}</el-menu-item></router-link>
-      </el-submenu>
-    </el-menu>
+      <!--&lt;!&ndash;后期加上&ndash;&gt;-->
+      <!--<el-submenu v-for="(value,index1) in leftList" :index=index1.toString() :key="index1">-->
+        <!--<template slot="title">{{value.name}}</template>-->
+        <!--<router-link v-for="(item,index2) in value.children" :key="item.route" :to=item.route><el-menu-item :index=formatNum(index1,index2) :key="index2">{{item.name}}</el-menu-item></router-link>-->
+      <!--</el-submenu>-->
+    <!--</el-menu>-->
 
       <tree :data='leftData' :count=0></tree>
 
@@ -49,12 +49,12 @@
                },
                {
                  name: '下发记录',
-                 route: '/activitySetting/downRecord'
+                 route: '/activitySetting/postPaymentJump/downRecord'
                },
-               // {
-               //   name: '模板消息跳转',
-               //   route: '/jumpManagement/templateMessageJump'
-               // },
+               {
+                 name: '模板消息跳转',
+                 route: '/jumpManagement/templateMessageJump'
+               },
              ]
            },
 
@@ -79,7 +79,7 @@
     },
     computed: {
       ...mapGetters([
-        'getTopHeight','getBodyHeight'
+        'getTopHeight','getBodyHeight','getTheme'
       ]),
     },
     methods: {
@@ -154,6 +154,6 @@
   #xoMenu{
     overflow-y: scroll;
     overflow-x: hidden;
-    background-color: #2A3642;
+
   }
 </style>

@@ -104,10 +104,11 @@ import businessList from '@/components/businessInformation/businessList/Index.vu
 /**********************活动设置********************************/
 import activityData from '@/components/activitySetting/activityData/Index.vue'
 import activitySetting from '@/components/activitySetting/activitySetting/Index.vue'
-
 import postPaymentJump from '@/components/activitySetting/postPaymentJump/Index.vue'
-import activityDownRecord from '@/components/activitySetting/downRecord/Index.vue'
-import activeDown from '@/components/activitySetting/activitySetting/activeDown/Index.vue'
+import activityDownRecord from '@/components/activitySetting/postPaymentJump/downRecord/Index.vue'
+import activeDown from '@/components/activitySetting/postPaymentJump/activeDown/Index.vue'
+
+import shihuisheSet from '@/components/activitySetting/shihuisheSet/Index.vue'
 
 
 /************************** 跳转管理 ***************************/
@@ -625,18 +626,27 @@ export default new Router({
 
         //活动设置/活动下发
         {
-          path: '/activitySetting/activeDown/:id',
+          path: '/activitySetting/postPaymentJump/activeDown/:id',
           meta: { auth: false },
           name: '活动下发',
           component: activeDown
         },
         //活动设置/下发记录
         {
-          path: '/activitySetting/downRecord',
+          path: '/activitySetting/postPaymentJump/downRecord',
           meta: { auth: false },
           name: '活动设置/下发记录',
           component: activityDownRecord
         },
+        //食惠社设置
+        {
+          path: '/activitySetting/shihuisheSet',
+          meta: { auth: false },
+          name: '活动设置/食惠社设置',
+          component: shihuisheSet
+        },
+
+
         /************************** 跳转管理 ***************************/
         //跳转管理/模板消息跳转
         {

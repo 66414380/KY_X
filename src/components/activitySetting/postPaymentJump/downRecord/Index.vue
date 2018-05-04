@@ -30,9 +30,9 @@
           </el-table-column>
           <el-table-column label-class-name="table_head" header-align="center" align="center" label="方案名称" prop="jumpName" min-width="100">
           </el-table-column>
-          <el-table-column label-class-name="table_head" header-align="center" align="center" label="操作员" prop="operator" min-width="100">
-          </el-table-column>
           <el-table-column label-class-name="table_head" header-align="center" align="center" label="下发时间" prop="addTime" min-width="100">
+          </el-table-column>
+          <el-table-column label-class-name="table_head" header-align="center" align="center" label="操作员" prop="operator" min-width="100">
           </el-table-column>
           <el-table-column label-class-name="table_head" header-align="center" align="center" label="状态" prop="statusFormate" min-width="100">
           </el-table-column>
@@ -67,7 +67,7 @@
 
       <div class="margin_t_10">下发方案</div>
       <el-table :data="schemeData" border style="width: 100%;" >
-        <el-table-column label-class-name="table_head" header-align="center" align="center" label="序号" min-width="100">
+        <el-table-column label-class-name="table_head" header-align="center" align="center" label="序号" width="100">
           <template slot-scope="scope">
             <div>{{scope.$index + 1}}</div>
           </template>
@@ -80,14 +80,14 @@
 
       <div class="margin_t_10">下发门店</div>
       <el-table :data="jumpUseInfo.store" border style="width: 100%;" >
-        <el-table-column label-class-name="table_head" header-align="center" align="center" label="序号" min-width="100">
+        <el-table-column label-class-name="table_head" header-align="center" align="center" label="序号" width="100">
           <template slot-scope="scope">
             <div>{{scope.$index + 1}}</div>
           </template>
         </el-table-column>
-        <el-table-column label-class-name="table_head" header-align="center" align="center" label="门店编码">
+        <el-table-column label-class-name="table_head" header-align="center" align="center" prop="storeId" label="门店编码">
         </el-table-column>
-        <el-table-column label-class-name="table_head" header-align="center" align="center" label="门店名称">
+        <el-table-column label-class-name="table_head" header-align="center" align="center" prop="storeName" label="门店名称">
         </el-table-column>
       </el-table>
     </el-dialog>
@@ -98,12 +98,12 @@
 <script>
 
 
-  import {recur} from '../../utility/communApi'
-  import Hub from '../../utility/commun'
-  import {getScrollHeight} from '../../utility/getScrollHeight'
+  import {recur} from '../../../utility/communApi'
+  import Hub from '../../../utility/commun'
+  import {getScrollHeight} from '../../../utility/getScrollHeight'
   import {mapActions, mapGetters} from 'vuex';
   import {oneTwoApi} from '@/api/api.js';
-  import getApi1 from '../../infrastructure/DishesLibrary/dishesLibrary.service'
+  import getApi1 from '../../../infrastructure/DishesLibrary/dishesLibrary.service'
   import getApi from './downRecord.service'
   export default {
     components: {},
@@ -151,7 +151,7 @@
       },
       activeDown() {
 
-        this.$router.push({path:`/activitySetting/activeDown/${this.getActivityDownRecordLevelId()}`})
+        this.$router.push({path:`/activitySetting/postPaymentJump/activeDown/${this.getActivityDownRecordLevelId()}`})
 
       },
 

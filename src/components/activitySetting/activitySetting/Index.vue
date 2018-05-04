@@ -196,6 +196,8 @@
             <el-switch
               :disabled="show"
               v-model="formEdit.status"
+              :active-value="1"
+              :inactive-value="0"
              >
             </el-switch>
           </el-form-item>
@@ -426,7 +428,7 @@
                   <i class="fa fa-plus-circle" aria-hidden="true"></i>
                 </div>
               </div>
-              <div class="button flex pointer" @click="buttonClick(4)" :style="{'background-color':(buttonInt === 4)?'#E8EEF5':''}">领取界面</div>
+              <div class="button flex pointer" @click="buttonClick(4)" :style="{'background-color':(buttonInt === 4)?'#E8EEF5':''}">领取页面</div>
               <div class="button flex pointer" @click="buttonClick(5)" :style="{'background-color':(buttonInt === 5)?'#E8EEF5':''}">分享页面</div>
             </div>
 
@@ -1074,7 +1076,23 @@
                       </div>
                       <div class="margin_b_10">3.不可全部为标点</div>
                       <div class="margin_b_10">4.不可全部为表情</div>
+                      <div class="flex_a">
+                        <el-switch
+                          @change="(bool)=>{
+                          return changeCopywriting(bool,index)
+                          }"
+                          v-model="item.is_receive_copywriting"
+                          :active-value="1"
+                          :inactive-value="0"
+                          active-color="#13ce66"
+                          inactive-color="#ff4949">
+                        </el-switch>
+                        <span class="margin_l_10">是否将题目设为领取页面文案</span>
+
+                      </div>
                     </div>
+
+
 
                   </div>
                 </div>
@@ -1197,6 +1215,59 @@
                   </div>
 
                 </el-popover>
+
+
+                <div class="" style="height: 100px">
+                  <div>
+                    <el-switch
+                      :disabled="show"
+                      v-model="formEdit.show_wx_name"
+                      active-value="1"
+                      inactive-value="0"
+                      active-color="#13ce66"
+                      inactive-color="#ff4949">
+                    </el-switch>
+                    <span class="margin_l_10">显示答题人微信昵称</span>
+                  </div>
+
+
+                  <div class="margin_b_10">
+                    <el-switch
+                      :disabled="show"
+                      @change="changeSize"
+                      v-model="formEdit.show_font"
+                      active-color="#13ce66"
+                      inactive-color="#ff4949">
+                    </el-switch>
+                    <span class="margin_l_10">设置主题方案的字体字号</span>
+                  </div>
+
+                  <div class="flex_a margin_t_10" v-if="formEdit.show_font === true">
+
+                    <el-select v-model="formEdit.font" placeholder="请选择字体" size="small">
+                      <el-option
+                        v-for="item in options_font"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                      </el-option>
+
+                    </el-select>
+                    <el-select class="margin_l_10" v-model="formEdit.size" placeholder="请选择字号" size="small">
+                      <el-option
+                        v-for="item in options_size"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                      </el-option>
+                    </el-select>
+
+                  </div>
+
+
+
+
+                </div>
 
 
 
@@ -1346,6 +1417,22 @@
                   </div>
                 </el-popover>
 
+
+                <div class="flex_a" style="height: 100px">
+                  <el-switch
+                    :disabled="show"
+                    v-model="formEdit.is_primary_in_receive"
+                    active-value="1"
+                    inactive-value="0"
+                    active-color="#13ce66"
+                    inactive-color="#ff4949">
+                  </el-switch>
+                  <span class="margin_l_10">将领取页面为主图嵌入本页</span>
+
+                </div>
+
+
+
               </div>
             </div>
 
@@ -1484,7 +1571,7 @@
           third_code: [
             {code1: '', code2: ''}
           ],
-          status:true,//：关闭 1：开启
+          status:1,//：关闭 1：开启
           start_time:'',//活动开始时间 时间戳
           end_time:'',//活动结束时间 时间戳
           type:0,//0：直接领取 1：答题后领取
@@ -1513,6 +1600,13 @@
           element2:'',//分享元素2
           element3:'',//分享元素3
           element4:'',//分享元素4
+
+          is_primary_in_receive:'1',//将领取页面为主图嵌入本页
+          show_wx_name:'1',//是否显示微信昵称
+          show_font:false,//__字体字号
+          font:'kuhei',//'字体'
+          size:'20',//'字体大小'
+
           url:'',
 
           imgurl_appId:'',
@@ -1533,6 +1627,54 @@
 
         },
 
+        options_font:[
+          {
+            value: 'gaoduanhei',
+            label: '高端黑'
+          },
+          {
+            value: 'kuaileti',
+            label: '快乐体'
+          },
+          {
+            value: 'kuhei',
+            label: '酷黑'
+          }
+        ],
+        options_size:[
+          {
+            value: '12',
+            label: '12'
+          },
+          {
+            value: '14',
+            label: '14'
+          },
+          {
+            value: '16',
+            label: '16'
+          },
+          {
+            value: '18',
+            label: '18'
+          },
+          {
+            value: '20',
+            label: '20'
+          },
+          {
+            value: '22',
+            label: '22'
+          },
+          {
+            value: '24',
+            label: '24'
+          }
+        ],
+
+
+
+
         subjectAddList:{ //增加题目
           subject_type:'',//1填空，2单选 ，3多选
           subject_problem:'',//问题url
@@ -1542,7 +1684,8 @@
           select_num:'',//选中数量
           option:[],//图片数量（单选，多选)
           multi_selection:'',//__多选 题目数__
-          subject_rule:{max:33,min:1}
+          subject_rule:{max:33,min:1},
+          is_receive_copywriting:0//是否将题目设为领取页面文案
         },
 
 
@@ -1555,6 +1698,19 @@
     methods: {
       ...mapActions(['setActivitySettingTree', 'setActivitySettingLevelId']),
       ...mapGetters(['getActivitySettingTree', 'getActivitySettingLevelId']),
+      changeSize(bool){
+        if(bool === false){
+          // this.formEdit.font = 'kuhei';
+          // this.formEdit.size = '20'
+        }
+      },
+      changeCopywriting(bool,index){
+        console.log(bool)
+        this.formEdit.subject_data.forEach((item)=>{
+          item.is_receive_copywriting = 0
+        });
+        this.formEdit.subject_data[index].is_receive_copywriting = bool
+      },
       closeImg(){
         this.imgUrl = '';
         this.activityId = '';
@@ -1723,7 +1879,8 @@
           subject_background_url:'',
           option:[],
           multi_selection:'',
-          subject_rule:{max:33,min:1}
+          subject_rule:{max:33,min:1},
+          is_receive_copywriting:0
         }
       },
       subjectAdd(){
@@ -1772,7 +1929,8 @@
             option:optionList,
             multi_selection:this.subjectAddList.multi_selection,
             select_num:this.subjectAddList.select_num,
-            subject_rule:{max:33,min:1}
+            subject_rule:{max:33,min:1},
+            is_receive_copywriting:0
           });
           this.showSubjectIndex = this.formEdit.subject_data.length -1
         } else {
@@ -1785,7 +1943,8 @@
             option:optionList,
             multi_selection:this.subjectAddList.multi_selection,
             select_num:this.subjectAddList.select_num,
-            subject_rule:{max:this.subjectAddList.subject_rule.max,min:this.subjectAddList.subject_rule.min}
+            subject_rule:{max:this.subjectAddList.subject_rule.max,min:this.subjectAddList.subject_rule.min},
+            is_receive_copywriting:this.subjectAddList.is_receive_copywriting
           })
         }
 
@@ -1854,7 +2013,7 @@
             third_code: [
             {code1: '', code2: ''}
           ],
-            status:true,//：关闭 1：开启
+            status:1,//：关闭 1：开启
             start_time:'',//活动开始时间 时间戳
             end_time:'',//活动结束时间 时间戳
             type:0,//0：直接领取 1：答题后领取
@@ -1882,10 +2041,17 @@
             element2:'',//分享元素2
             element3:'',//分享元素3
             element4:'',//分享元素4
+
+            is_primary_in_receive:1,
+            show_wx_name:1,//是否显示微信昵称
+            show_font:false,//__字体字号
+            font:'kuhei',//'字体'
+            size:'20',//'字体大小'
+
             url:'',
 
             imgurl_appId:'',
-
+            qr_code:'',
 
             status1:false,
             status2:false,
@@ -1973,12 +2139,16 @@
         this.dialogFormVisible = true;
         getApi.getInfo(id).then((res) => {
           if (res.data.errcode === 0) {
-            res.data.data.status === 1 ? res.data.data.status = true:res.data.data.status = false;
+
             res.data.data.start_time === ''? res.data.data.start_time = '': res.data.data.start_time  = (res.data.data.start_time + '000') * 1;
             res.data.data.end_time === ''? res.data.data.end_time  = '': res.data.data.end_time  = (res.data.data.end_time + '000') * 1;
+
+            (res.data.data.size === "20" && res.data.data.font === "kuhei")? res.data.data.show_font = false: res.data.data.show_font = true;
+
             this.formEdit = res.data.data;
             this.formEdit1.card_id = res.data.data.card_id;
             this.formEdit1.material_id = res.data.data.material_id
+
           }
 
         });
@@ -2557,7 +2727,9 @@
   .reg{
     width: 420px;height: 345px;display: flex;align-items: flex-end;justify-content: flex-end;
     .reg_box{
-      width: 200px;height: 200px;border: 1px dashed #d9d9d9;border-radius: 5px;padding: 10px;
+      width: 240px;
+      height: 210px;
+      border: 1px dashed #d9d9d9;border-radius: 5px;padding: 10px;
     }
   }
   .b_c{

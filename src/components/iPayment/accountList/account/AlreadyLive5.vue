@@ -75,13 +75,18 @@
     </el-form-item>
 
     <!-- appid -->
-    <el-form-item label="APPID:" prop="appid">
-      <el-input v-model="ruleForm.appid" placeholder="在您通联后台-设置-对接配置中获取"></el-input>
+    <el-form-item label="终端编号:" prop="appid">
+      <el-input v-model="ruleForm.appid" placeholder="请输入终端编号"></el-input>
     </el-form-item>
 
     <!-- 交易秘钥 -->
     <el-form-item label="交易秘钥:" prop="key">
-      <el-input v-model="ruleForm.key" placeholder="在您通联后台-设置-对接配置中获取"></el-input>
+      <el-input v-model="ruleForm.key" placeholder="请输入交易秘钥"></el-input>
+    </el-form-item>
+
+    <!-- 商户会员号 -->
+    <el-form-item label="商户会员号:" prop="memo">
+      <el-input v-model="ruleForm.memo" placeholder="请输入商户会员号"></el-input>
     </el-form-item>
 
     <el-form-item>
@@ -112,7 +117,7 @@
           }],
           appid:'',
           key:'',
-
+          memo:''
         },
 
         rules: {
@@ -140,6 +145,9 @@
           ],
           key: [
             {required: true, message: '请输入交易秘钥', trigger: 'change'}
+          ],
+          memo: [
+            {required: true, message: '请输入商户会员号', trigger: 'change'}
           ],
         },
       };
@@ -187,6 +195,7 @@
                 merchants: this.ruleForm.Merchants,         // 商户号
                 appid:this.ruleForm.appid,
                 key:this.ruleForm.key,
+                memo:this.ruleForm.memo,
                 level_id:this.$route.params.id
               };
 

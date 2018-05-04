@@ -6,6 +6,9 @@ export default{
   getData(state, getters, rootState){
     return state.data;
   },
+  getTheme(state){
+    return state.theme;
+  },
   getTopHeight(state){
     return state.height;
   },
@@ -187,5 +190,12 @@ export default{
   },
   getPostPaymentJumpLevelId(state){
     return state.postPaymentJumpLevelId;
+  },
+
+  getTemplateMessageTree(state){
+    return state.templateMessageTree;
+  },
+  getTemplateMessageLevelId(state){
+    return state.templateMessageLevelId;
   },
 }

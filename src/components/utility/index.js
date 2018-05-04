@@ -7,4 +7,5 @@ import xoAffiliatedStore from './AffiliatedStore.vue'
 import xoPubTree from './PubTree.vue'
 import xoDishes from './Dishes'
 import xoForm from './Form'
-export default {xoPagination,xoDatePicker,xoNavPath,xoButton,xoAuth,xoAffiliatedStore,xoPubTree,xoDishes,xoForm}
+import xoThemePicker from './ThemePicker'
+export default {xoPagination,xoDatePicker,xoNavPath,xoButton,xoAuth,xoAffiliatedStore,xoPubTree,xoDishes,xoForm,xoThemePicker}

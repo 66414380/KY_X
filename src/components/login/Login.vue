@@ -30,7 +30,7 @@
 
 <script>
   import {requestLogin} from '@/api/api.js';
-
+  import {mapActions, mapGetters} from 'vuex';
   export default {
     data() {
       return {
@@ -52,6 +52,7 @@
       };
     },
     methods: {
+      ...mapActions(['setTheme']),
       handleReset2() {
         this.$refs.ruleForm2.resetFields();
       },
@@ -67,7 +68,7 @@
             formData.append("user_name", loginParams.username);
             formData.append("password", loginParams.password);
             this.$http.request({
-              url: 'index.php?controller=user&action=login',
+              url: 'index.php?controller=user&action=newLogin',
               method: 'post',
               headers: {'Content-Type': 'application/x-www-form-urlencoded'},
               data: formData,
@@ -75,6 +76,11 @@
               if (res.data.errcode === 0) {
                 this.$localStorage.set("token", res.data.data.token);
                 this.$localStorage.set("user", res.data.data.nickname);
+                if(res.data.data.theme !== null){
+                  this.$localStorage.set("logo", res.data.data.theme.logo_src);
+                  this.$localStorage.set("theme", res.data.data.theme.base_color);
+                }
+
                 this.$router.push('/home');
 
                 if(this.checked === true){

@@ -10,7 +10,7 @@ const state = {
   navPath: [],
   isLoading: false,
   treeArr:{},//页面权限
-
+  theme:'#2A3642',//主题色
   storeTreeList:[],//门店库树
   showStoreTree: {levelid: '', type: '', showAdd: false},//门店库树状态
   publicTree:[],//公众号树
@@ -61,12 +61,21 @@ const state = {
   activitySettingLevelId:'',//活动设置levelId
   activityDownRecordTree:[],//活动下发记录树
   activityDownRecordLevelId:'',//活动下发记录levelId
-
   postPaymentJumpTree:[],//支付后跳转树
   postPaymentJumpLevelId:'',//支付后跳转levelId
+
+  templateMessageTree:[],//消息模板跳转树
+  templateMessageLevelId:'',//消息模板跳转levelId
+
+
+
+
 };
 
 const mutations = {
+  [types.THEME](state, theme){
+    state.theme = theme;
+  },
   [types.TOPHEIGHT](state, height){
     state.height = height;
   },
@@ -248,6 +257,13 @@ const mutations = {
   },
   [types.POSTPAYMENTJUMPLEVELID](state, obj){
     state.postPaymentJumpLevelId = obj.levelId
+  },
+
+  [types.TEMPLATEMESSAGETREE](state,obj){
+    state.templateMessageTree = obj.list;
+  },
+  [types.TEMPLATEMESSAGELEVELID](state, obj){
+    state.templateMessageLevelId = obj.levelId
   },
 };
 

@@ -1,4 +1,4 @@
-import {axios,get} from '../../utility/communApi'
+import {axios,get} from '../../../utility/communApi'
 
 //方案列表
 let jumpUseList = (p,levelid) => {

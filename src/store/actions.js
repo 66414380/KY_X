@@ -4,6 +4,9 @@
 import * as types from './type'
 
 export default {
+  setTheme({commit}, theme){
+    commit(types.THEME,theme);
+  },
   topHeight({commit}, height){
     commit(types.TOPHEIGHT,height);
   },
@@ -175,7 +178,6 @@ export default {
   setActivityDownRecordLevelId({commit},obj){
     commit(types.ACTIVITYDOWNRECORDLEVELID,obj);
   },
-
   setPostPaymentJumpTree({commit},obj){
     commit(types.POSTPAYMENTJUMPTREE,obj);
   },
@@ -183,4 +185,10 @@ export default {
     commit(types.POSTPAYMENTJUMPLEVELID,obj);
   },
 
+  setTemplateMessageTree({commit},obj){
+    commit(types.TEMPLATEMESSAGETREE,obj);
+  },
+  setTemplateMessageLevelId({commit},obj){
+    commit(types.TEMPLATEMESSAGELEVELID,obj);
+  },
 }
